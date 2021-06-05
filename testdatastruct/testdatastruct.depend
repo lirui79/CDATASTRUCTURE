@@ -1,0 +1,77 @@
+# depslib dependency file v1.0
+1622686123 source:d:\project\testdatastruct\testdatastruct\main.c
+	<stdio.h>
+	<stdlib.h>
+	"test_list_init.h"
+	"test_list_alloc.h"
+
+1622860028 d:\project\testdatastruct\cstl\glist.h
+	"gtypes.h"
+
+1621823422 d:\project\testdatastruct\cstl\gtypes.h
+	"gmacros.h"
+
+1621822889 d:\project\testdatastruct\cstl\gmacros.h
+	<stddef.h>
+
+1621823184 source:d:\project\testdatastruct\cstl\garray.c
+	"garray.h"
+
+1621824408 d:\project\testdatastruct\cstl\garray.h
+	"gtypes.h"
+
+1622861729 source:d:\project\testdatastruct\cstl\glist.c
+	"glist.h"
+	<stdio.h>
+	<stdlib.h>
+
+1622686092 d:\project\testdatastruct\testdatastruct\test_list_init.h
+	"../cstl/glist.h"
+
+1622861250 source:d:\project\testdatastruct\testdatastruct\test_list_init.c
+	"test_list_init.h"
+
+1622686071 source:d:\project\testdatastruct\testdatastruct\test_list_alloc.c
+	"test_list_alloc.h"
+
+1622686038 d:\project\testdatastruct\testdatastruct\test_list_alloc.h
+	"../cstl/glist.h"
+
+1621823184 source:d:\project\testdatastruct\testdatastruct\cstl\garray.c
+	"garray.h"
+
+1621824408 d:\project\testdatastruct\testdatastruct\cstl\garray.h
+	"gtypes.h"
+
+1621823422 d:\project\testdatastruct\testdatastruct\cstl\gtypes.h
+	"gmacros.h"
+
+1621822889 d:\project\testdatastruct\testdatastruct\cstl\gmacros.h
+	<stddef.h>
+
+1622861729 source:d:\project\testdatastruct\testdatastruct\cstl\glist.c
+	"glist.h"
+	<stdio.h>
+	<stdlib.h>
+
+1622860028 d:\project\testdatastruct\testdatastruct\cstl\glist.h
+	"gtypes.h"
+
+1622686123 source:d:\project\testdatastruct\testdatastruct\testdatastruct\main.c
+	<stdio.h>
+	<stdlib.h>
+	"test_list_init.h"
+	"test_list_alloc.h"
+
+1622686092 d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_init.h
+	"../cstl/glist.h"
+
+1622686038 d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_alloc.h
+	"../cstl/glist.h"
+
+1622686071 source:d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_alloc.c
+	"test_list_alloc.h"
+
+1622861871 source:d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_init.c
+	"test_list_init.h"
+
