@@ -10,33 +10,18 @@ G_BEGIN_DECLS
 
 typedef struct  _GNode     GNode;
 
-
 struct _GNode {
-    GNode             *next;// next node
-    GNode             *prev;// prev node
-    gpointer           data;// data pointer
-    unsigned int     size;//  data size
+    GNode*       (*next)(GNode *node);
+    GNode*       (*prev)(GNode *node);
+    gpointer     (*data)(GNode *node);
+    unsigned int (*size)(GNode *node);
 };
 
-GNode*          g_node_next(GNode  *node);
-
-GNode*          g_node_prev(GNode  *node);
-
-gpointer        g_node_data(GNode  *node);
-
-unsigned int  g_node_size(GNode  *node);
-
-
-
-/////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
 typedef struct  _GList     GList;
 
 struct _GList {
-    GNode                  head;// list  head  no data        last-> head ->first
-    unsigned int         length;
-
     void (*clear)(GList *list);// free node, but not free data
 
     void (*free)(GList *list);  // free node, and free data
@@ -81,7 +66,6 @@ struct _GList {
 
 GList* g_list_alloc();
 
-GList* g_list_init(GList *list);
 
 
 

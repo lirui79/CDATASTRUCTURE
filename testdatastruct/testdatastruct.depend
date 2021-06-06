@@ -75,3 +75,47 @@
 1622861871 source:d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_init.c
 	"test_list_init.h"
 
+1621823184 source:d:\workspace\cdatastructure\cstl\garray.c
+	"garray.h"
+
+1621824408 d:\workspace\cdatastructure\cstl\garray.h
+	"gtypes.h"
+
+1621823422 d:\workspace\cdatastructure\cstl\gtypes.h
+	"gmacros.h"
+
+1621822889 d:\workspace\cdatastructure\cstl\gmacros.h
+	<stddef.h>
+
+1622954001 source:d:\workspace\cdatastructure\testdatastruct\main.c
+	<stdio.h>
+	<stdlib.h>
+	"test_list_alloc.h"
+
+1622686092 d:\workspace\cdatastructure\testdatastruct\test_list_init.h
+	"../cstl/glist.h"
+
+1622946827 d:\workspace\cdatastructure\cstl\glist.h
+	"gtypes.h"
+
+1622686038 d:\workspace\cdatastructure\testdatastruct\test_list_alloc.h
+	"../cstl/glist.h"
+
+1622953943 source:d:\workspace\cdatastructure\testdatastruct\test_list_alloc.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_list_alloc.h"
+
+1622953881 source:d:\workspace\cdatastructure\testdatastruct\test_list_init.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_list_init.h"
+
+1622956490 source:d:\workspace\cdatastructure\cstl\glist.c
+	"glist.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

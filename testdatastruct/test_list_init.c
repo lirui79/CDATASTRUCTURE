@@ -1,4 +1,7 @@
 
+#include  <stdio.h>
+#include  <stdlib.h>
+#include  <string.h>
 #include "test_list_init.h"
 
 typedef struct {
@@ -22,32 +25,31 @@ static void print_begintoend(GList *list) {
    GNode  *node = NULL;
    Msg_t *msg = NULL;
    printf("GList: empty %d  size %d\n", list->empty(list), list->size(list));
-   for (node = list->begin(list); node != list->end(list); node = g_node_next(node)) {
-        msg = g_node_data(node);
+   for (node = list->begin(list); node != list->end(list); node = node->next(node)) {
+        msg = node->data(node);
         print_Msg_t(msg);
    }
-
 }
 
 static void print_rbegintorend(GList *list) {
    GNode  *node = NULL;
    Msg_t *msg = NULL;
    printf("GList: empty %d  size %d\n", list->empty(list), list->size(list));
-   for (node = list->rbegin(list); node != list->rend(list); node = g_node_prev(node)) {
-        msg = g_node_data(node);
+   for (node = list->rbegin(list); node != list->rend(list); node = node->prev(node)) {
+        msg = node->data(node);
         print_Msg_t(msg);
    }
 }
 
 static void test_list_nodes(GList *list) {
     GNode *node = list->front(list);
-    Msg_t *msg = g_node_data(node);
+    Msg_t *msg = node->data(node);
     print_Msg_t(msg);
 
     list->pop_front(list);
 
     node = list->back(list);
-    msg  = g_node_data(node);
+    msg  = node->data(node);
 
     print_Msg_t(msg);
 
@@ -57,15 +59,15 @@ static void test_list_nodes(GList *list) {
 
     node = list->at(list, 8);
 
-    msg  = g_node_data(node);
+    msg  = node->data(node);
 
     print_Msg_t(msg);
 
-    int index = list->find(list, g_node_data(node), g_node_size(node));
+    int index = list->find(list, node->data(node), node->size(node));
 
     printf("index = %d  : 8\n", index);
 
-    list->remove(list, g_node_data(node), g_node_size(node));
+    list->remove(list, node->data(node), node->size(node));
 
     print_begintoend(list);
     int headSize = sizeof(unsigned int) +  sizeof(unsigned long) +  sizeof(int);
@@ -83,7 +85,7 @@ static void test_list_nodes(GList *list) {
     print_begintoend(list);
 }
 
-
+/*
 static void test_list_init_1() {
     GList  list, list1;
     g_list_init(&list);
@@ -120,20 +122,7 @@ static void test_list_init_1() {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 
@@ -145,7 +134,7 @@ static void test_list_init_1() {
 
 
 void test_list_init() {
-    test_list_init_1() ;
+    //test_list_init_1() ;
 
 
 
