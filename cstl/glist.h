@@ -22,45 +22,45 @@ struct _GNode {
 typedef struct  _GList     GList;
 
 struct _GList {
-    void (*clear)(GList *list);// free node, and free data , but not free list
+    void (*clear)(GList *_this);// free node, and free data , but not free list
 
-    void (*free)(GList *list);  // free node, and free data, free list
+    void (*free)(GList *_this);  // free node, and free data, free list
 
-    GList* (*push_back)(GList *list, gpointer data, unsigned int size);
+    GList* (*push_back)(GList *_this, gpointer data, unsigned int size);
 
-    GList* (*push_front)(GList *list, gpointer data, unsigned int size);
+    GList* (*push_front)(GList *_this, gpointer data, unsigned int size);
 
-    GList* (*remove)(GList *list, gpointer data, unsigned int size);// free node, but not free data
+    GList* (*remove)(GList *_this, gpointer data, unsigned int size);// free node, but not free data
 
-    GList* (*pop_back)(GList *list);// free node, but not free data
+    GList* (*pop_back)(GList *_this);// free node, but not free data
 
-    GList* (*pop_front)(GList *list);// free node, but not free data
+    GList* (*pop_front)(GList *_this);// free node, but not free data
 
-    GNode* (*back)(GList *list);
+    GNode* (*back)(GList *_this);
 
-    GNode* (*front)(GList *list);
+    GNode* (*front)(GList *_this);
 
-    GNode* (*begin)(GList *list);
+    GNode* (*begin)(GList *_this);
 
-    GNode* (*end)(GList *list);
+    GNode* (*end)(GList *_this);
 
-    GNode* (*rbegin)(GList *list);
+    GNode* (*rbegin)(GList *_this);
 
-    GNode* (*rend)(GList *list);
+    GNode* (*rend)(GList *_this);
 
-    GList* (*reverse)(GList *list);
+    GList* (*reverse)(GList *_this);
 
-    GList* (*copy)(GList *list, GList *newlist);
+    GList* (*copy)(GList *_this, GList *newlist);
 
-    int    (*find)(GList *list, gpointer data, unsigned int size);
+    int    (*find)(GList *_this, gpointer data, unsigned int size);
 
-    GNode*  (*at)(GList *list, int index);
+    GNode*  (*at)(GList *_this, int index);
 
-    GList* (*insert)(GList *list, int index, gpointer data, unsigned int size);
+    GList* (*insert)(GList *_this, int index, gpointer data, unsigned int size);
 
-    int  (*empty)(GList *list);
+    int  (*empty)(GList *_this);
 
-    int  (*size)(GList *list);
+    int  (*size)(GList *_this);
 };
 
 

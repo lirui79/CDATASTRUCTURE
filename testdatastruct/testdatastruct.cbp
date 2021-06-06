@@ -51,6 +51,13 @@
 		<Unit filename="../cstl/gtypes.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="../cstl/gvector.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../cstl/gvector.h">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -59,13 +66,6 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="test_list_alloc.h">
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="test_list_init.c">
-			<Option compilerVar="CC" />
-			<Option target="Debug" />
-		</Unit>
-		<Unit filename="test_list_init.h">
 			<Option target="Debug" />
 		</Unit>
 		<Extensions>
