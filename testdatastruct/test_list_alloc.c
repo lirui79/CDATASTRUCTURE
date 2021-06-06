@@ -47,12 +47,16 @@ static void test_list_nodes(GList *list) {
 
     list->pop_front(list);
 
+    free(msg);
+
     node = list->back(list);
     msg  = node->data(node);
 
     print_Msg_t(msg);
 
     list->pop_back(list);
+
+    free(msg);
 
     print_begintoend(list);
 
@@ -67,6 +71,8 @@ static void test_list_nodes(GList *list) {
     printf("index = %d  : 8\n", index);
 
     list->remove(list, node->data(node), node->size(node));
+
+    free(msg);
 
     print_begintoend(list);
     int headSize = sizeof(unsigned int) +  sizeof(unsigned long) +  sizeof(int);
