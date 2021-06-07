@@ -42,12 +42,11 @@ static void print_rbegintorend(GList *list) {
 
 static void test_list_nodes(GList *list) {
     GNode *node = list->front(list);
-    Msg_t *msg = node->data(node);
+    Msg_t *msg = node->data(node), *msg1 = NULL;
+    int size;
     print_Msg_t(msg);
 
     list->pop_front(list);
-
-    free(msg);
 
     node = list->back(list);
     msg  = node->data(node);
@@ -56,23 +55,26 @@ static void test_list_nodes(GList *list) {
 
     list->pop_back(list);
 
-    free(msg);
-
     print_begintoend(list);
 
     node = list->at(list, 8);
 
     msg  = node->data(node);
+    size = node->size(node);
 
-    print_Msg_t(msg);
+    msg1 = malloc(size);
 
-    int index = list->find(list, node->data(node), node->size(node));
+    memcpy(msg1, msg, size);
+
+    print_Msg_t(msg1);
+
+    int index = list->find(list, msg1, size);
 
     printf("index = %d  : 8\n", index);
 
-    list->remove(list, node->data(node), node->size(node));
+    list->remove(list,  msg1, size);
 
-    free(msg);
+    free(msg1);
 
     print_begintoend(list);
     int headSize = sizeof(unsigned int) +  sizeof(unsigned long) +  sizeof(int);
@@ -86,6 +88,8 @@ static void test_list_nodes(GList *list) {
     }
 
     list->insert(list, index, msg, headSize + dataSize);
+
+    free(msg);
 
     print_begintoend(list);
 }
@@ -103,6 +107,7 @@ static void test_list_create_data(GList *list, GList *list1) {
             msg->data[j] = 0x10 * i + j;
         }
         list->push_back(list, msg, headSize + dataSize);
+        free(msg);
     }
 
     print_begintoend(list);
@@ -111,7 +116,7 @@ static void test_list_create_data(GList *list, GList *list1) {
 
     list->reverse(list);
     print_begintoend(list);
-    list1 = list->copy(list, list1);
+    list1 = list1->assign(list1, list);
 
     list->clear(list);
     print_begintoend(list1);

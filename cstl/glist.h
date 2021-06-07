@@ -50,7 +50,7 @@ struct _GList {
 
     GList* (*reverse)(GList *_this);
 
-    GList* (*copy)(GList *_this, GList *newlist);
+    GList* (*assign)(GList *_this, const GList *_othis);
 
     int    (*find)(GList *_this, gpointer data, unsigned int size);
 

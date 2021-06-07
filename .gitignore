@@ -1,2 +1,4 @@
 
 testdatastruct/testdatastruct.layout
+*.o
+*.exe
