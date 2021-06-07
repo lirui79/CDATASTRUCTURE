@@ -50,9 +50,9 @@ static GVector* g_vector_push_front(GVector *_this, gpointer data) {
     return _this->fill(_this, _gthis->first, 1, data);
 }
 
-static GVector* g_vector_remove(GVector *_this, gpointer pos) {
+static GVector* g_vector_remove(GVector *_this, gpointer position) {
     GDVector *_gthis = (GDVector*)_this;
-    return _this->erase(_this, pos, pos + _gthis->cellsize);
+    return _this->erase(_this, position, position + _gthis->cellsize);
 }
 
 static GVector* g_vector_pop_back(GVector *_this) {
@@ -103,10 +103,10 @@ static gpointer g_vector_end(GVector *_this) {
     return _gthis->last;
 }
 
-static gpointer  g_vector_move(GVector *_this, gpointer pos, int n) {
+static gpointer  g_vector_move(GVector *_this, gpointer position, int n) {
     GDVector *_gthis = (GDVector*)_this;
-    pos = pos + n * _gthis->cellsize;
-    return pos;
+    position = position + n * _gthis->cellsize;
+    return position;
 }
 
 static gpointer g_vector_rbegin(GVector *_this) {
@@ -121,10 +121,10 @@ static gpointer g_vector_rend(GVector *_this) {
     return gptr;
 }
 
-static gpointer g_vector_forward(GVector *_this, gpointer pos, int n) {
+static gpointer g_vector_forward(GVector *_this, gpointer position, int n) {
     GDVector *_gthis = (GDVector*)_this;
-    pos = pos - n * _gthis->cellsize;
-    return pos;
+    position = position - n * _gthis->cellsize;
+    return position;
 }
 
 static GVector* g_vector_reverse(GVector *_this) {
@@ -157,22 +157,22 @@ static gpointer  g_vector_at(GVector *_this, int index) {
     return (_gthis->first + index * _gthis->cellsize);
 }
 
-static GVector* g_vector_fill(GVector *_this, gpointer pos, int n, gpointer data) {
+static GVector* g_vector_fill(GVector *_this, gpointer position, int n, gpointer data) {
     GDVector *_gthis = (GDVector*)_this;
-    if (pos == NULL || data == NULL || n <= 0)
+    if (position == NULL || data == NULL || n <= 0)
         return _this;
-    if (pos < _gthis->first || pos > _gthis->last)
+    if (position < _gthis->first || position > _gthis->last)
         return _this;
     int newsize = n * _gthis->cellsize, size = _gthis->last - _gthis->first, capacity = _gthis->end - _gthis->first;
     if (newsize + size > capacity) {
         gpointer gptr = malloc(2 * (newsize + size));
-        int psize = pos - _gthis->first;
+        int psize = position - _gthis->first;
         if (psize > 0)
             memcpy(gptr, _gthis->first, psize);
         for (int step = 0; step < newsize; step = step + _gthis->cellsize)
             memcpy(gptr + psize + step, data, _gthis->cellsize);
         if (size > psize)
-            memcpy(gptr + psize + newsize, pos, size - psize);
+            memcpy(gptr + psize + newsize, position, size - psize);
         free(_gthis->first);
         _gthis->first = gptr;
         _gthis->last  = gptr + newsize + size;
@@ -180,12 +180,12 @@ static GVector* g_vector_fill(GVector *_this, gpointer pos, int n, gpointer data
         return _this;
     }
     gpointer gptr = _gthis->last - _gthis->cellsize;
-    for ( ;gptr >= pos; gptr = gptr - _gthis->cellsize) {
+    for ( ;gptr >= position; gptr = gptr - _gthis->cellsize) {
         memcpy(gptr + newsize, gptr, _gthis->cellsize);
     }
 
     for (int step = 0; step < newsize; step = step + _gthis->cellsize)
-        memcpy(pos + step, data, _gthis->cellsize);
+        memcpy(position + step, data, _gthis->cellsize);
     _gthis->last = _gthis->last + newsize;
     return _this;
 }
@@ -288,21 +288,21 @@ static GVector* g_vector_assign(GVector *_this, gpointer first, gpointer last) {
     return _this;
 }
 
-static GVector* g_vector_insert(GVector *_this, gpointer pos, gpointer first, gpointer last) {
+static GVector* g_vector_insert(GVector *_this, gpointer position, gpointer first, gpointer last) {
     GDVector *_gthis = (GDVector*)_this;
-    if (pos == NULL || first == NULL || last == NULL)
+    if (position == NULL || first == NULL || last == NULL)
         return _this;
-    if (pos < _gthis->first || pos > _gthis->last || first >= last)
+    if (position < _gthis->first || position > _gthis->last || first >= last)
         return _this;
     int newsize = last - first, size = _gthis->last - _gthis->first, capacity = _gthis->end - _gthis->first;
     if (newsize + size > capacity) {
         gpointer gptr = malloc(2 * (newsize + size));
-        int psize = pos - _gthis->first;
+        int psize = position - _gthis->first;
         if (psize > 0)
             memcpy(gptr, _gthis->first, psize);
         memcpy(gptr + psize, first, newsize);
         if (size > psize)
-            memcpy(gptr + psize + newsize, pos, size - psize);
+            memcpy(gptr + psize + newsize, position, size - psize);
         free(_gthis->first);
         _gthis->first = gptr;
         _gthis->last  = gptr + newsize + size;
@@ -310,10 +310,10 @@ static GVector* g_vector_insert(GVector *_this, gpointer pos, gpointer first, gp
         return _this;
     }
     gpointer gptr = _gthis->last - _gthis->cellsize;
-    for ( ;gptr >= pos; gptr = gptr - _gthis->cellsize) {
+    for ( ;gptr >= position; gptr = gptr - _gthis->cellsize) {
         memcpy(gptr + newsize, gptr, _gthis->cellsize);
     }
-    memcpy(pos, first, newsize);
+    memcpy(position, first, newsize);
     _gthis->last = _gthis->last + newsize;
     return _this;
 }

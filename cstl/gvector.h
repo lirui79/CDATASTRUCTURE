@@ -19,7 +19,7 @@ struct _GVector {
 
     GVector* (*push_front)(GVector *_this, gpointer data);
 
-    GVector* (*remove)(GVector *_this, gpointer pos);//
+    GVector* (*remove)(GVector *_this, gpointer data);//
 
     GVector* (*pop_back)(GVector *_this);//
 
@@ -33,13 +33,13 @@ struct _GVector {
 
     gpointer (*end)(GVector *_this);
 
-    gpointer  (*move)(GVector *_this, gpointer pos, int n);
+    gpointer  (*move)(GVector *_this, gpointer position, int n);
 
     gpointer (*rbegin)(GVector *_this);
 
     gpointer (*rend)(GVector *_this);
 
-    gpointer  (*forward)(GVector *_this, gpointer pos, int n);
+    gpointer  (*forward)(GVector *_this, gpointer position, int n);
 
     GVector* (*reverse)(GVector *_this);
 
@@ -47,7 +47,7 @@ struct _GVector {
 
     gpointer  (*at)(GVector *_this, int index);
 
-    GVector* (*fill)(GVector *_this, gpointer pos, int n, gpointer data);
+    GVector* (*fill)(GVector *_this, gpointer position, int n, gpointer data);
 
     int  (*empty)(GVector *_this);
 
@@ -63,7 +63,7 @@ struct _GVector {
 
     GVector* (*assign)(GVector *_this, gpointer first, gpointer last);
 
-    GVector* (*insert)(GVector *_this, gpointer pos, gpointer first, gpointer last);
+    GVector* (*insert)(GVector *_this, gpointer position, gpointer first, gpointer last);
 
     int (*capacity)(GVector *_this);
 };

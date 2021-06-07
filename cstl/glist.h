@@ -54,7 +54,7 @@ struct _GList {
 
     int    (*find)(GList *_this, gpointer data, unsigned int size);
 
-    GNode*  (*at)(GList *_this, int index);
+    GNode* (*at)(GList *_this, int index);
 
     GList* (*insert)(GList *_this, int index, gpointer data, unsigned int size);
 
