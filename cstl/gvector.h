@@ -43,8 +43,6 @@ struct _GVector {
 
     GVector* (*reverse)(GVector *_this);
 
-    GVector* (*copy)(GVector *_this, GVector *new_this);
-
     gpointer  (*at)(GVector *_this, int index);
 
     GVector* (*fill)(GVector *_this, gpointer position, int n, gpointer data);

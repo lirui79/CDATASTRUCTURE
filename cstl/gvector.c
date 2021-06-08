@@ -142,14 +142,6 @@ static GVector* g_vector_reverse(GVector *_this) {
     return _this;
 }
 
-static GVector* g_vector_copy(GVector *_this, GVector *new_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (new_this == NULL) {
-        new_this = g_vector_alloc(_gthis->cellsize);
-    }
-    return new_this->assign(new_this, _gthis->first, _gthis->last);
-}
-
 static gpointer  g_vector_at(GVector *_this, int index) {
     GDVector *_gthis = (GDVector*)_this;
     if (index >= _this->size(_this))
@@ -354,7 +346,6 @@ GVector* g_vector_alloc(int cellsize) {//vector unit size
     _this->rend   = g_vector_rend;
     _this->forward   = g_vector_forward;
     _this->reverse = g_vector_reverse;
-    _this->copy    = g_vector_copy;
     _this->at      = g_vector_at;
     _this->fill    = g_vector_fill;
     _this->empty   = g_vector_empty;

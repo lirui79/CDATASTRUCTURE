@@ -68,6 +68,13 @@
 		<Unit filename="test_list_alloc.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="test_vector.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_vector.h">
+			<Option target="Debug" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 			<code_completion />
