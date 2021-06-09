@@ -75,7 +75,7 @@
 1622861871 source:d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_init.c
 	"test_list_init.h"
 
-1623165791 source:d:\workspace\cdatastructure\cstl\garray.c
+1623253686 source:d:\workspace\cdatastructure\cstl\garray.c
 	"garray.h"
 	<stdio.h>
 	<stdlib.h>
@@ -123,21 +123,30 @@
 	<stdlib.h>
 	<string.h>
 
-1623250798 source:d:\workspace\cdatastructure\cstl\gvector.c
+1623253877 source:d:\workspace\cdatastructure\cstl\gvector.c
 	"gvector.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623250798 d:\workspace\cdatastructure\cstl\gvector.h
+1623253765 d:\workspace\cdatastructure\cstl\gvector.h
 	"gtypes.h"
 
 1623075254 d:\workspace\cdatastructure\testdatastruct\test_vector.h
 	"../cstl/gvector.h"
 
-1623077595 source:d:\workspace\cdatastructure\testdatastruct\test_vector.c
+1623250815 source:d:\workspace\cdatastructure\testdatastruct\test_vector.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"test_vector.h"
+
+1623254316 source:d:\workspace\cdatastructure\cstl\gstack.c
+	"gstack.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1623253094 d:\workspace\cdatastructure\cstl\gstack.h
+	"gtypes.h"
 

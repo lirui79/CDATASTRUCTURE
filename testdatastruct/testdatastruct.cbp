@@ -48,6 +48,13 @@
 		<Unit filename="../cstl/gmacros.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="../cstl/gstack.c">
+			<Option compilerVar="CC" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../cstl/gstack.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="../cstl/gtypes.h">
 			<Option target="Debug" />
 		</Unit>

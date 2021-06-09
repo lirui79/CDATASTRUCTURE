@@ -64,6 +64,8 @@ struct _GVector {
     GVector* (*insert)(GVector *_this, gpointer position, gpointer first, gpointer last);
 
     int (*capacity)(GVector *_this);
+
+    int (*swap)(GVector *_this, GVector *_that);
 };
 
 
