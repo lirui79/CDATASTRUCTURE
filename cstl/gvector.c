@@ -317,17 +317,16 @@ static int g_vector_capacity(GVector *_this) {
     return capacity;
 }
 
-GVector* g_vector_alloc(int cellsize) {//vector unit size
+GVector* g_vector_alloc(int n, int c) {//vector unit size
     GDVector* _gthis = (GDVector*) malloc(sizeof(GDVector));
     GVector*  _this  = NULL;
-    const int cellcount = 4;
-    if (cellsize <= 0 || _gthis == NULL) {
+    if (c <= 0 || _gthis == NULL) {
         return NULL;
     }
-    _gthis->first = malloc(cellcount * cellsize);
+    _gthis->first = malloc(n * c);
     _gthis->last  = _gthis->first;
-    _gthis->end   = _gthis->first + cellcount * cellsize;
-    _gthis->cellsize = cellsize;// unit size > 0
+    _gthis->end   = _gthis->first + n * c;
+    _gthis->cellsize = c;// unit size > 0
 
     _this     = &(_gthis->_this);
     _this->clear  = g_vector_clear;// but not free _this

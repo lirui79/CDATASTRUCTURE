@@ -27,7 +27,7 @@ static void print_vector_int_r(GVector *ivector) {
 }
 
 void test_vector_int() {
-    GVector *ivector = g_vector_alloc(sizeof(int));
+    GVector *ivector = g_vector_alloc(8,sizeof(int));
     int value = 11;
     ivector->resize(ivector, 20, &value);
     print_vector_int(ivector);

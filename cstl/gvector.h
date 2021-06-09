@@ -67,7 +67,7 @@ struct _GVector {
 };
 
 
-GVector* g_vector_alloc(int cellsize); //vector ElementSize
+GVector* g_vector_alloc(int n, int c); //vector ElementSize
 
 
 G_END_DECLS
