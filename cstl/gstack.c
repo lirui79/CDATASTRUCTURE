@@ -10,7 +10,7 @@ struct _GDStack {
     gpointer   first;
     gpointer   last;
     gpointer   end;
-    int        csize;
+    guint      csize;
 };
 
 static    void g_stack_free(GStack *_this) {
@@ -29,14 +29,14 @@ static    gpointer g_stack_top(GStack *_this) {
     return gptr;
 }
 
-static    int  g_stack_size(GStack *_this) {
+static    guint  g_stack_size(GStack *_this) {
     GDStack *_gthis = (GDStack*) _this;
-    int size = _gthis->last - _gthis->first;
+    guint size = _gthis->last - _gthis->first;
     size = size / _gthis->csize;
     return size;
 }
 
-static    gpointer  g_stack_empty(GStack *_this) {
+static    guint  g_stack_empty(GStack *_this) {
     GDStack *_gthis = (GDStack*) _this;
     if (_gthis->first == _gthis->last)
         return 1;
@@ -58,11 +58,11 @@ static    GStack* g_stack_pop(GStack *_this) {
      return _this;
 }
 
-static    int g_stack_swap(GStack *_this, GStack *_that) {
+static    void g_stack_swap(GStack *_this, GStack *_that) {
     gpointer gptr = NULL;
     GDStack *_gthis = (GDStack*) _this, *_gthat = (GDStack*)_that;
     if (_that == NULL) {
-        return -1;
+        return;
     }
     gptr = _gthis->first;
     _gthis->first = _gthat->first;
@@ -76,13 +76,13 @@ static    int g_stack_swap(GStack *_this, GStack *_that) {
     _gthis->end = _gthat->end;
     _gthat->end = gptr;
 
-    int c = _gthis->csize;
+    guint c = _gthis->csize;
     _gthis->csize = _gthat->csize;
     _gthat->csize = c;
-    return 1;
+    return;
 }
 
-GStack* g_stack_alloc(int n, int c) {
+GStack* g_stack_alloc(guint n, guint c) {
  //n - count   c - ElementSize
     GDStack *_gthis = malloc(sizeof(GDStack));
     GStack *_this = NULL;

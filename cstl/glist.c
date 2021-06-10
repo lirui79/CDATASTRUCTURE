@@ -7,11 +7,11 @@
 typedef struct _GDNode GDNode;
 
 struct _GDNode {
-    GNode              _this;
+    GNode             _this;
     GDNode            *next;
     GDNode            *prev;
     gpointer           data;// data pointer
-    unsigned int       size;//  data size
+    guint              size;//  data size
 };
 
 static GNode*          g_node_next(GNode  *_this);
@@ -20,10 +20,10 @@ static GNode*          g_node_prev(GNode  *_this);
 
 static gpointer        g_node_data(GNode  *_this);
 
-static unsigned int    g_node_size(GNode  *_this);
+static guint           g_node_size(GNode  *_this);
 
 
-static GDNode*          g_node_init(GDNode *_this, gpointer data, unsigned int size) {
+static GDNode*          g_node_init(GDNode *_this, gpointer data, guint size) {
     _this->_this.next = g_node_next;
     _this->_this.prev = g_node_prev;
     _this->_this.data = g_node_data;
@@ -35,7 +35,7 @@ static GDNode*          g_node_init(GDNode *_this, gpointer data, unsigned int s
     return _this;
 }
 
-static GDNode*          g_node_alloc(gpointer data, unsigned int size) {
+static GDNode*          g_node_alloc(gpointer data, guint size) {
     GDNode *_this = malloc(sizeof(GDNode));
     if(data == NULL || size <= 0) {
         return g_node_init(_this, NULL, 0);
@@ -57,7 +57,7 @@ gpointer        g_node_data(GNode  *_this) {
     return ((GDNode*) _this)->data;
 }
 
-unsigned int  g_node_size(GNode  *_this) {
+guint  g_node_size(GNode  *_this) {
     return ((GDNode*) _this)->size;
 }
 
@@ -82,7 +82,7 @@ typedef struct _GDList GDList;
 struct _GDList {
     GList                  _this;
     GDNode                 head;// list  head  no data        last-> head ->first
-    unsigned int           size;
+    guint                  size;
 };
 
 static   void  g_list_alloc_clear(GList *gthis) {
@@ -107,7 +107,7 @@ static   void  g_list_alloc_free(GList *gthis) {
     free(_this);
 }
 
-static   GList* g_list_push_back(GList *gthis, gpointer data, unsigned int size) {
+static   GList* g_list_push_back(GList *gthis, gpointer data, guint size) {
     GDList* _this = (GDList*)gthis;
     GDNode *node = NULL, *prev = NULL;
     prev = _this->head.prev;// last node
@@ -117,7 +117,7 @@ static   GList* g_list_push_back(GList *gthis, gpointer data, unsigned int size)
     return gthis;
 }
 
-static   GList* g_list_push_front(GList *gthis, gpointer data, unsigned int size) {
+static   GList* g_list_push_front(GList *gthis, gpointer data, guint size) {
     GDList* _this = (GDList*)gthis;
     GDNode *node = NULL, *prev = NULL;
     prev = &(_this->head);// head node
@@ -127,7 +127,7 @@ static   GList* g_list_push_front(GList *gthis, gpointer data, unsigned int size
     return gthis;
 }
 
-static   GList* g_list_remove(GList *gthis, gpointer data, unsigned int size) {
+static   GList* g_list_remove(GList *gthis, gpointer data, guint size) {
     GDList* _this = (GDList*)gthis;
     GDNode *node = NULL, *next = NULL, *prev = NULL;
     if ((data == NULL) || (size <= 0)) {
@@ -258,10 +258,10 @@ static   GList* g_list_assign(GList *gthis, const GList *gothis) {
     return gthis;
 }
 
-static   int    g_list_find(GList *gthis, gpointer data, unsigned int size) {
+static   gint    g_list_find(GList *gthis, gpointer data, guint size) {
     GDNode *node = NULL;
     GDList* _this = (GDList*)gthis;
-    int index = 0;
+    guint index = 0;
     if ((data == NULL) || (size <= 0)) {
         return -1;
     }
@@ -279,7 +279,7 @@ static   int    g_list_find(GList *gthis, gpointer data, unsigned int size) {
     return -2;
 }
 
-static   GNode*  g_list_at(GList *gthis, int index) {
+static   GNode*  g_list_at(GList *gthis, guint index) {
     GDList* _this = (GDList*)gthis;
     GDNode *node = NULL;
     if (index < 0)
@@ -294,7 +294,7 @@ static   GNode*  g_list_at(GList *gthis, int index) {
     return NULL;
 }
 
-static   GList* g_list_insert(GList *gthis, int index, gpointer data, unsigned int size) {
+static   GList* g_list_insert(GList *gthis, guint index, gpointer data, guint size) {
     GDList* _this = (GDList*)gthis;
     GDNode *newnode = NULL, *node = (GDNode *)g_list_at(gthis, index);
     if (node == NULL) {
@@ -307,18 +307,52 @@ static   GList* g_list_insert(GList *gthis, int index, gpointer data, unsigned i
     return gthis;
 }
 
-static   int  g_list_empty(GList *gthis) {
+static   guint  g_list_empty(GList *gthis) {
     GDList* _this = (GDList*)gthis;
     if (_this->size <= 0)
         return 1;
     return 0;
 }
 
-static   int  g_list_size(GList *gthis) {
+static   guint  g_list_size(GList *gthis) {
     GDList* _this = (GDList*)gthis;
     return _this->size;
 }
 
+static    void g_list_swap(GList *_this, GList *_that) {
+    GDNode            *next, *nxt;
+    GDNode            *prev, *prv;
+    GDList *_gthis = (GDList*) _this, *_gthat = (GDList*)_that;
+    if (_that == NULL) {
+        return;
+    }
+
+    next = _gthis->head.next;
+    prev = _gthis->head.prev;
+    nxt  = _gthat->head.next;
+    prv  = _gthat->head.prev;
+
+    if (nxt != &(_gthat->head)) {
+        _gthis->head.next = nxt;
+        _gthis->head.prev = prv;
+        nxt->prev = &(_gthis->head);
+        prv->next = &(_gthis->head);
+    } else {
+        _gthis->head.next = &(_gthis->head);
+        _gthis->head.prev = &(_gthis->head);
+    }
+
+    if (next != &(_gthis->head)) {
+        _gthat->head.next = next;
+        _gthat->head.prev = prev;
+        next->prev = &(_gthat->head);
+        prev->next = &(_gthat->head);
+    } else {
+        _gthat->head.next = &(_gthat->head);
+        _gthat->head.prev = &(_gthat->head);
+    }
+    return;
+}
 
 GList* g_list_alloc() {
     GDList *gthis = (GDList *) malloc(sizeof(GDList));
@@ -352,6 +386,7 @@ GList* g_list_alloc() {
     _this->insert       = g_list_insert;
     _this->empty        = g_list_empty;
     _this->size         = g_list_size;
+    _this->swap         = g_list_swap;
     return _this;
 }
 

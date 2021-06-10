@@ -21,31 +21,31 @@ struct _GArray {
 
     gpointer (*end)(GArray *_this);
 
-    gpointer  (*move)(GArray *_this, gpointer position, int n);
+    gpointer  (*move)(GArray *_this, gpointer position, gint n);
 
     gpointer (*rbegin)(GArray *_this);
 
     gpointer (*rend)(GArray *_this);
 
-    gpointer  (*forward)(GArray *_this, gpointer position, int n);
+    gpointer  (*forward)(GArray *_this, gpointer position, gint n);
 
     GArray* (*reverse)(GArray *_this);
 
-    gpointer  (*at)(GArray *_this, int index);
+    gpointer  (*at)(GArray *_this, guint index);
 
     GArray* (*fill)(GArray *_this, gpointer data);
 
-    int  (*size)(GArray *_this);
+    guint  (*size)(GArray *_this);
 
     gpointer  (*data)(GArray *_this);
 
     GArray* (*assign)(GArray *_this, gpointer first, gpointer last);
 
-    int (*swap)(GArray *_this, GArray *_that);
+    void (*swap)(GArray *_this, GArray *_that);
 };
 
 
-GArray* g_array_alloc(int n, int c); //n - count   c - ElementSize
+GArray* g_array_alloc(guint n, guint c); //n - count   c - ElementSize
 
 
 

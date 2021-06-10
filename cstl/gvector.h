@@ -33,43 +33,43 @@ struct _GVector {
 
     gpointer (*end)(GVector *_this);
 
-    gpointer  (*move)(GVector *_this, gpointer position, int n);
+    gpointer  (*move)(GVector *_this, gpointer position, gint n);
 
     gpointer (*rbegin)(GVector *_this);
 
     gpointer (*rend)(GVector *_this);
 
-    gpointer  (*forward)(GVector *_this, gpointer position, int n);
+    gpointer  (*forward)(GVector *_this, gpointer position, gint n);
 
     GVector* (*reverse)(GVector *_this);
 
-    gpointer  (*at)(GVector *_this, int index);
+    gpointer  (*at)(GVector *_this, guint index);
 
-    GVector* (*fill)(GVector *_this, gpointer position, int n, gpointer data);
+    GVector* (*fill)(GVector *_this, gpointer position, guint n, gpointer data);
 
-    int  (*empty)(GVector *_this);
+    guint  (*empty)(GVector *_this);
 
-    int  (*size)(GVector *_this);
+    guint  (*size)(GVector *_this);
 
     GVector* (*erase)(GVector *_this, gpointer first, gpointer last);
 
     gpointer  (*data)(GVector *_this);
 
-    GVector* (*resize)(GVector *_this, int n, gpointer data);
+    GVector* (*resize)(GVector *_this, guint n, gpointer data);
 
-    GVector* (*reserve)(GVector *_this, int capacity);
+    GVector* (*reserve)(GVector *_this, guint capacity);
 
     GVector* (*assign)(GVector *_this, gpointer first, gpointer last);
 
     GVector* (*insert)(GVector *_this, gpointer position, gpointer first, gpointer last);
 
-    int (*capacity)(GVector *_this);
+    guint (*capacity)(GVector *_this);
 
-    int (*swap)(GVector *_this, GVector *_that);
+    void (*swap)(GVector *_this, GVector *_that);
 };
 
 
-GVector* g_vector_alloc(int n, int c); //vector ElementSize
+GVector* g_vector_alloc(guint n, guint c); //vector ElementSize
 
 
 G_END_DECLS

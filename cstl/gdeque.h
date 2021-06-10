@@ -1,5 +1,6 @@
-#ifndef GSTACK_H_INCLUDED
-#define GSTACK_H_INCLUDED
+#ifndef GDEQUE_H_INCLUDED
+#define GDEQUE_H_INCLUDED
+
 
 
 #include "gtypes.h"
@@ -15,18 +16,18 @@ struct _GStack {
 
     gpointer (*top)(GStack *_this);
 
-    guint  (*size)(GStack *_this);
+    int  (*size)(GStack *_this);
 
-    guint  (*empty)(GStack *_this);
+    gpointer  (*empty)(GStack *_this);
 
     GStack* (*push)(GStack *_this, gpointer data);
 
     GStack* (*pop)(GStack *_this);
 
-    void    (*swap)(GStack *_this, GStack *_that);
+    void (*swap)(GStack *_this, GStack *_that);
 };
 
 
-GStack* g_stack_alloc(guint n, guint c); //n - count   c - ElementSize
+GStack* g_stack_alloc(int n, int c); //n - count   c - ElementSize
 
-#endif // GSTACK_H_INCLUDED
+#endif // GDEQUE_H_INCLUDED

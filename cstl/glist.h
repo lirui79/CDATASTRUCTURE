@@ -14,7 +14,7 @@ struct _GNode {
     GNode*       (*next)(GNode *_this);
     GNode*       (*prev)(GNode *_this);
     gpointer     (*data)(GNode *_this);
-    unsigned int (*size)(GNode *_this);
+    guint        (*size)(GNode *_this);
 };
 
 /////////////////////////////////////////////////
@@ -26,11 +26,11 @@ struct _GList {
 
     void (*free)(GList *_this);  // free node, and free data, free list
 
-    GList* (*push_back)(GList *_this, gpointer data, unsigned int size);
+    GList* (*push_back)(GList *_this, gpointer data, guint size);
 
-    GList* (*push_front)(GList *_this, gpointer data, unsigned int size);
+    GList* (*push_front)(GList *_this, gpointer data, guint size);
 
-    GList* (*remove)(GList *_this, gpointer data, unsigned int size);// free node, but not free data
+    GList* (*remove)(GList *_this, gpointer data, guint size);// free node, but not free data
 
     GList* (*pop_back)(GList *_this);// free node, but not free data
 
@@ -52,15 +52,17 @@ struct _GList {
 
     GList* (*assign)(GList *_this, const GList *_othis);
 
-    int    (*find)(GList *_this, gpointer data, unsigned int size);
+    gint   (*find)(GList *_this, gpointer data, guint size);
 
-    GNode* (*at)(GList *_this, int index);
+    GNode* (*at)(GList *_this, guint index);
 
-    GList* (*insert)(GList *_this, int index, gpointer data, unsigned int size);
+    GList* (*insert)(GList *_this, guint index, gpointer data, guint size);
 
-    int  (*empty)(GList *_this);
+    guint  (*empty)(GList *_this);
 
-    int  (*size)(GList *_this);
+    guint  (*size)(GList *_this);
+
+    void   (*swap)(GList *_this, GList *_that);
 };
 
 
