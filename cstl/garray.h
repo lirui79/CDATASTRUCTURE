@@ -29,19 +29,19 @@ struct _GArray {
 
     gpointer  (*forward)(GArray *_this, gpointer position, gint n);
 
-    GArray* (*reverse)(GArray *_this);
+    void      (*reverse)(GArray *_this);
 
     gpointer  (*at)(GArray *_this, guint index);
 
-    GArray* (*fill)(GArray *_this, gpointer data);
+    void      (*fill)(GArray *_this, gpointer data);
 
-    guint  (*size)(GArray *_this);
+    guint     (*size)(GArray *_this);
 
     gpointer  (*data)(GArray *_this);
 
-    GArray* (*assign)(GArray *_this, gpointer first, gpointer last);
+    void      (*assign)(GArray *_this, gpointer first, gpointer last);
 
-    void (*swap)(GArray *_this, GArray *_that);
+    void      (*swap)(GArray *_this, GArray *_that);
 };
 
 

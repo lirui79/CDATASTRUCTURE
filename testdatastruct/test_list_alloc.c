@@ -116,7 +116,7 @@ static void test_list_create_data(GList *list, GList *list1) {
 
     list->reverse(list);
     print_begintoend(list);
-    list1 = list1->assign(list1, list);
+    list1->assign(list1, list);
 
     list->clear(list);
     print_begintoend(list1);

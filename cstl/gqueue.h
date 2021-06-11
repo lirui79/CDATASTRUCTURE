@@ -22,9 +22,9 @@ struct _GQueue {
 
     gpointer (*back)(GQueue *_this);
 
-    GQueue* (*push)(GQueue *_this, gpointer data);
+    void    (*push)(GQueue *_this, gpointer data);
 
-    GQueue* (*pop)(GQueue *_this);
+    void    (*pop)(GQueue *_this);
 
     void    (*swap)(GQueue *_this, GQueue *_that);
 };

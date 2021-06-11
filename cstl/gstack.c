@@ -43,19 +43,17 @@ static    guint  g_stack_empty(GStack *_this) {
     return 0;
 }
 
-static    GStack* g_stack_push(GStack *_this, gpointer data) {
+static    void g_stack_push(GStack *_this, gpointer data) {
     GDStack *_gthis = (GDStack*) _this;
     if (_gthis->end > _gthis->last) {
         memcpy(_gthis->last, data, _gthis->csize);
         _gthis->last = _gthis->last + _gthis->csize;
     }
-     return _this;
 }
-static    GStack* g_stack_pop(GStack *_this) {
+static    void g_stack_pop(GStack *_this) {
     GDStack *_gthis = (GDStack*) _this;
     if (_gthis->last > _gthis->first)
         _gthis->last = _gthis->last - _gthis->csize;
-     return _this;
 }
 
 static    void g_stack_swap(GStack *_this, GStack *_that) {

@@ -67,7 +67,7 @@ static gpointer g_array_forward(GArray *_this, gpointer position, gint n) {
     return position;
 }
 
-static GArray* g_array_reverse(GArray *_this) {
+static void g_array_reverse(GArray *_this) {
     GDArray *_gthis = (GDArray*)_this;
     gpointer first = _gthis->first, last = _gthis->last - _gthis->csize;
     gpointer gptr  = malloc(_gthis->csize);
@@ -77,7 +77,6 @@ static GArray* g_array_reverse(GArray *_this) {
         memcpy(last,  gptr,  _gthis->csize);
     }
     free(gptr);
-    return _this;
 }
 
 static gpointer g_array_at(GArray *_this, guint index) {
@@ -87,13 +86,12 @@ static gpointer g_array_at(GArray *_this, guint index) {
     return (_gthis->first + index * _gthis->csize);
 }
 
-static GArray* g_array_fill(GArray *_this, gpointer data) {
+static void g_array_fill(GArray *_this, gpointer data) {
     GDArray *_gthis = (GDArray*) _this;
     gpointer gptr = NULL;
     for(gptr = _gthis->first; gptr < _gthis->last; gptr += _gthis->csize) {
         memcpy(gptr, data, _gthis->csize);
     }
-    return _this;
 }
 
 static guint  g_array_size(GArray *_this) {
@@ -108,10 +106,10 @@ static gpointer g_array_data(GArray *_this) {
     return _gthis->first;
 }
 
-static GArray* g_array_assign(GArray *_this, gpointer first, gpointer last) {
+static void g_array_assign(GArray *_this, gpointer first, gpointer last) {
     GDArray *_gthis = (GDArray*) _this;
     if (first == NULL || last == NULL || first >= last) {
-        return _this;
+        return;
     }
 
     guint size = _gthis->last - _gthis->first;
@@ -119,7 +117,6 @@ static GArray* g_array_assign(GArray *_this, gpointer first, gpointer last) {
     if (newsize > size)
         newsize = size;
     memcpy(_gthis->first, first, newsize);
-    return _this;
 }
 
 static void  g_array_swap(GArray *_this, GArray *_that) {
@@ -139,7 +136,6 @@ static void  g_array_swap(GArray *_this, GArray *_that) {
     guint c = _gthis->csize;
     _gthis->csize = _gthat->csize;
     _gthat->csize = c;
-    return;
 }
 
 
