@@ -24,7 +24,7 @@ struct _GDeque {
 
     gpointer  (*end)(GDeque *_this);
 
-    gpointer  (*move)(GDeque *_this, gpointer position, gint n);
+    gpointer  (*backward)(GDeque *_this, gpointer position, gint n);
 
     gpointer  (*front)(GDeque *_this);
 
@@ -63,6 +63,10 @@ struct _GDeque {
 };
 
 
-GDeque* g_deque_alloc(int n, int c); //n - count   c - ElementSize
+GDeque* g_deque_alloc(guint n, guint c); //n - count   c - ElementSize
+
+
+G_END_DECLS
+
 
 #endif // GDEQUE_H_INCLUDED

@@ -11,29 +11,9 @@ G_BEGIN_DECLS
 typedef struct  _GVector     GVector;
 
 struct _GVector {
-    void     (*clear)(GVector *_this);// but not free _this
+    void      (*clear)(GVector *_this);// but not free _this
 
-    void     (*free)(GVector *_this);  // free _this
-
-    gpointer (*back)(GVector *_this);
-
-    gpointer (*front)(GVector *_this);
-
-    gpointer (*begin)(GVector *_this);
-
-    gpointer (*end)(GVector *_this);
-
-    gpointer  (*move)(GVector *_this, gpointer position, gint n);
-
-    gpointer (*rbegin)(GVector *_this);
-
-    gpointer (*rend)(GVector *_this);
-
-    gpointer  (*forward)(GVector *_this, gpointer position, gint n);
-
-    gpointer  (*at)(GVector *_this, guint index);
-
-    gpointer  (*data)(GVector *_this);
+    void      (*free)(GVector *_this);  // free _this
 
     guint     (*empty)(GVector *_this);
 
@@ -41,17 +21,37 @@ struct _GVector {
 
     guint     (*capacity)(GVector *_this);
 
-    void     (*push_back)(GVector *_this, gpointer data);
+    gpointer  (*back)(GVector *_this);
 
-    void     (*push_front)(GVector *_this, gpointer data);
+    gpointer  (*front)(GVector *_this);
 
-    void     (*pop_back)(GVector *_this);//
+    gpointer  (*begin)(GVector *_this);
 
-    void     (*pop_front)(GVector *_this);//
+    gpointer  (*end)(GVector *_this);
 
-    gpointer (*erase)(GVector *_this, gpointer first, gpointer last);
+    gpointer  (*backward)(GVector *_this, gpointer position, gint n);
 
-    gpointer (*remove)(GVector *_this, gpointer data);//
+    gpointer  (*rbegin)(GVector *_this);
+
+    gpointer  (*rend)(GVector *_this);
+
+    gpointer  (*forward)(GVector *_this, gpointer position, gint n);
+
+    gpointer  (*at)(GVector *_this, guint index);
+
+    gpointer  (*data)(GVector *_this);
+
+    void      (*push_back)(GVector *_this, gpointer data);
+
+    void      (*push_front)(GVector *_this, gpointer data);
+
+    void      (*pop_back)(GVector *_this);//
+
+    void      (*pop_front)(GVector *_this);//
+
+    gpointer  (*erase)(GVector *_this, gpointer first, gpointer last);
+
+    gpointer  (*remove)(GVector *_this, gpointer data);//
 
     void      (*resize)(GVector *_this, guint n, gpointer data);
 

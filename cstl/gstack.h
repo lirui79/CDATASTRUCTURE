@@ -15,18 +15,21 @@ struct _GStack {
 
     gpointer (*top)(GStack *_this);
 
-    guint   (*size)(GStack *_this);
+    guint    (*size)(GStack *_this);
 
-    guint   (*empty)(GStack *_this);
+    guint    (*empty)(GStack *_this);
 
-    void    (*push)(GStack *_this, gpointer data);
+    void     (*push)(GStack *_this, gpointer data);
 
-    void    (*pop)(GStack *_this);
+    void     (*pop)(GStack *_this);
 
-    void    (*swap)(GStack *_this, GStack *_that);
+    void     (*swap)(GStack *_this, GStack *_that);
 };
 
 
 GStack* g_stack_alloc(guint n, guint c); //n - count   c - ElementSize
+
+
+G_END_DECLS
 
 #endif // GSTACK_H_INCLUDED

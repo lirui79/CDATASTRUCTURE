@@ -40,10 +40,10 @@
 		</Unit>
 		<Unit filename="../cstl/gdeque.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../cstl/gdeque.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../cstl/glist.c">
 			<Option compilerVar="CC" />

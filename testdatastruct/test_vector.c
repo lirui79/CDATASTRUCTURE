@@ -8,7 +8,7 @@ static void print_vector_int(GVector *ivector) {
     int value = 0;
     gpointer it = NULL;
     printf("GVector::size %d  empty %d capacity %d \n", ivector->size(ivector), ivector->empty(ivector), ivector->capacity(ivector));
-    for (it = ivector->begin(ivector); it < ivector->end(ivector); it = ivector->move(ivector, it, 1)) {
+    for (it = ivector->begin(ivector); it < ivector->end(ivector); it = ivector->backward(ivector, it, 1)) {
         value = *(int *) it;
         printf("%d ", value);
     }

@@ -43,7 +43,7 @@ static gpointer g_array_end(GArray *_this) {
     return _gthis->last;
 }
 
-static gpointer g_array_move(GArray *_this, gpointer position, gint n) {
+static gpointer g_array_backward(GArray *_this, gpointer position, gint n) {
     GDArray *_gthis = (GDArray*)_this;
     position = position + n * _gthis->csize;
     return position;
@@ -140,11 +140,12 @@ static void  g_array_swap(GArray *_this, GArray *_that) {
 
 
 GArray* g_array_alloc(guint n, guint c) { //n - count   c - ElementSize
-    GDArray *_gthis = malloc(sizeof(GDArray));
-    GArray *_this = NULL;
+    GDArray *_gthis = NULL;
+    GArray  *_this  = NULL;
      if (n <= 0 || c <= 0) {
         return _this;
      }
+     _gthis = malloc(sizeof(GDArray));
     _gthis->first = malloc(n * c);
     _gthis->last  = _gthis->first + n * c;
     _gthis->csize = c;// unit size > 0
@@ -155,7 +156,7 @@ GArray* g_array_alloc(guint n, guint c) { //n - count   c - ElementSize
     _this->front  = g_array_front;
     _this->begin  = g_array_begin;
     _this->end  = g_array_end;
-    _this->move  = g_array_move;
+    _this->backward  = g_array_backward;
     _this->rbegin  = g_array_rbegin;
     _this->rend  = g_array_rend;
     _this->forward  = g_array_forward;

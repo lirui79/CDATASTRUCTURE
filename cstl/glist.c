@@ -350,8 +350,10 @@ static    void g_list_swap(GList *_this, GList *_that) {
 GList* g_list_alloc() {
     GDList *gthis = (GDList *) malloc(sizeof(GDList));
     GList  *_this = NULL;
-    if (gthis == NULL)
+    if (gthis == NULL) {
         return NULL;
+    }
+
     g_node_init(&gthis->head, NULL, 0);
     gthis->head.next = &(gthis->head);
     gthis->head.prev = &(gthis->head);

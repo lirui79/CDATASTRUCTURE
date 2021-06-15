@@ -11,7 +11,9 @@ G_BEGIN_DECLS
 typedef struct _GArray     GArray;
 
 struct _GArray {
-    void (*free)(GArray *_this);  // free _this
+    void     (*free)(GArray *_this);  // free _this
+
+    guint    (*size)(GArray *_this);
 
     gpointer (*back)(GArray *_this);
 
@@ -21,27 +23,25 @@ struct _GArray {
 
     gpointer (*end)(GArray *_this);
 
-    gpointer  (*move)(GArray *_this, gpointer position, gint n);
+    gpointer (*backward)(GArray *_this, gpointer position, gint n);
 
     gpointer (*rbegin)(GArray *_this);
 
     gpointer (*rend)(GArray *_this);
 
-    gpointer  (*forward)(GArray *_this, gpointer position, gint n);
+    gpointer (*forward)(GArray *_this, gpointer position, gint n);
 
-    void      (*reverse)(GArray *_this);
+    void     (*reverse)(GArray *_this);
 
-    gpointer  (*at)(GArray *_this, guint index);
+    gpointer (*at)(GArray *_this, guint index);
 
-    void      (*fill)(GArray *_this, gpointer data);
+    void     (*fill)(GArray *_this, gpointer data);
 
-    guint     (*size)(GArray *_this);
+    gpointer (*data)(GArray *_this);
 
-    gpointer  (*data)(GArray *_this);
+    void     (*assign)(GArray *_this, gpointer first, gpointer last);
 
-    void      (*assign)(GArray *_this, gpointer first, gpointer last);
-
-    void      (*swap)(GArray *_this, GArray *_that);
+    void     (*swap)(GArray *_this, GArray *_that);
 };
 
 

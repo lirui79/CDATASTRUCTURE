@@ -101,7 +101,7 @@ static gpointer g_vector_end(GVector *_this) {
     return _gthis->last;
 }
 
-static gpointer  g_vector_move(GVector *_this, gpointer position, gint n) {
+static gpointer  g_vector_backward(GVector *_this, gpointer position, gint n) {
     GDVector *_gthis = (GDVector*)_this;
     position = position + n * _gthis->csize;
     return position;
@@ -332,11 +332,12 @@ static guint g_vector_capacity(GVector *_this) {
 }
 
 GVector* g_vector_alloc(guint n, guint c) {//vector unit size
-    GDVector* _gthis = (GDVector*) malloc(sizeof(GDVector));
+    GDVector* _gthis = NULL;
     GVector*  _this  = NULL;
-    if (c <= 0 || _gthis == NULL) {
-        return NULL;
+    if (n <= 0 || c <= 0) {
+        return _this;
     }
+    _gthis = (GDVector*) malloc(sizeof(GDVector));
     _gthis->first = malloc(n * c);
     _gthis->last  = _gthis->first;
     _gthis->end   = _gthis->first + n * c;
@@ -354,7 +355,7 @@ GVector* g_vector_alloc(guint n, guint c) {//vector unit size
     _this->front = g_vector_front;
     _this->begin = g_vector_begin;
     _this->end    = g_vector_end;
-    _this->move   = g_vector_move;
+    _this->backward   = g_vector_backward;
     _this->rbegin = g_vector_rbegin;
     _this->rend   = g_vector_rend;
     _this->forward   = g_vector_forward;
