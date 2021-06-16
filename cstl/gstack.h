@@ -13,6 +13,8 @@ typedef struct _GStack     GStack;
 struct _GStack {
     void     (*free)(GStack *_this);  // free _this
 
+    void     (*clear)(GStack *_this);
+
     gpointer (*top)(GStack *_this);
 
     guint    (*size)(GStack *_this);

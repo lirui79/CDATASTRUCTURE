@@ -21,6 +21,11 @@ static    void g_stack_free(GStack *_this) {
     _gthis->end  = NULL;
     free(_gthis);
 }
+
+static    void g_stack_clear(GStack *_this) {
+    _gthis->last  = _gthis->first;
+}
+
 static    gpointer g_stack_top(GStack *_this) {
     GDStack *_gthis = (GDStack*) _this;
     gpointer gptr = NULL;
@@ -86,7 +91,8 @@ GStack* g_stack_alloc(guint n, guint c) { //n - count   c - ElementSize
     if (n <= 0 || c <= 0) {
         return _this;
     }
-     _gthis = malloc(sizeof(GDStack));
+
+    _gthis = malloc(sizeof(GDStack));
     _gthis->first = malloc(n * c);
     _gthis->last  = _gthis->first;
     _gthis->end   = _gthis->first + n * c;
@@ -94,11 +100,12 @@ GStack* g_stack_alloc(guint n, guint c) { //n - count   c - ElementSize
 
     _this        = &(_gthis->_this);
     _this->free  = g_stack_free;  // free _this
+    _this->clear = g_stack_clear;
     _this->top   = g_stack_top;
     _this->size  = g_stack_size;
     _this->empty = g_stack_empty;
     _this->push  = g_stack_push;
     _this->pop   = g_stack_pop;
     _this->swap  = g_stack_swap;
-     return _this;
+    return _this;
 }
