@@ -141,12 +141,22 @@
 	<string.h>
 	"test_vector.h"
 
-1623761225 source:d:\workspace\cdatastructure\cstl\gstack.c
+1624200538 source:d:\workspace\cdatastructure\cstl\gstack.c
 	"gstack.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623504442 d:\workspace\cdatastructure\cstl\gstack.h
+1623850122 d:\workspace\cdatastructure\cstl\gstack.h
+	"gtypes.h"
+
+1624203310 source:d:\workspace\cdatastructure\cstl\gdeque.c
+	"gdeque.h"
+	"gvector.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1623767396 d:\workspace\cdatastructure\cstl\gdeque.h
 	"gtypes.h"
 

@@ -15,24 +15,19 @@ map   |  |  |
 
 struct _GDDeque {
     GDeque     _this;
-    gpointer  *map;
-    guint      rows;//
-    guint      cols;
+    gpointer  *mptr;
+    guint      rows;//map_ptr size
+    guint      cols;// one row ptr size
     guint      csize;
-    guint      nsize;
     struct {
-        gulong   first;
-        gulong   last ;
-        gulong   cur;
-        gulong   node;
+        gulong   cur; // one row idx
+        gulong   node;// rows idx
     } start, finish;
 };
 
 static    void      g_deque_clear(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
     gthis->start.node  = 0;
-    gthis->start.first = 0;
-    gthis->start.last  = gthis->cols * gthis->csize;
     gthis->start.cur   = 0;
     gthis->finish      = gthis->start;
 }
@@ -40,24 +35,24 @@ static    void      g_deque_clear(GDeque *_this) {
 static    void      g_deque_free(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
     for (guint i = 0; i < gthis->rows; ++i) {
-        gpointer gptr = gthis->map[i];
+        gpointer gptr = gthis->mptr[i];
         free(gptr);
     }
-    free(gthis->map);
+    free(gthis->mptr);
     gthis->rows = 0;
-    gthis->map = NULL;
+    gthis->mptr = NULL;
     free(gthis);
 }
 
 static    guint     g_deque_size(GDeque *_this) {
     GDDeque   *gthis = (GDDeque*) _this;
-    gpointer  *node = gthis->start.node;
-    guint  size = (gthis->start.last -gthis->start.cur) / gthis->csize;
-    for (node += gthis->nsize; node < gthis->finish.node; node += gthis->nsize) {
+    gulong      node = gthis->start.node;
+    guint  size = (gthis->cols -gthis->start.cur);
+    for (node += 1; node < gthis->finish.node; node += 1) {
         size += gthis->cols;
     }
 
-    size += (gthis->finish.cur - gthis->finish.first) / gthis->csize;
+    size += gthis->finish.cur;
     return size;
 }
 
@@ -69,104 +64,257 @@ static    guint     g_deque_empty(GDeque *_this) {
 
 static    gpointer  g_deque_begin(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
-    return gthis->start.cur;
+    gpointer gptr = gthis->mptr[gthis->start.node];
+    gptr = gptr + gthis->start.cur * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_end(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
-    return gthis->finish.cur;
+    gpointer gptr = gthis->mptr[gthis->finish.node];
+    gptr = gptr + gthis->finish.cur * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_backward(GDeque *_this, gpointer position, gint n) {
     GDDeque *gthis = (GDDeque*) _this;
-    gpointer  *node = gthis->start.node;
-    int bFind = 0;
-    if (position >= gthis->start.cur && position < gthis->start.last) {
-        bFinde = 1;
-        for ( ; position < gthis->last; --n, position += gthis->csize) {
-            if (n > 0) {
+    guint rows = 0, cols = 0;
+    for (rows = 0; rows < gthis->rows; ++rows) {
+        gpointer  first = gthis->mptr[rows];
+        gpointer  last  = first + gthis->cols * gthis->csize;
+        if (position < first || position >= last) {
                 continue;
-            }
-            return position;
         }
-    }
-
-    for (node += gthis->nsize; node < gthis->finish.node; node += gthis->nsize) {
-        gpointer begin = *node;
-        gpointer end = begin + gthis->cols * gthis->csize;
-        if (bFind == 0) {
-            if (position < begin || position >= end)
-                continue;
-            bFind = 1;
-        } else {
-            position = begin;
+        rows = rows + n / gthis->cols;
+        cols = gthis->start.cur + n % gthis->cols;
+        if (cols >= gthis->cols) {
+            rows += 1;
+            cols  = cols - gthis->cols;
         }
 
-        for ( ; position < end; --n, position += gthis->csize) {
-            if (n > 0) {
-                continue;
-            }
-            return position;
+        if (rows > gthis->finish.node)
+            return NULL;
+        if (rows == gthis->finish.node) {
+            if (cols >= gthis->finish.cur)
+                return NULL;
         }
-    }
 
-    if (bFind == 0) {
-        if (position < gthis->finish.first || position >= gthis->finish.cur)
-            return position;
-    } else {
-        position = gthis->finish.first;
+        gpointer gptr = gthis->mptr[rows];
+        gptr = gptr + cols * gthis->csize;
+        return gptr;
     }
-
-    for ( ; position < gthis->finish.cur; --n, position += gthis->csize) {
-        if (n > 0) {
-            continue;
-        }
-        return position;
-    }
-    return position;
+    return NULL;
 }
 
 static    gpointer  g_deque_front(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
-    return gthis->start.cur;
+    gpointer gptr = gthis->mptr[gthis->start.node];
+    gptr = gptr + gthis->start.cur * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_back(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
-    if (gthis->finish.cur == gthis->finish.first) {
-        if (gthis->start.node == gthis->finish.node) {
+    guint rows = gthis->finish.node;
+    guint cols = gthis->finish.cur;
+    if (cols <= 0) {
+       if (gthis->finish.node <= gthis->start.node)
             return NULL;
-        }
-        gpointer *node = gthis->finish.node;
-        node -= sizeof(gpointer*);
-        gpointer gptr = (*node);
-        gptr += (gthis->cols - 1) * gthis->csize;
-        return gptr;
+       rows = rows - 1;
+       cols = gthis->cols - 1;
+    } else {
+       cols = cols - 1;
     }
-    return (gthis->finish.cur - gthis->csize);
+
+    gpointer gptr = gthis->mptr[rows];
+    gptr = gptr + cols * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_at(GDeque *_this, guint index) {
+    GDDeque *gthis = (GDDeque*) _this;
+    guint rows = index / gthis->cols;
+    guint cols = index % gthis->cols;
+    cols = cols + gthis->start.cur;
+    if (cols >= gthis->cols) {
+        rows += 1;
+        cols = cols - gthis->cols;
+    }
+
+    rows = rows + gthis->start.node;
+    if (rows > gthis->finish.node)
+        return NULL;
+    if (rows == gthis->finish.node) {
+        if (cols >= gthis->finish.cur)
+            return NULL;
+    }
+
+    gpointer gptr = gthis->mptr[rows];
+    gptr = gptr + cols * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_rbegin(GDeque *_this){
+    GDDeque *gthis = (GDDeque*) _this;
+    guint rows = gthis->finish.node;
+    guint cols = gthis->finish.cur;
+    if (cols <= 0) {
+       if (gthis->finish.node <= gthis->start.node)
+            return NULL;
+       rows = rows - 1;
+       cols = gthis->cols - 1;
+    } else {
+       cols = cols - 1;
+    }
 
+    gpointer gptr = gthis->mptr[rows];
+    gptr = gptr + cols * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_rend(GDeque *_this){
+    GDDeque *gthis = (GDDeque*) _this;
+    guint rows = gthis->start.node;
+    guint cols = gthis->start.cur;
+    if (cols <= 0) {
+       if (gthis->start.node <= 0)
+            return NULL;
+       rows = rows - 1;
+       cols = gthis->cols - 1;
+    } else {
+       cols = cols - 1;
+    }
 
+    gpointer gptr = gthis->mptr[rows];
+    gptr = gptr + cols * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_forward(GDeque *_this, gpointer position, gint n){
+    GDDeque *gthis = (GDDeque*) _this;
+    gint rows = 0, cols = 0;
+    for (rows = 0; rows < gthis->rows; ++rows) {
+        gpointer  first = gthis->mptr[rows];
+        gpointer  last  = first + gthis->cols * gthis->csize;
+        if (position < first || position >= last) {
+                continue;
+        }
+        rows = rows - n / gthis->cols;
+        cols = gthis->finish.cur - n % gthis->cols;
+        if (cols < 0) {
+            rows -= 1;
+            cols  = cols + gthis->cols;
+        }
 
+        if (rows < gthis->start.node)
+            return NULL;
+
+        gpointer gptr = gthis->mptr[rows];
+        gptr = gptr + cols * gthis->csize;
+        return gptr;
+    }
+    return NULL;
 }
 
 static    void      g_deque_assign(GDeque *_this, gpointer first, gpointer last){
+    GDDeque *gthis = (GDDeque*) _this;
+    guint size = (last - first) / gthis->csize;
+    guint rows = size / gthis->cols;
+    guint cols = size % gthis->cols;
+    if ((rows + 1) > gthis->rows) {
+        gpointer *mptr = malloc(2 * (rows + 1) * sizeof(gpointer));
+        memcpy(mptr, gthis->mptr, gthis->rows * sizeof(gpointer));
+        if (gthis->mptr)
+            free(gthis->mptr);
+        gthis->mptr = mptr;
+        for (; gthis->rows < 2 * (rows + 1); gthis->rows += 1) {
+            gthis->mptr[gthis->rows] = malloc(gthis->cols * gthis->csize);
+        }
+    }
+    guint i = 0;
+    for (i = 0; i < rows; ++i, first += gthis->cols * gthis->csize) {
+        memcpy(gthis->mptr[i], first, gthis->cols * gthis->csize);
+    }
 
+    gthis->start.cur  = 0;
+    gthis->start.node = 0;
+
+    gthis->finish.cur  = 0;
+    gthis->finish.node = i;
+    if (cols <= 0)
+        return;
+    memcpy(gthis->mptr[i], first, cols * gthis->csize);
+    gthis->finish.cur = cols;
 }
 
 static    void      g_deque_fill(GDeque *_this, gpointer position, guint n, gpointer data){
+    GDDeque *gthis = (GDDeque*) _this;
+    guint rows = 0, cols = 0;
+    for (rows = 0; rows < gthis->rows; ++rows) {
+        gpointer  first = gthis->mptr[rows];
+        gpointer  last  = first + gthis->cols * gthis->csize;
+        if (position < first || position >= last) {
+                continue;
+        }
 
+        cols = (position - first) / gthis->csize;
+
+        guint nrows = n / gthis->cols;
+        guint ncols = n % gthis->cols;
+        ncols = cols + ncols;
+        if (ncols >= gthis->cols) {
+            nrows = nrows + 1;
+            ncols = ncols - gthis->cols;
+        }
+
+        nrows = nrows + rows;
+        if (nrows >= gthis->rows) {
+            gpointer *mptr = malloc(2 * nrows * sizeof(gpointer));
+            memcpy(mptr, gthis->mptr, gthis->rows * sizeof(gpointer));
+            if (gthis->mptr)
+                free(gthis->mptr);
+            gthis->mptr = mptr;
+            for (; gthis->rows < 2 * nrows; gthis->rows += 1) {
+                gthis->mptr[gthis->rows] = malloc(gthis->cols * gthis->csize);
+            }
+        }
+
+        gpointer gptr = gthis->mptr[rows];
+        gptr = gptr + cols;
+        guint i = 0;
+        for (i = cols; (i < gthis->cols) && (n > 0); ++i, --n, gptr += gthis->csize) {
+            memcpy(gptr, data, gthis->csize);
+        }
+
+        guint j = rows + 1;
+        for (j = rows + 1; j < nrows; ++j) {
+            gptr = gthis->mptr[j];
+            for(i = 0;(i < gthis->cols) && (n > 0); ++i, --n, gptr += gthis->csize) {
+                memcpy(gptr, data, gthis->csize);
+            }
+        }
+
+        gptr = gthis->mptr[j];
+        for (i = 0; (i < ncols) && (n > 0); ++i, --n, gptr += gthis->csize) {
+            memcpy(gptr, data, gthis->csize);
+        }
+
+        if (gthis->start.node > rows) {
+            gthis->start.node = rows;
+        }
+
+        if (gthis->start.cur > cols) {
+            gthis->start.cur = cols;
+        }
+
+        if (gthis->finish.node < nrows) {
+            gthis->finish.node = nrows;
+        }
+
+        if (gthis->finish.cur < ncols) {
+            gthis->finish.cur = ncols;
+        }
+    }
 }
 
 static    void      g_deque_push_back(GDeque *_this, gpointer data){
@@ -214,18 +362,15 @@ GDeque* g_deque_alloc(guint n, guint c) { //n - count   c - ElementSize
     }
 
     gthis = malloc(sizeof(GDDeque));
-    gthis->nsize = sizeof(gpointer);
-    gthis->map   = malloc(n * gthis->nsize);
+    gthis->mptr   = malloc(n * sizeof(gpointer));
     gthis->rows  = n;//
     gthis->cols  = 8;
     gthis->csize = c;
     for (guint i = 0; i < gthis->rows; ++i) {
-        gthis->map[i] = malloc(gthis->cols * c);
+        gthis->mptr[i] = malloc(gthis->cols * c);
     }
 
     gthis->start.node  = 0;
-    gthis->start.first = 0;
-    gthis->start.last  = gthis->cols * c;
     gthis->start.cur   = 0;
     gthis->finish      = gthis->start;
 

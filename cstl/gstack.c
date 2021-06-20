@@ -23,6 +23,7 @@ static    void g_stack_free(GStack *_this) {
 }
 
 static    void g_stack_clear(GStack *_this) {
+    GDStack *_gthis = (GDStack*) _this;
     _gthis->last  = _gthis->first;
 }
 
