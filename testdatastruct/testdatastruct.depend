@@ -160,3 +160,88 @@
 1623767396 d:\workspace\cdatastructure\cstl\gdeque.h
 	"gtypes.h"
 
+1623122848 source:d:\project\cdatastructure\testdatastruct\main.c
+	<stdio.h>
+	<stdlib.h>
+	"test_vector.h"
+	"test_list_alloc.h"
+
+1623122848 d:\project\cdatastructure\testdatastruct\test_vector.h
+	"../cstl/gvector.h"
+
+1623892290 d:\project\cdatastructure\cstl\gvector.h
+	"gtypes.h"
+
+1623122848 d:\project\cdatastructure\cstl\gtypes.h
+	"gmacros.h"
+
+1623122848 d:\project\cdatastructure\cstl\gmacros.h
+	<stddef.h>
+
+1623122848 d:\project\cdatastructure\testdatastruct\test_list_alloc.h
+	"../cstl/glist.h"
+
+1623892290 d:\project\cdatastructure\cstl\glist.h
+	"gtypes.h"
+
+1623892290 source:d:\project\cdatastructure\cstl\garray.c
+	"garray.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1623892290 d:\project\cdatastructure\cstl\garray.h
+	"gtypes.h"
+
+1624241213 source:d:\project\cdatastructure\cstl\gdeque.c
+	"gdeque.h"
+	"gvector.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1623892290 d:\project\cdatastructure\cstl\gdeque.h
+	"gtypes.h"
+
+1624245464 source:d:\project\cdatastructure\cstl\glist.c
+	"glist.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1624241213 source:d:\project\cdatastructure\cstl\gstack.c
+	"gstack.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1624242778 d:\project\cdatastructure\cstl\gstack.h
+	"gtypes.h"
+
+1623892290 source:d:\project\cdatastructure\cstl\gvector.c
+	"gvector.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1623723884 source:d:\project\cdatastructure\testdatastruct\test_list_alloc.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_list_alloc.h"
+
+1623892290 source:d:\project\cdatastructure\testdatastruct\test_vector.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_vector.h"
+
+1624263866 source:d:\project\cdatastructure\cstl\gqueue.c
+	"gqueue.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1624244885 d:\project\cdatastructure\cstl\gqueue.h
+	"gtypes.h"
+

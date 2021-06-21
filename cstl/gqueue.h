@@ -14,6 +14,8 @@ typedef struct _GQueue    GQueue;
 struct _GQueue {
     void      (*free)(GQueue *_this);  // free _this
 
+    void      (*clear)(GQueue *_this);
+
     guint     (*size)(GQueue *_this);
 
     guint     (*empty)(GQueue *_this);
@@ -22,7 +24,7 @@ struct _GQueue {
 
     gpointer  (*back)(GQueue *_this);
 
-    void      (*push)(GQueue *_this, gpointer data);
+    void      (*push)(GQueue *_this, gpointer data, guint size);
 
     void      (*pop)(GQueue *_this);
 
@@ -30,7 +32,7 @@ struct _GQueue {
 };
 
 
-GQueue* g_queue_alloc(guint n, guint c); //n - count   c - ElementSize
+GQueue* g_queue_alloc(); //n - count   c - ElementSize
 
 
 G_END_DECLS

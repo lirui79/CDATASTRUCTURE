@@ -68,8 +68,8 @@ static void           g_node_free(GDNode  *_this) {
 }
 
 static GDNode*          g_node_insert(GDNode  *_this, GDNode  *newthis) {
-    GDNode *next   = _this->next;
-    _this->next    = newthis;
+    GDNode *next  = _this->next;
+    _this->next   = newthis;
     next->prev    = newthis;
     newthis->next = next;
     newthis->prev = _this;
@@ -317,14 +317,18 @@ static    void g_list_swap(GList *_this, GList *_that) {
     GDNode            *next, *nxt;
     GDNode            *prev, *prv;
     GDList *_gthis = (GDList*) _this, *_gthat = (GDList*)_that;
+    guint             size = 0;
     if (_that == NULL) {
         return;
     }
 
     next = _gthis->head.next;
     prev = _gthis->head.prev;
+    size = _gthis->size;
     nxt  = _gthat->head.next;
     prv  = _gthat->head.prev;
+    _gthis->size = _gthat->size;
+    _gthat->size = size;
 
     if (nxt != &(_gthat->head)) {
         _gthis->head.next = nxt;
