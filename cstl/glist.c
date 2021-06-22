@@ -262,7 +262,6 @@ static   gint    g_list_find(GList *gthis, gpointer data, guint size) {
 
     node = _this->head.next;
     while(node != &(_this->head)) {
-        //if ((node->data != data) || (node->size != size)) {
         if (memcmp(data, node->data, size) != 0) {
             node = node->next;
             ++index;

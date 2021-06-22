@@ -140,7 +140,7 @@ static    void    g_queue_swap(GQueue *_this, GQueue *_that) {
     GDQNode            *next, *nxt;
     GDQNode            *prev, *prv;
     GDQueue *_gthis = (GDQueue*) _this, *_gthat = (GDQueue*)_that;
-    guint             size = 0;
+    guint              size = 0;
     if (_that == NULL) {
         return;
     }

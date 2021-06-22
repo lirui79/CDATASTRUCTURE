@@ -58,8 +58,7 @@ struct _GDeque {
 
     void      (*swap)(GDeque *_this, GDeque *_that);
 
-    void      (*resize)(GDeque *_this, guint n);
-
+    void      (*resize)(GDeque *_this, guint n, gpointer data);
 };
 
 
