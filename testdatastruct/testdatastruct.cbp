@@ -40,9 +40,13 @@
 		</Unit>
 		<Unit filename="../cstl/gdeque.c">
 			<Option compilerVar="CC" />
-			<Option target="Debug" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="../cstl/gdeque.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../cstl/gdeque_old.c">
+			<Option compilerVar="CC" />
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../cstl/glist.c">
@@ -112,9 +116,6 @@
 		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
-			<code_completion />
-			<envvars />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

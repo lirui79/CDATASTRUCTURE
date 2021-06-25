@@ -82,7 +82,7 @@ static void g_array_reverse(GArray *_this) {
 static gpointer g_array_at(GArray *_this, guint index) {
     GDArray *_gthis = (GDArray*)_this;
     if (index >= _this->size(_this))
-        return NULL;
+        return _gthis->last;
     return (_gthis->first + index * _gthis->csize);
 }
 

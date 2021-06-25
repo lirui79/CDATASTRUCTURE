@@ -79,7 +79,7 @@ static gpointer g_vector_back(GVector *_this) {
     gpointer gptr = NULL;
     guint size = _gthis->last - _gthis->first;
     if (size < _gthis->csize)
-        return gptr;
+        return _gthis->last;
     gptr = _gthis->last - _gthis->csize;
     return gptr;
 }
@@ -87,7 +87,7 @@ static gpointer g_vector_back(GVector *_this) {
 static gpointer g_vector_front(GVector *_this) {
     GDVector *_gthis = (GDVector*)_this;
     if (_gthis->first == _gthis->last)
-        return NULL;
+        return _gthis->last;
     return _gthis->first;
 }
 
@@ -142,7 +142,7 @@ static void g_vector_reverse(GVector *_this) {
 static gpointer  g_vector_at(GVector *_this, guint index) {
     GDVector *_gthis = (GDVector*)_this;
     if (index >= _this->size(_this))
-        return NULL;
+        return _gthis->last;
     return (_gthis->first + index * _gthis->csize);
 }
 

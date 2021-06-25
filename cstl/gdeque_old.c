@@ -5,153 +5,6 @@
 #include  <stdlib.h>
 #include  <string.h>
 
-
-typedef struct _GDEQItem   GDEQItem;
-
-struct _GDEQItem {
-    void      (*free)(GDEQItem *_this);  // free _this
-    guint     (*size)(GDEQItem *_this);
-    gpointer  (*back)(GDEQItem *_this);
-    gpointer  (*front)(GDEQItem *_this);
-    gpointer  (*begin)(GDEQItem *_this);
-    gpointer  (*end)(GDEQItem *_this);
-    gpointer  (*backward)(GDEQItem *_this, gpointer position, gint n);
-    gpointer  (*rbegin)(GDEQItem *_this);
-    gpointer  (*rend)(GDEQItem *_this);
-    gpointer  (*forward)(GDEQItem *_this, gpointer position, gint n);
-    gpointer  (*at)(GDEQItem *_this, guint index);
-    void     (*fill)(GDEQItem *_this, gpointer data);
-    gpointer  (*data)(GDEQItem *_this);
-    void     (*assign)(GDEQItem *_this, gpointer first, gpointer last);
-    gint      (*find)(GDEQItem *_this, gpointer data);
-
-    gpointer   first;
-    gpointer   last;
-    guint      csize;
-};
-
-
-static void g_dequeitem_free(GDEQItem *_gthis) {  // free _this
-    free(_gthis->first);
-    _gthis->first = NULL;
-    _gthis->last  = NULL;
-    free(_gthis);
-}
-
-static gpointer g_dequeitem_back(GDEQItem *_gthis) {
-    gpointer gptr = _gthis->last - _gthis->csize;
-    return gptr;
-}
-
-static gpointer g_dequeitem_front(GDEQItem *_gthis) {
-    return _gthis->first;
-}
-
-static gpointer g_dequeitem_begin(GDEQItem *_gthis) {
-    return _gthis->first;
-}
-
-static gpointer g_dequeitem_end(GDEQItem *_gthis) {
-    return _gthis->last;
-}
-
-static gpointer g_dequeitem_backward(GDEQItem *_gthis, gpointer position, gint n) {
-    position = position + n * _gthis->csize;
-    return position;
-}
-
-static gpointer g_dequeitem_rbegin(GDEQItem *_gthis) {
-    gpointer gptr = _gthis->last - _gthis->csize;
-    return gptr;
-}
-
-static gpointer g_dequeitem_rend(GDEQItem *_gthis) {
-    gpointer gptr = _gthis->first - _gthis->csize;
-    return gptr;
-}
-
-static gpointer g_dequeitem_forward(GDEQItem *_gthis, gpointer position, gint n) {
-    position = position - n * _gthis->csize;
-    return position;
-}
-
-static gpointer g_dequeitem_at(GDEQItem *_gthis, guint index) {
-    if (index >= _this->size(_this))
-        return _gthis->last;
-    return (_gthis->first + index * _gthis->csize);
-}
-
-static void g_dequeitem_fill(GDEQItem *_gthis, gpointer data) {
-    gpointer gptr = NULL;
-    for(gptr = _gthis->first; gptr < _gthis->last; gptr += _gthis->csize) {
-        memcpy(gptr, data, _gthis->csize);
-    }
-}
-
-static gint g_dequeitem_find(GDEQItem *_gthis, gpointer data) {
-    gint index = -1;
-    if (data < _gthis->first || data >= _gthis->last) {
-        return index;
-    }
-
-    index = (data - _gthis->first) / _gthis->csize;
-    return index;
-}
-
-static guint  g_dequeitem_size(GDEQItem *_gthis) {
-    guint size = _gthis->last - _gthis->first;
-    size = size / _gthis->csize;
-    return size;
-}
-
-static gpointer g_dequeitem_data(GDEQItem *_gthis) {
-    return _gthis->first;
-}
-
-static void g_dequeitem_assign(GDEQItem *_gthis, gpointer first, gpointer last) {
-    if (first == NULL || last == NULL || first >= last) {
-        return;
-    }
-
-    guint size = _gthis->last - _gthis->first;
-    guint newsize = last - first;
-    if (newsize > size)
-        newsize = size;
-    memcpy(_gthis->first, first, newsize);
-}
-
-static  GDEQItem* g_dequeitem_alloc(guint n, guint c) { //n - count   c - ElementSize
-    GDEQItem *_gthis = NULL;
-    if (n <= 0 || c <= 0) {
-        return _gthis;
-    }
-
-    _gthis = malloc(sizeof(GDEQItem));
-    _gthis->first = malloc(n * c);
-    _gthis->last  = _gthis->first + n * c;
-    _gthis->csize = c;// unit size > 0
-
-    _gthis->free  = g_dequeitem_free;
-    _gthis->back  = g_dequeitem_back;
-    _gthis->front  = g_dequeitem_front;
-    _gthis->begin  = g_dequeitem_begin;
-    _gthis->end  = g_dequeitem_end;
-    _gthis->backward  = g_dequeitem_backward;
-    _gthis->rbegin  = g_dequeitem_rbegin;
-    _gthis->rend  = g_dequeitem_rend;
-    _gthis->forward  = g_dequeitem_forward;
-    _gthis->at  = g_dequeitem_at;
-    _gthis->fill  = g_dequeitem_fill;
-    _gthis->size  = g_dequeitem_size;
-    _gthis->data  = g_dequeitem_data;
-    _gthis->assign= g_dequeitem_assign;
-    _gthis->find  = g_dequeitem_find;
-
-    return _gthis;
-}
-
-
-
 typedef struct _GDDeque  GDDeque;
 
 /*************************************/
@@ -166,7 +19,7 @@ map(row, col)
 
 struct _GDDeque {
     GDeque     _this;
-    GDEQItem  *qmap;
+    gpointer  *mptr;
     guint      rows;// row number
     guint      cols;// col number
     guint      csize;
@@ -185,26 +38,20 @@ static    void      g_deque_clear(GDeque *_this) {
 
 static    void      g_deque_free(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
-    GDEQItem **qitem = gthis->qmap->at(gthis->qmap, 0);
-    for (guint i = 0; i < gthis->rows; ++i, ++qitem) {
-        free(qitem[0]);
+    for (guint i = 0; i < gthis->rows; ++i) {
+        gpointer gptr = gthis->mptr[i];
+        free(gptr);
     }
-
-    gthis->qmap->free(gthis->qmap);
+    free(gthis->mptr);
     gthis->rows = 0;
-    gthis->qmap = NULL;
+    gthis->mptr = NULL;
     free(gthis);
 }
 
 static    guint     g_deque_size(GDeque *_this) {
     GDDeque   *gthis = (GDDeque*) _this;
-    guint      row   = gthis->first.rows;
-    guint      size  = (gthis->cols - gthis->first.cols);
-    if (gthis->first.rows == gthis->last.rows) {
-        size = gthis->last.cols - gthis->first.cols;
-        return size;
-    }
-
+    guint      row = gthis->first.rows;
+    guint      size = (gthis->cols - gthis->first.cols);
     for (row += 1; row < gthis->last.rows; row += 1) {
         size += gthis->cols;
     }
@@ -220,60 +67,28 @@ static    guint     g_deque_empty(GDeque *_this) {
 }
 
 static    gpointer  g_deque_begin(GDeque *_this) {
-    GDDeque *gthis   = (GDDeque*) _this;
-    gpointer gptr    = NULL;
-    GDEQItem **qitem = NULL:
-    if (gthis->first.rows > gthis->last.rows) {
-        qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-        return qitem[0]->end(qitem[0]);
-    }
-
-    if (gthis->first.rows == gthis->last.rows) {
-        if (gthis->first.cols >= gthis->last.cols) {
-            qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-            return qitem[0]->end(qitem[0]);
-        }
-    }
-
-    qitem  = gthis->qmap->at(gthis->qmap, gthis->first.rows);
-    gptr   = qitem[0]->at(qitem[0], gthis->first.cols);
+    GDDeque *gthis = (GDDeque*) _this;
+    gpointer gptr = gthis->mptr[gthis->first.rows];
+    gptr = gptr + gthis->first.cols * gthis->csize;
     return gptr;
 }
 
 static    gpointer  g_deque_end(GDeque *_this) {
     GDDeque *gthis = (GDDeque*) _this;
-    gpointer gptr    = NULL;
-    GDEQItem **qitem = NULL:
-    if (gthis->first.rows > gthis->last.rows) {
-        qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-        return qitem[0]->end(qitem[0]);
-    }
-
-    if (gthis->first.rows == gthis->last.rows) {
-        if (gthis->first.cols >= gthis->last.cols) {
-            qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-            return qitem[0]->end(qitem[0]);
-        }
-    }
-
-    qitem = gthis->qmap->at(gthis->qmap, gthis->last.rows);
-    gptr   = qitem[0]->at(qitem[0], gthis->last.cols);
+    gpointer gptr = gthis->mptr[gthis->last.rows];
+    gptr = gptr + gthis->last.cols * gthis->csize;
     return gptr;
 }
 
 static    gpointer  g_deque_backward(GDeque *_this, gpointer position, gint n) {
     GDDeque *gthis = (GDDeque*) _this;
     guint rows = 0, cols = 0;
-    gint  index = -1;
-    gpointer gptr    = NULL;
-    GDEQItem **qitem = gthis->qmap->at(gthis->qmap, rows);
-    for (rows = 0; rows < gthis->rows; ++rows, ++qitem) {
-        index = qitem[0]->find(qitem[0], position);
-        if (index < 0) {
-            continue;
+    for (rows = 0; rows < gthis->rows; ++rows) {
+        gpointer  first = gthis->mptr[rows];
+        gpointer  last  = first + gthis->cols * gthis->csize;
+        if (position < first || position >= last) {
+                continue;
         }
-
-        cols = index;
         rows = rows + n / gthis->cols;
         cols = gthis->first.cols + n % gthis->cols;
         if (cols >= gthis->cols) {
@@ -281,29 +96,25 @@ static    gpointer  g_deque_backward(GDeque *_this, gpointer position, gint n) {
             cols  = cols - gthis->cols;
         }
 
-        if (rows > gthis->last.rows) {
-            qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-            return qitem[0]->end(qitem[0]);
-        }
-
+        if (rows > gthis->last.rows)
+            return NULL;
         if (rows == gthis->last.rows) {
-            if (cols >= gthis->last.cols) {
-                qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-                return qitem[0]->end(qitem[0]);
-            }
+            if (cols >= gthis->last.cols)
+                return NULL;
         }
 
-        qitem = gthis->qmap->at(gthis->qmap, rows);
-        gptr = qitem[0]->at(qitem[0], cols);
+        gpointer gptr = gthis->mptr[rows];
+        gptr = gptr + cols * gthis->csize;
         return gptr;
     }
-
-    qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-    return qitem[0]->end(qitem[0]);
+    return NULL;
 }
 
 static    gpointer  g_deque_front(GDeque *_this) {
-    return _this->begin(_this);
+    GDDeque *gthis = (GDDeque*) _this;
+    gpointer gptr = gthis->mptr[gthis->first.rows];
+    gptr = gptr + gthis->first.cols * gthis->csize;
+    return gptr;
 }
 
 static    gpointer  g_deque_back(GDeque *_this) {
@@ -349,96 +160,41 @@ static    gpointer  g_deque_at(GDeque *_this, guint index) {
 
 static    gpointer  g_deque_rbegin(GDeque *_this){
     GDDeque *gthis = (GDDeque*) _this;
-    gpointer gptr    = NULL;
-    GDEQItem **qitem = NULL:
-    if (gthis->first.rows > gthis->last.rows) {
-        qitem = gthis->qmap->at(gthis->qmap, 0);
-        return qitem[0]->rend(qitem[0]);
-    }
-
-    if (gthis->first.rows == gthis->last.rows) {
-        if (gthis->first.cols >= gthis->last.cols) {
-            qitem = gthis->qmap->at(gthis->qmap, 0);
-            return qitem[0]->rend(qitem[0]);
-        }
-    }
-
-    if (gthis->last.cols <= 0) {
-        qitem = gthis->qmap->at(gthis->qmap, gthis->last.rows - 1);
-        gptr   = qitem[0]->rbegin(qitem[0]);
-    } else {
-        qitem = gthis->qmap->at(gthis->qmap, gthis->last.rows);
-        gptr   = qitem[0]->at(qitem[0], gthis->last.cols - 1);
-    }
-
-    return gptr;
-}
-
-static    gpointer  g_deque_rend(GDeque *_this){
-    GDDeque *gthis = (GDDeque*) _this;
-    gpointer gptr    = NULL;
-    GDEQItem **qitem = NULL:
-
-    guint rows = gthis->first.rows;
-    guint cols = gthis->first.cols;
+    guint rows = gthis->last.rows;
+    guint cols = gthis->last.cols;
     if (cols <= 0) {
-       if (gthis->first.rows <= 0) {
-            qitem = gthis->qmap->at(gthis->qmap, 0);
-            return qitem[0]->rend(qitem[0]);
-       }
-
+       if (gthis->last.rows <= gthis->first.rows)
+            return NULL;
        rows = rows - 1;
        cols = gthis->cols - 1;
     } else {
        cols = cols - 1;
     }
 
-    qitem = gthis->qmap->at(gthis->qmap, rows);
-    gptr   = qitem[0]->at(qitem[0], cols);
+    gpointer gptr = gthis->mptr[rows];
+    gptr = gptr + cols * gthis->csize;
+    return gptr;
+}
+
+static    gpointer  g_deque_rend(GDeque *_this){
+    GDDeque *gthis = (GDDeque*) _this;
+    guint rows = gthis->first.rows;
+    guint cols = gthis->first.cols;
+    if (cols <= 0) {
+       if (gthis->first.rows <= 0)
+            return NULL;
+       rows = rows - 1;
+       cols = gthis->cols - 1;
+    } else {
+       cols = cols - 1;
+    }
+
+    gpointer gptr = gthis->mptr[rows];
+    gptr = gptr + cols * gthis->csize;
     return gptr;
 }
 
 static    gpointer  g_deque_forward(GDeque *_this, gpointer position, gint n){
-    GDDeque *gthis = (GDDeque*) _this;
-    guint rows = 0, cols = 0;
-    gint  index = -1;
-    gpointer gptr    = NULL;
-    GDEQItem **qitem = gthis->qmap->at(gthis->qmap, rows);
-    for (rows = 0; rows < gthis->rows; ++rows, ++qitem) {
-        index = qitem[0]->find(qitem[0], position);
-        if (index < 0) {
-            continue;
-        }
-
-        cols = index;
-        rows = rows + n / gthis->cols;
-        cols = gthis->first.cols + n % gthis->cols;
-        if (cols >= gthis->cols) {
-            rows += 1;
-            cols  = cols - gthis->cols;
-        }
-
-        if (rows > gthis->last.rows) {
-            qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-            return qitem[0]->end(qitem[0]);
-        }
-
-        if (rows == gthis->last.rows) {
-            if (cols >= gthis->last.cols) {
-                qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-                return qitem[0]->end(qitem[0]);
-            }
-        }
-
-        qitem = gthis->qmap->at(gthis->qmap, rows);
-        gptr = qitem[0]->at(qitem[0], cols);
-        return gptr;
-    }
-
-    qitem = gthis->qmap->at(gthis->qmap, gthis->rows - 1);
-    return qitem[0]->end(qitem[0]);
-
-
     GDDeque *gthis = (GDDeque*) _this;
     gint rows = 0, cols = 0;
     for (rows = 0; rows < gthis->rows; ++rows) {
@@ -612,21 +368,19 @@ static    void      g_deque_resize(GDeque *_this, guint n, gpointer data){
 
 
 GDeque* g_deque_alloc(guint n, guint c) { //n - count   c - ElementSize
-    GDDeque *gthis   = NULL;
-    GDeque   *_this  = NULL;
-    GDEQItem **qitem = NULL;
+    GDDeque *gthis = NULL;
+    GDeque   *_this = NULL;
     if (n <= 0 || c <= 0) {
         return _this;
     }
 
     gthis = malloc(sizeof(GDDeque));
-    gthis->qmap  = g_dequeitem_alloc(n, sizeof(GDEQItem *));
+    gthis->mptr   = malloc(n * sizeof(gpointer));
     gthis->rows  = n;//
     gthis->cols  = 8;
     gthis->csize = c;
-    qitem = (GDEQItem**)gthis->qmap->at(gthis->qmap, 0);
-    for (guint i = 0; i < gthis->rows; ++i, ++qitem) {
-        qitem[0] = g_dequeitem_alloc(gthis->cols, c);
+    for (guint i = 0; i < gthis->rows; ++i) {
+        gthis->mptr[i] = malloc(gthis->cols * c);
     }
 
     gthis->first.rows  = 0;
