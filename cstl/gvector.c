@@ -3,6 +3,105 @@
 #include  <stdlib.h>
 #include  <string.h>
 
+
+
+static GIterator       g_dvector_iterator_next(GIterator *thiz) {
+    thiz->data += thiz->dsize;
+    return thiz[0];
+}
+
+static GIterator       g_dvector_iterator_prev(GIterator *thiz) {
+    thiz->data -= thiz->dsize;
+    return thiz[0];
+}
+
+static GIterator       g_dvector_iterator_next_n(GIterator *thiz, guint n) {
+    thiz->data += n * thiz->dsize;
+    return thiz[0];
+}
+
+static GIterator       g_dvector_iterator_prev_n(GIterator *thiz, guint n) {
+    thiz->data -= n * thiz->dsize;
+    return thiz[0];
+}
+
+static int              g_dvector_iterator_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->data == that->data)
+        return 1;
+    return 0;
+}
+
+static int              g_dvector_iterator_not_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->data != that->data)
+        return 1;
+    return 0;
+}
+
+static int              g_dvector_iterator_less(GIterator *thiz, GIterator *that) {
+    if (thiz->data < that->data)
+        return 1;
+    return 0;
+}
+
+static int              g_dvector_iterator_less_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->data <= that->data)
+        return 1;
+    return 0;
+}
+
+static int              g_dvector_iterator_greater(GIterator *thiz, GIterator *that) {
+    if (thiz->data > that->data)
+        return 1;
+    return 0;
+}
+
+static int              g_dvector_iterator_greater_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->data >= that->data)
+        return 1;
+    return 0;
+}
+
+static gpointer         g_dvector_iterator_get(GIterator *thiz) {
+    return thiz->data;
+}
+
+static guint            g_dvector_iterator_size(GIterator *thiz) {
+    return thiz->dsize;
+}
+
+static GIterator       g_dvector_iterator_set(GIterator *thiz, gpointer data, guint sz) {
+    thiz->data = data;
+    thiz->dsize = sz;
+    return thiz[0];
+}
+
+static GIterator g_dvector_iterator_init(gpointer data, guint size, guint dir) {
+    GIterator        thiz  = {0};
+    thiz.data = data;
+    thiz.dsize = size;
+    if (dir > 0) {
+        thiz.next  = g_dvector_iterator_next;
+        thiz.prev  = g_dvector_iterator_prev;
+        thiz.next_n  = g_dvector_iterator_next_n;
+        thiz.prev_n  = g_dvector_iterator_prev_n;
+    } else {
+        thiz.next  = g_dvector_iterator_prev;
+        thiz.prev  = g_dvector_iterator_next;
+        thiz.next_n  = g_dvector_iterator_prev_n;
+        thiz.prev_n  = g_dvector_iterator_next_n;
+    }
+    thiz.equal  = g_dvector_iterator_equal;
+    thiz.not_equal  = g_dvector_iterator_not_equal;
+    thiz.less  = g_dvector_iterator_less;
+    thiz.less_equal  = g_dvector_iterator_less_equal;
+    thiz.greater  = g_dvector_iterator_greater;
+    thiz.greater_equal  = g_dvector_iterator_greater_equal;
+    thiz.get  = g_dvector_iterator_get;
+    thiz.size  = g_dvector_iterator_size;
+    thiz.set  = g_dvector_iterator_set;
+    return thiz;
+}
+
 typedef struct _GDVector  GDVector;
 
 struct _GDVector {

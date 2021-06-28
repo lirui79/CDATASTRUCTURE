@@ -5,19 +5,25 @@
 #include "test_list_alloc.h"
 
 
+typedef struct {
+//   typedef gpointer iterator;
+   int n;
+}  my;
+
 struct VAL {
- union {
+
+ union  {
      float fVal;
      int   iVal;
  };
 };
 
 
-int main()
-{
+int main() {
     float val = 1.3;
     int   ival = 0;
     struct VAL  v;
+    //struct VAL::iterator  it;
 
     memcpy(&ival, &val, sizeof(float));
     memcpy(&v, &val, sizeof(float));

@@ -3,6 +3,7 @@
 
 
 #include "gtypes.h"
+#include "giterator.h"
 
 
 G_BEGIN_DECLS
@@ -25,15 +26,15 @@ struct _GVector {
 
     gpointer  (*front)(GVector *_this);
 
-    gpointer  (*begin)(GVector *_this);
+    GIterator  (*begin)(GVector *_this);
 
-    gpointer  (*end)(GVector *_this);
+    GIterator  (*end)(GVector *_this);
 
     gpointer  (*backward)(GVector *_this, gpointer position, gint n);
 
-    gpointer  (*rbegin)(GVector *_this);
+    GIterator  (*rbegin)(GVector *_this);
 
-    gpointer  (*rend)(GVector *_this);
+    GIterator  (*rend)(GVector *_this);
 
     gpointer  (*forward)(GVector *_this, gpointer position, gint n);
 
@@ -49,19 +50,19 @@ struct _GVector {
 
     void      (*pop_front)(GVector *_this);//
 
-    gpointer  (*erase)(GVector *_this, gpointer first, gpointer last);
+    GIterator  (*erase)(GVector *_this, GIterator first, GIterator last);
 
-    gpointer  (*remove)(GVector *_this, gpointer data);//
+    GIterator  (*remove)(GVector *_this, GIterator position);//
 
     void      (*resize)(GVector *_this, guint n, gpointer data);
 
     void      (*reserve)(GVector *_this, guint capacity);
 
-    void      (*assign)(GVector *_this, gpointer first, gpointer last);
+    void      (*assign)(GVector *_this, GIterator first, GIterator last);
 
-    void      (*fill)(GVector *_this, gpointer position, guint n, gpointer data);
+    void      (*fill)(GVector *_this, GIterator position, guint n, gpointer data);
 
-    void      (*insert)(GVector *_this, gpointer position, gpointer first, gpointer last);
+    void      (*insert)(GVector *_this, GIterator position, GIterator first, GIterator last);
 
     void      (*reverse)(GVector *_this);
 

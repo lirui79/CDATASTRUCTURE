@@ -275,7 +275,7 @@ static    gpointer  g_deque_backward(GDeque *_this, gpointer position, gint n) {
 
         cols = index;
         rows = rows + n / gthis->cols;
-        cols = gthis->first.cols + n % gthis->cols;
+        cols = cols + n % gthis->cols;
         if (cols >= gthis->cols) {
             rows += 1;
             cols  = cols - gthis->cols;
@@ -307,21 +307,7 @@ static    gpointer  g_deque_front(GDeque *_this) {
 }
 
 static    gpointer  g_deque_back(GDeque *_this) {
-    GDDeque *gthis = (GDDeque*) _this;
-    guint rows = gthis->last.rows;
-    guint cols = gthis->last.cols;
-    if (cols <= 0) {
-       if (gthis->last.rows <= gthis->first.rows)
-            return NULL;
-       rows = rows - 1;
-       cols = gthis->cols - 1;
-    } else {
-       cols = cols - 1;
-    }
-
-    gpointer gptr = gthis->mptr[rows];
-    gptr = gptr + cols * gthis->csize;
-    return gptr;
+    return _this->rbegin(_this);
 }
 
 static    gpointer  g_deque_at(GDeque *_this, guint index) {

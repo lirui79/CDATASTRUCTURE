@@ -49,6 +49,9 @@
 			<Option compilerVar="CC" />
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="../cstl/giterator.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="../cstl/glist.c">
 			<Option compilerVar="CC" />
 			<Option target="Debug" />
