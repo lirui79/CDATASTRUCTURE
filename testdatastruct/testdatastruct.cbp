@@ -103,6 +103,13 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="test_array.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_array.h">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="test_list_alloc.c">
 			<Option compilerVar="CC" />
 			<Option target="Debug" />

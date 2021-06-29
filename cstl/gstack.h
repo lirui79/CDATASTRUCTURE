@@ -11,21 +11,21 @@ G_BEGIN_DECLS
 typedef struct _GStack     GStack;
 
 struct _GStack {
-    void      (*free)(GStack *_this);  // free _this
+    void      (*free)(GStack *thiz);  // free thiz
 
-    void      (*clear)(GStack *_this);
+    void      (*clear)(GStack *thiz);
 
-    gpointer  (*top)(GStack *_this);
+    gpointer  (*top)(GStack *thiz);
 
-    guint     (*size)(GStack *_this);
+    guint     (*size)(GStack *thiz);
 
-    guint     (*empty)(GStack *_this);
+    guint     (*empty)(GStack *thiz);
 
-    void     (*push)(GStack *_this, gpointer data);
+    void     (*push)(GStack *thiz, gpointer data);
 
-    void     (*pop)(GStack *_this);
+    void     (*pop)(GStack *thiz);
 
-    void     (*swap)(GStack *_this, GStack *_that);
+    void     (*swap)(GStack *thiz, GStack *that);
 };
 
 

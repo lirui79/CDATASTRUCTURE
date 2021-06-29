@@ -6,107 +6,107 @@
 typedef struct _GDStack  GDStack;
 
 struct _GDStack {
-    GStack     _this;
+    GStack     thiz;
     gpointer   first;
     gpointer   last;
     gpointer   end;
     guint      csize;
 };
 
-static    void g_stack_free(GStack *_this) {
-    GDStack *_gthis = (GDStack*) _this;
-    free(_gthis->first);
-    _gthis->first = NULL;
-    _gthis->last  = NULL;
-    _gthis->end  = NULL;
-    free(_gthis);
+static    void g_stack_free(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
+    free(gthiz->first);
+    gthiz->first = NULL;
+    gthiz->last  = NULL;
+    gthiz->end  = NULL;
+    free(gthiz);
 }
 
-static    void g_stack_clear(GStack *_this) {
-    GDStack *_gthis = (GDStack*) _this;
-    _gthis->last  = _gthis->first;
+static    void g_stack_clear(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
+    gthiz->last  = gthiz->first;
 }
 
-static    gpointer g_stack_top(GStack *_this) {
-    GDStack *_gthis = (GDStack*) _this;
+static    gpointer g_stack_top(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
     gpointer gptr = NULL;
-    if (_gthis->last > _gthis->first)
-        gptr = _gthis->last - _gthis->csize;
+    if (gthiz->last > gthiz->first)
+        gptr = gthiz->last - gthiz->csize;
     return gptr;
 }
 
-static    guint  g_stack_size(GStack *_this) {
-    GDStack *_gthis = (GDStack*) _this;
-    guint size = _gthis->last - _gthis->first;
-    size = size / _gthis->csize;
+static    guint  g_stack_size(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
+    guint size = gthiz->last - gthiz->first;
+    size = size / gthiz->csize;
     return size;
 }
 
-static    guint  g_stack_empty(GStack *_this) {
-    GDStack *_gthis = (GDStack*) _this;
-    if (_gthis->first == _gthis->last)
+static    guint  g_stack_empty(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
+    if (gthiz->first == gthiz->last)
         return 1;
     return 0;
 }
 
-static    void g_stack_push(GStack *_this, gpointer data) {
-    GDStack *_gthis = (GDStack*) _this;
-    if (_gthis->end > _gthis->last) {
-        memcpy(_gthis->last, data, _gthis->csize);
-        _gthis->last = _gthis->last + _gthis->csize;
+static    void g_stack_push(GStack *thiz, gpointer data) {
+    GDStack *gthiz = (GDStack*) thiz;
+    if (gthiz->end > gthiz->last) {
+        memcpy(gthiz->last, data, gthiz->csize);
+        gthiz->last = gthiz->last + gthiz->csize;
     }
 }
-static    void g_stack_pop(GStack *_this) {
-    GDStack *_gthis = (GDStack*) _this;
-    if (_gthis->last > _gthis->first)
-        _gthis->last = _gthis->last - _gthis->csize;
+static    void g_stack_pop(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
+    if (gthiz->last > gthiz->first)
+        gthiz->last = gthiz->last - gthiz->csize;
 }
 
-static    void g_stack_swap(GStack *_this, GStack *_that) {
+static    void g_stack_swap(GStack *thiz, GStack *that) {
     gpointer gptr = NULL;
-    GDStack *_gthis = (GDStack*) _this, *_gthat = (GDStack*)_that;
-    if (_that == NULL) {
+    GDStack *gthiz = (GDStack*) thiz, *gthat = (GDStack*)that;
+    if (that == NULL) {
         return;
     }
-    gptr = _gthis->first;
-    _gthis->first = _gthat->first;
-    _gthat->first = gptr;
+    gptr = gthiz->first;
+    gthiz->first = gthat->first;
+    gthat->first = gptr;
 
-    gptr = _gthis->last;
-    _gthis->last = _gthat->last;
-    _gthat->last = gptr;
+    gptr = gthiz->last;
+    gthiz->last = gthat->last;
+    gthat->last = gptr;
 
-    gptr = _gthis->end;
-    _gthis->end = _gthat->end;
-    _gthat->end = gptr;
+    gptr = gthiz->end;
+    gthiz->end = gthat->end;
+    gthat->end = gptr;
 
-    guint c = _gthis->csize;
-    _gthis->csize = _gthat->csize;
-    _gthat->csize = c;
+    guint c = gthiz->csize;
+    gthiz->csize = gthat->csize;
+    gthat->csize = c;
     return;
 }
 
 GStack* g_stack_alloc(guint n, guint c) { //n - count   c - ElementSize
-    GDStack *_gthis = NULL;
-    GStack  *_this  = NULL;
+    GDStack *gthiz = NULL;
+    GStack  *thiz  = NULL;
     if (n <= 0 || c <= 0) {
-        return _this;
+        return thiz;
     }
 
-    _gthis = malloc(sizeof(GDStack));
-    _gthis->first = malloc(n * c);
-    _gthis->last  = _gthis->first;
-    _gthis->end   = _gthis->first + n * c;
-    _gthis->csize = c;// unit size > 0
+    gthiz = malloc(sizeof(GDStack));
+    gthiz->first = malloc(n * c);
+    gthiz->last  = gthiz->first;
+    gthiz->end   = gthiz->first + n * c;
+    gthiz->csize = c;// unit size > 0
 
-    _this        = &(_gthis->_this);
-    _this->free  = g_stack_free;  // free _this
-    _this->clear = g_stack_clear;
-    _this->top   = g_stack_top;
-    _this->size  = g_stack_size;
-    _this->empty = g_stack_empty;
-    _this->push  = g_stack_push;
-    _this->pop   = g_stack_pop;
-    _this->swap  = g_stack_swap;
-    return _this;
+    thiz        = &(gthiz->thiz);
+    thiz->free  = g_stack_free;  // free thiz
+    thiz->clear = g_stack_clear;
+    thiz->top   = g_stack_top;
+    thiz->size  = g_stack_size;
+    thiz->empty = g_stack_empty;
+    thiz->push  = g_stack_push;
+    thiz->pop   = g_stack_pop;
+    thiz->swap  = g_stack_swap;
+    return thiz;
 }

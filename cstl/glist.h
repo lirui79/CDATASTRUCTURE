@@ -11,10 +11,10 @@ G_BEGIN_DECLS
 typedef struct  _GNode     GNode;
 
 struct _GNode {
-    GNode*       (*next)(GNode *_this);
-    GNode*       (*prev)(GNode *_this);
-    gpointer     (*data)(GNode *_this);
-    guint        (*size)(GNode *_this);
+    GNode*       (*next)(GNode *thiz);
+    GNode*       (*prev)(GNode *thiz);
+    gpointer     (*data)(GNode *thiz);
+    guint        (*size)(GNode *thiz);
 };
 
 /////////////////////////////////////////////////
@@ -22,47 +22,47 @@ struct _GNode {
 typedef struct  _GList     GList;
 
 struct _GList {
-    void   (*clear)(GList *_this);// free node, and free data , but not free list
+    void   (*clear)(GList *thiz);// free node, and free data , but not free list
 
-    void   (*free)(GList *_this);  // free node, and free data, free list
+    void   (*free)(GList *thiz);  // free node, and free data, free list
 
-    guint  (*empty)(GList *_this);
+    guint  (*empty)(GList *thiz);
 
-    guint  (*size)(GList *_this);
+    guint  (*size)(GList *thiz);
 
-    GNode* (*back)(GList *_this);
+    GNode* (*back)(GList *thiz);
 
-    GNode* (*front)(GList *_this);
+    GNode* (*front)(GList *thiz);
 
-    GNode* (*begin)(GList *_this);
+    GNode* (*begin)(GList *thiz);
 
-    GNode* (*end)(GList *_this);
+    GNode* (*end)(GList *thiz);
 
-    GNode* (*rbegin)(GList *_this);
+    GNode* (*rbegin)(GList *thiz);
 
-    GNode* (*rend)(GList *_this);
+    GNode* (*rend)(GList *thiz);
 
-    GNode* (*at)(GList *_this, guint index);
+    GNode* (*at)(GList *thiz, guint index);
 
-    gint   (*find)(GList *_this, gpointer data, guint size);
+    gint   (*find)(GList *thiz, gpointer data, guint size);
 
-    void   (*push_back)(GList *_this, gpointer data, guint size);
+    void   (*push_back)(GList *thiz, gpointer data, guint size);
 
-    void   (*push_front)(GList *_this, gpointer data, guint size);
+    void   (*push_front)(GList *thiz, gpointer data, guint size);
 
-    GNode* (*remove)(GList *_this, gpointer data, guint size);// free node, but not free data
+    GNode* (*remove)(GList *thiz, gpointer data, guint size);// free node, but not free data
 
-    void   (*pop_back)(GList *_this);// free node, but not free data
+    void   (*pop_back)(GList *thiz);// free node, but not free data
 
-    void   (*pop_front)(GList *_this);// free node, but not free data
+    void   (*pop_front)(GList *thiz);// free node, but not free data
 
-    void   (*reverse)(GList *_this);
+    void   (*reverse)(GList *thiz);
 
-    void   (*assign)(GList *_this, const GList *_othis);
+    void   (*assign)(GList *thiz, const GList *that);
 
-    void   (*insert)(GList *_this, guint index, gpointer data, guint size);
+    void   (*insert)(GList *thiz, guint index, gpointer data, guint size);
 
-    void   (*swap)(GList *_this, GList *_that);
+    void   (*swap)(GList *thiz, GList *that);
 };
 
 
