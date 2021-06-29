@@ -4,168 +4,270 @@
 #include  <stdlib.h>
 #include  <string.h>
 
+
+
+
+
+static GIterator       g_darray_iterator_next(GIterator *thiz) {
+    thiz->itdata += thiz->itsize;
+    return thiz[0];
+}
+
+static GIterator       g_darray_iterator_prev(GIterator *thiz) {
+    thiz->itdata -= thiz->itsize;
+    return thiz[0];
+}
+
+static GIterator       g_darray_iterator_forward(GIterator *thiz, guint n) {
+    thiz->itdata += n * thiz->itsize;
+    return thiz[0];
+}
+
+static GIterator       g_darray_iterator_backward(GIterator *thiz, guint n) {
+    thiz->itdata -= n * thiz->itsize;
+    return thiz[0];
+}
+
+static int              g_darray_iterator_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->itdata == that->itdata)
+        return 1;
+    return 0;
+}
+
+static int              g_darray_iterator_not_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->itdata != that->itdata)
+        return 1;
+    return 0;
+}
+
+static int              g_darray_iterator_less(GIterator *thiz, GIterator *that) {
+    if (thiz->itdata < that->itdata)
+        return 1;
+    return 0;
+}
+
+static int              g_darray_iterator_less_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->itdata <= that->itdata)
+        return 1;
+    return 0;
+}
+
+static int              g_darray_iterator_greater(GIterator *thiz, GIterator *that) {
+    if (thiz->itdata > that->itdata)
+        return 1;
+    return 0;
+}
+
+static int              g_darray_iterator_greater_equal(GIterator *thiz, GIterator *that) {
+    if (thiz->itdata >= that->itdata)
+        return 1;
+    return 0;
+}
+
+static gpointer         g_darray_iterator_data(GIterator *thiz) {
+    return thiz->itdata;
+}
+
+static guint            g_darray_iterator_size(GIterator *thiz) {
+    return thiz->itsize;
+}
+
+static GIterator       g_darray_iterator_set(GIterator *thiz, gpointer data, guint sz) {
+    thiz->itdata = data;
+    thiz->itsize = sz;
+    return thiz[0];
+}
+
+static GIterator g_darray_iterator_init(gpointer data, guint size, guint dir) {
+    GIterator        thiz  = {0};
+    thiz.itdata  = data;
+    thiz.itsize  = size;
+    thiz.dir   = dir;
+    if (dir > 0) {
+        thiz.next  = g_darray_iterator_next;
+        thiz.prev  = g_darray_iterator_prev;
+        thiz.forward  = g_darray_iterator_forward;
+        thiz.backward  = g_darray_iterator_backward;
+    } else {
+        thiz.next  = g_darray_iterator_prev;
+        thiz.prev  = g_darray_iterator_next;
+        thiz.forward  = g_darray_iterator_backward;
+        thiz.backward  = g_darray_iterator_forward;
+    }
+    thiz.equal  = g_darray_iterator_equal;
+    thiz.not_equal  = g_darray_iterator_not_equal;
+    thiz.less  = g_darray_iterator_less;
+    thiz.less_equal  = g_darray_iterator_less_equal;
+    thiz.greater  = g_darray_iterator_greater;
+    thiz.greater_equal  = g_darray_iterator_greater_equal;
+    thiz.data  = g_darray_iterator_data;
+    thiz.size  = g_darray_iterator_size;
+    thiz.set  = g_darray_iterator_set;
+    return thiz;
+}
+
+GIterator g_array_iterator() {
+    return g_darray_iterator_init(NULL, 0, 1);
+}
+
+
+
 typedef struct _GDArray  GDArray;
 
 struct _GDArray {
-    GArray     _this;
+    GArray     thiz;
     gpointer   first;
     gpointer   last;
     gint       csize;
 };
 
 
-static void g_array_free(GArray *_this) {  // free _this
-    GDArray *_gthis = (GDArray*)_this;
-    free(_gthis->first);
-    _gthis->first = NULL;
-    _gthis->last  = NULL;
-    free(_gthis);
+static void g_array_free(GArray *thiz) {  // free thiz
+    GDArray *gthiz = (GDArray*)thiz;
+    free(gthiz->first);
+    gthiz->first = NULL;
+    gthiz->last  = NULL;
+    free(gthiz);
 }
 
-static gpointer g_array_back(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    gpointer gptr = _gthis->last - _gthis->csize;
+static guint  g_array_size(GArray *thiz) {
+    GDArray *gthiz = (GDArray*) thiz;
+    guint size = gthiz->last - gthiz->first;
+    size = size / gthiz->csize;
+    return size;
+}
+
+
+static gpointer g_array_back(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    gpointer gptr = gthiz->last - gthiz->csize;
     return gptr;
 }
 
-static gpointer g_array_front(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    return _gthis->first;
+static gpointer g_array_front(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    return gthiz->first;
 }
 
-static gpointer g_array_begin(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    return _gthis->first;
+static gpointer g_array_at(GArray *thiz, guint index) {
+    GDArray *gthiz = (GDArray*)thiz;
+    if (index >= thiz->size(thiz))
+        return gthiz->last;
+    return (gthiz->first + index * gthiz->csize);
 }
 
-static gpointer g_array_end(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    return _gthis->last;
+static gpointer g_array_data(GArray *thiz) {
+    GDArray *gthiz = (GDArray*) thiz;
+    return gthiz->first;
 }
 
-static gpointer g_array_backward(GArray *_this, gpointer position, gint n) {
-    GDArray *_gthis = (GDArray*)_this;
-    position = position + n * _gthis->csize;
-    return position;
+
+
+static GIterator g_array_begin(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    GIterator iterator = g_darray_iterator_init(gthiz->first, gthiz->csize, 1);
+    return iterator;
 }
 
-static gpointer g_array_rbegin(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    gpointer gptr = _gthis->last - _gthis->csize;
-    return gptr;
+static GIterator g_array_end(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    GIterator iterator = g_darray_iterator_init(gthiz->last, gthiz->csize, 1);
+    return iterator;
 }
 
-static gpointer g_array_rend(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    gpointer gptr = _gthis->first - _gthis->csize;
-    return gptr;
+static GIterator g_array_rbegin(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    GIterator iterator = g_darray_iterator_init(gthiz->last - gthiz->csize, gthiz->csize, 0);
+    return iterator;
 }
 
-static gpointer g_array_forward(GArray *_this, gpointer position, gint n) {
-    GDArray *_gthis = (GDArray*)_this;
-    position = position - n * _gthis->csize;
-    return position;
+static GIterator g_array_rend(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    GIterator iterator = g_darray_iterator_init(gthiz->first - gthiz->csize, gthiz->csize, 0);
+    return iterator;
 }
 
-static void g_array_reverse(GArray *_this) {
-    GDArray *_gthis = (GDArray*)_this;
-    gpointer first = _gthis->first, last = _gthis->last - _gthis->csize;
-    gpointer gptr  = malloc(_gthis->csize);
-    for (; first < last; first = first + _gthis->csize, last = last - _gthis->csize) {
-        memcpy(gptr,  first, _gthis->csize);
-        memcpy(first, last,  _gthis->csize);
-        memcpy(last,  gptr,  _gthis->csize);
+
+
+static void g_array_reverse(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    gpointer first = gthiz->first, last = gthiz->last - gthiz->csize;
+    gpointer gptr  = malloc(gthiz->csize);
+    for (; first < last; first = first + gthiz->csize, last = last - gthiz->csize) {
+        memcpy(gptr,  first, gthiz->csize);
+        memcpy(first, last,  gthiz->csize);
+        memcpy(last,  gptr,  gthiz->csize);
     }
     free(gptr);
 }
 
-static gpointer g_array_at(GArray *_this, guint index) {
-    GDArray *_gthis = (GDArray*)_this;
-    if (index >= _this->size(_this))
-        return _gthis->last;
-    return (_gthis->first + index * _gthis->csize);
-}
-
-static void g_array_fill(GArray *_this, gpointer data) {
-    GDArray *_gthis = (GDArray*) _this;
+static void g_array_fill(GArray *thiz, gpointer data) {
+    GDArray *gthiz = (GDArray*) thiz;
     gpointer gptr = NULL;
-    for(gptr = _gthis->first; gptr < _gthis->last; gptr += _gthis->csize) {
-        memcpy(gptr, data, _gthis->csize);
+    for(gptr = gthiz->first; gptr < gthiz->last; gptr += gthiz->csize) {
+        memcpy(gptr, data, gthiz->csize);
     }
 }
 
-static guint  g_array_size(GArray *_this) {
-    GDArray *_gthis = (GDArray*) _this;
-    guint size = _gthis->last - _gthis->first;
-    size = size / _gthis->csize;
-    return size;
-}
-
-static gpointer g_array_data(GArray *_this) {
-    GDArray *_gthis = (GDArray*) _this;
-    return _gthis->first;
-}
-
-static void g_array_assign(GArray *_this, gpointer first, gpointer last) {
-    GDArray *_gthis = (GDArray*) _this;
+static void g_array_assign(GArray *thiz, GIterator itfirst, GIterator itlast) {
+    GDArray *gthiz = (GDArray*) thiz;
+    gpointer first = itfirst.data(&itfirst), last = itlast.data(&itlast);
     if (first == NULL || last == NULL || first >= last) {
         return;
     }
 
-    guint size = _gthis->last - _gthis->first;
+    guint size = gthiz->last - gthiz->first;
     guint newsize = last - first;
     if (newsize > size)
         newsize = size;
-    memcpy(_gthis->first, first, newsize);
+    memcpy(gthiz->first, first, newsize);
 }
 
-static void  g_array_swap(GArray *_this, GArray *_that) {
+static void  g_array_swap(GArray *thiz, GArray *that) {
     gpointer gptr = NULL;
-    GDArray *_gthis = (GDArray*) _this, *_gthat = (GDArray*)_that;
-    if (_that == NULL) {
+    GDArray *gthiz = (GDArray*) thiz, *gthat = (GDArray*)that;
+    if (that == NULL) {
         return;
     }
-    gptr = _gthis->first;
-    _gthis->first = _gthat->first;
-    _gthat->first = gptr;
+    gptr = gthiz->first;
+    gthiz->first = gthat->first;
+    gthat->first = gptr;
 
-    gptr = _gthis->last;
-    _gthis->last = _gthat->last;
-    _gthat->last = gptr;
+    gptr = gthiz->last;
+    gthiz->last = gthat->last;
+    gthat->last = gptr;
 
-    guint c = _gthis->csize;
-    _gthis->csize = _gthat->csize;
-    _gthat->csize = c;
+    guint c = gthiz->csize;
+    gthiz->csize = gthat->csize;
+    gthat->csize = c;
 }
 
 
 GArray* g_array_alloc(guint n, guint c) { //n - count   c - ElementSize
-    GDArray *_gthis = NULL;
-    GArray  *_this  = NULL;
-     if (n <= 0 || c <= 0) {
-        return _this;
-     }
-     _gthis = malloc(sizeof(GDArray));
-    _gthis->first = malloc(n * c);
-    _gthis->last  = _gthis->first + n * c;
-    _gthis->csize = c;// unit size > 0
+    GDArray *gthiz = NULL;
+    GArray  *thiz  = NULL;
+    if (n <= 0 || c <= 0) {
+        return thiz;
+    }
+    gthiz = malloc(sizeof(GDArray));
+    gthiz->first = malloc(n * c);
+    gthiz->last  = gthiz->first + n * c;
+    gthiz->csize = c;// unit size > 0
 
-    _this     = &(_gthis->_this);
-    _this->free  = g_array_free;  // free _this
-    _this->back  = g_array_back;
-    _this->front  = g_array_front;
-    _this->begin  = g_array_begin;
-    _this->end  = g_array_end;
-    _this->backward  = g_array_backward;
-    _this->rbegin  = g_array_rbegin;
-    _this->rend  = g_array_rend;
-    _this->forward  = g_array_forward;
-    _this->reverse  = g_array_reverse;
-    _this->at  = g_array_at;
-    _this->fill  = g_array_fill;
-    _this->size  = g_array_size;
-    _this->data  = g_array_data;
-    _this->assign  = g_array_assign;
-    _this->swap  = g_array_swap;
-     return _this;
+    thiz     = &(gthiz->thiz);
+    thiz->free  = g_array_free;  // free thiz
+    thiz->back  = g_array_back;
+    thiz->front  = g_array_front;
+    thiz->begin  = g_array_begin;
+    thiz->end    = g_array_end;
+    thiz->rbegin = g_array_rbegin;
+    thiz->rend   = g_array_rend;
+    thiz->reverse  = g_array_reverse;
+    thiz->at  = g_array_at;
+    thiz->fill  = g_array_fill;
+    thiz->size  = g_array_size;
+    thiz->data  = g_array_data;
+    thiz->assign  = g_array_assign;
+    thiz->swap  = g_array_swap;
+    return thiz;
 }

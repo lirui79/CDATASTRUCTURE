@@ -12,65 +12,72 @@ G_BEGIN_DECLS
 typedef struct  _GVector     GVector;
 
 struct _GVector {
-    void      (*clear)(GVector *_this);// but not free _this
+    void      (*clear)(GVector *thiz);// but not free thiz
 
-    void      (*free)(GVector *_this);  // free _this
+    void      (*free)(GVector *thiz);  // free thiz
 
-    guint     (*empty)(GVector *_this);
 
-    guint     (*size)(GVector *_this);
 
-    guint     (*capacity)(GVector *_this);
+    guint     (*empty)(GVector *thiz);
 
-    gpointer  (*back)(GVector *_this);
+    guint     (*size)(GVector *thiz);
 
-    gpointer  (*front)(GVector *_this);
+    guint     (*capacity)(GVector *thiz);
 
-    GIterator  (*begin)(GVector *_this);
+    void      (*resize)(GVector *thiz, guint n, gpointer data);
 
-    GIterator  (*end)(GVector *_this);
+    void      (*reserve)(GVector *thiz, guint capacity);
 
-    gpointer  (*backward)(GVector *_this, gpointer position, gint n);
 
-    GIterator  (*rbegin)(GVector *_this);
 
-    GIterator  (*rend)(GVector *_this);
+    gpointer  (*back)(GVector *thiz);
 
-    gpointer  (*forward)(GVector *_this, gpointer position, gint n);
+    gpointer  (*front)(GVector *thiz);
 
-    gpointer  (*at)(GVector *_this, guint index);
+    gpointer  (*at)(GVector *thiz, guint index);
 
-    gpointer  (*data)(GVector *_this);
+    gpointer  (*data)(GVector *thiz);
 
-    void      (*push_back)(GVector *_this, gpointer data);
 
-    void      (*push_front)(GVector *_this, gpointer data);
 
-    void      (*pop_back)(GVector *_this);//
+    GIterator  (*begin)(GVector *thiz);
 
-    void      (*pop_front)(GVector *_this);//
+    GIterator  (*end)(GVector *thiz);
 
-    GIterator  (*erase)(GVector *_this, GIterator first, GIterator last);
+    GIterator  (*rbegin)(GVector *thiz);
 
-    GIterator  (*remove)(GVector *_this, GIterator position);//
+    GIterator  (*rend)(GVector *thiz);
 
-    void      (*resize)(GVector *_this, guint n, gpointer data);
 
-    void      (*reserve)(GVector *_this, guint capacity);
 
-    void      (*assign)(GVector *_this, GIterator first, GIterator last);
+    void      (*push_back)(GVector *thiz, gpointer data);
 
-    void      (*fill)(GVector *_this, GIterator position, guint n, gpointer data);
+    void      (*push_front)(GVector *thiz, gpointer data);
 
-    void      (*insert)(GVector *_this, GIterator position, GIterator first, GIterator last);
+    void      (*pop_back)(GVector *thiz);//
 
-    void      (*reverse)(GVector *_this);
+    void      (*pop_front)(GVector *thiz);//
 
-    void      (*swap)(GVector *_this, GVector *_that);
+    GIterator  (*erase)(GVector *thiz, GIterator first, GIterator last);
+
+    GIterator  (*remove)(GVector *thiz, GIterator position);//
+
+
+    void      (*assign)(GVector *thiz, GIterator first, GIterator last);
+
+    void      (*fill)(GVector *thiz, GIterator position, guint n, gpointer data);
+
+    void      (*insert)(GVector *thiz, GIterator position, GIterator first, GIterator last);
+
+    void      (*reverse)(GVector *thiz);
+
+    void      (*swap)(GVector *thiz, GVector *that);
 };
 
+GIterator g_vector_iterator();
 
 GVector* g_vector_alloc(guint n, guint c); //vector ElementSize
+
 
 
 G_END_DECLS

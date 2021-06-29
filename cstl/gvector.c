@@ -6,89 +6,90 @@
 
 
 static GIterator       g_dvector_iterator_next(GIterator *thiz) {
-    thiz->data += thiz->dsize;
+    thiz->itdata += thiz->itsize;
     return thiz[0];
 }
 
 static GIterator       g_dvector_iterator_prev(GIterator *thiz) {
-    thiz->data -= thiz->dsize;
+    thiz->itdata -= thiz->itsize;
     return thiz[0];
 }
 
-static GIterator       g_dvector_iterator_next_n(GIterator *thiz, guint n) {
-    thiz->data += n * thiz->dsize;
+static GIterator       g_dvector_iterator_forward(GIterator *thiz, guint n) {
+    thiz->itdata += n * thiz->itsize;
     return thiz[0];
 }
 
-static GIterator       g_dvector_iterator_prev_n(GIterator *thiz, guint n) {
-    thiz->data -= n * thiz->dsize;
+static GIterator       g_dvector_iterator_backward(GIterator *thiz, guint n) {
+    thiz->itdata -= n * thiz->itsize;
     return thiz[0];
 }
 
 static int              g_dvector_iterator_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->data == that->data)
+    if (thiz->itdata == that->itdata)
         return 1;
     return 0;
 }
 
 static int              g_dvector_iterator_not_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->data != that->data)
+    if (thiz->itdata != that->itdata)
         return 1;
     return 0;
 }
 
 static int              g_dvector_iterator_less(GIterator *thiz, GIterator *that) {
-    if (thiz->data < that->data)
+    if (thiz->itdata < that->itdata)
         return 1;
     return 0;
 }
 
 static int              g_dvector_iterator_less_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->data <= that->data)
+    if (thiz->itdata <= that->itdata)
         return 1;
     return 0;
 }
 
 static int              g_dvector_iterator_greater(GIterator *thiz, GIterator *that) {
-    if (thiz->data > that->data)
+    if (thiz->itdata > that->itdata)
         return 1;
     return 0;
 }
 
 static int              g_dvector_iterator_greater_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->data >= that->data)
+    if (thiz->itdata >= that->itdata)
         return 1;
     return 0;
 }
 
-static gpointer         g_dvector_iterator_get(GIterator *thiz) {
-    return thiz->data;
+static gpointer         g_dvector_iterator_data(GIterator *thiz) {
+    return thiz->itdata;
 }
 
 static guint            g_dvector_iterator_size(GIterator *thiz) {
-    return thiz->dsize;
+    return thiz->itsize;
 }
 
 static GIterator       g_dvector_iterator_set(GIterator *thiz, gpointer data, guint sz) {
-    thiz->data = data;
-    thiz->dsize = sz;
+    thiz->itdata = data;
+    thiz->itsize = sz;
     return thiz[0];
 }
 
 static GIterator g_dvector_iterator_init(gpointer data, guint size, guint dir) {
     GIterator        thiz  = {0};
-    thiz.data = data;
-    thiz.dsize = size;
+    thiz.itdata  = data;
+    thiz.itsize  = size;
+    thiz.dir   = dir;
     if (dir > 0) {
         thiz.next  = g_dvector_iterator_next;
         thiz.prev  = g_dvector_iterator_prev;
-        thiz.next_n  = g_dvector_iterator_next_n;
-        thiz.prev_n  = g_dvector_iterator_prev_n;
+        thiz.forward  = g_dvector_iterator_forward;
+        thiz.backward  = g_dvector_iterator_backward;
     } else {
         thiz.next  = g_dvector_iterator_prev;
         thiz.prev  = g_dvector_iterator_next;
-        thiz.next_n  = g_dvector_iterator_prev_n;
-        thiz.prev_n  = g_dvector_iterator_next_n;
+        thiz.forward  = g_dvector_iterator_backward;
+        thiz.backward  = g_dvector_iterator_forward;
     }
     thiz.equal  = g_dvector_iterator_equal;
     thiz.not_equal  = g_dvector_iterator_not_equal;
@@ -96,16 +97,20 @@ static GIterator g_dvector_iterator_init(gpointer data, guint size, guint dir) {
     thiz.less_equal  = g_dvector_iterator_less_equal;
     thiz.greater  = g_dvector_iterator_greater;
     thiz.greater_equal  = g_dvector_iterator_greater_equal;
-    thiz.get  = g_dvector_iterator_get;
+    thiz.data  = g_dvector_iterator_data;
     thiz.size  = g_dvector_iterator_size;
     thiz.set  = g_dvector_iterator_set;
     return thiz;
 }
 
+GIterator g_vector_iterator() {
+    return g_dvector_iterator_init(NULL, 0, 1);
+}
+
 typedef struct _GDVector  GDVector;
 
 struct _GDVector {
-    GVector       _this;
+    GVector       thiz;
     gpointer      first;
     gpointer      last;
     gpointer      end;
@@ -122,354 +127,365 @@ struct _GDVector {
 // |<---------------capacity()---------->|
 
 static void g_vector_clear(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    _gthis->last = _gthis->first;
+    GDVector *gthiz = (GDVector*)_this;
+    gthiz->last = gthiz->first;
 }
 
 static void g_vector_free(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (_gthis->first == NULL) {
-        free(_gthis);
+    GDVector *gthiz = (GDVector*)_this;
+    if (gthiz->first == NULL) {
+        free(gthiz);
         return;
     }
-    free(_gthis->first);
-    _gthis->first = NULL;
-    _gthis->last  = NULL;
-    _gthis->end   = NULL;
-    free(_gthis);
-}
-
-static void g_vector_push_back(GVector *_this, gpointer data) {
-    GDVector *_gthis = (GDVector*)_this;
-    _this->fill(_this, _gthis->last, 1, data);
-}
-
-static void g_vector_push_front(GVector *_this, gpointer data) {
-    GDVector *_gthis = (GDVector*)_this;
-    _this->fill(_this, _gthis->first, 1, data);
-}
-
-static gpointer g_vector_remove(GVector *_this, gpointer position) {
-    GDVector *_gthis = (GDVector*)_this;
-    return _this->erase(_this, position, position + _gthis->csize);
-}
-
-static void g_vector_pop_back(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    guint size = _gthis->last - _gthis->first;
-    if (size < _gthis->csize)
-        return;
-    _gthis->last = _gthis->last - _gthis->csize;
-}
-
-static void g_vector_pop_front(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    gpointer first;
-    guint size = _gthis->last - _gthis->first;
-    if (size < _gthis->csize)
-        return;
-    for (first = _gthis->first;first < _gthis->last; first = first + _gthis->csize)
-        memcpy(first, first + _gthis->csize, _gthis->csize);
-    _gthis->last = _gthis->last - _gthis->csize;
-}
-
-static gpointer g_vector_back(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    gpointer gptr = NULL;
-    guint size = _gthis->last - _gthis->first;
-    if (size < _gthis->csize)
-        return _gthis->last;
-    gptr = _gthis->last - _gthis->csize;
-    return gptr;
-}
-
-static gpointer g_vector_front(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (_gthis->first == _gthis->last)
-        return _gthis->last;
-    return _gthis->first;
-}
-
-static gpointer g_vector_begin(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    return _gthis->first;
-}
-
-static gpointer g_vector_end(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    return _gthis->last;
-}
-
-static gpointer  g_vector_backward(GVector *_this, gpointer position, gint n) {
-    GDVector *_gthis = (GDVector*)_this;
-    position = position + n * _gthis->csize;
-    return position;
-}
-
-static gpointer g_vector_rbegin(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    gpointer gptr = _gthis->last - _gthis->csize;
-    return gptr;
-}
-
-static gpointer g_vector_rend(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    gpointer gptr = _gthis->first - _gthis->csize;
-    return gptr;
-}
-
-static gpointer g_vector_forward(GVector *_this, gpointer position, gint n) {
-    GDVector *_gthis = (GDVector*)_this;
-    position = position - n * _gthis->csize;
-    return position;
-}
-
-static void g_vector_reverse(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (_gthis->first == _gthis->last)
-        return;
-    gpointer first = _gthis->first, last = _gthis->last - _gthis->csize;
-    gpointer gptr  = malloc(_gthis->csize);
-    for (; first < last; first = first + _gthis->csize, last = last - _gthis->csize) {
-        memcpy(gptr,  first, _gthis->csize);
-        memcpy(first, last,  _gthis->csize);
-        memcpy(last,  gptr,  _gthis->csize);
-    }
-    free(gptr);
-}
-
-static gpointer  g_vector_at(GVector *_this, guint index) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (index >= _this->size(_this))
-        return _gthis->last;
-    return (_gthis->first + index * _gthis->csize);
-}
-
-static void g_vector_fill(GVector *_this, gpointer position, guint n, gpointer data) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (position == NULL || data == NULL || n <= 0)
-        return;
-    if (position < _gthis->first || position > _gthis->last)
-        return;
-    guint newsize = n * _gthis->csize, size = _gthis->last - _gthis->first, capacity = _gthis->end - _gthis->first;
-    if (newsize + size > capacity) {
-        gpointer gptr = malloc(2 * (newsize + size));
-        guint psize = position - _gthis->first;
-        if (psize > 0)
-            memcpy(gptr, _gthis->first, psize);
-        for (guint step = 0; step < newsize; step = step + _gthis->csize)
-            memcpy(gptr + psize + step, data, _gthis->csize);
-        if (size > psize)
-            memcpy(gptr + psize + newsize, position, size - psize);
-        free(_gthis->first);
-        _gthis->first = gptr;
-        _gthis->last  = gptr + newsize + size;
-        _gthis->end   = gptr + 2 * (newsize + size);
-        return;
-    }
-    gpointer gptr = _gthis->last - _gthis->csize;
-    for ( ;gptr >= position; gptr = gptr - _gthis->csize) {
-        memcpy(gptr + newsize, gptr, _gthis->csize);
-    }
-
-    for (guint step = 0; step < newsize; step = step + _gthis->csize)
-        memcpy(position + step, data, _gthis->csize);
-    _gthis->last = _gthis->last + newsize;
+    free(gthiz->first);
+    gthiz->first = NULL;
+    gthiz->last  = NULL;
+    gthiz->end   = NULL;
+    free(gthiz);
 }
 
 static guint  g_vector_empty(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (_gthis->first == _gthis->last)
+    GDVector *gthiz = (GDVector*)_this;
+    if (gthiz->first == gthiz->last)
         return 1;
     return 0;
 }
 
 static guint  g_vector_size(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    guint size = _gthis->last - _gthis->first;
-    size = (size / _gthis->csize);
+    GDVector *gthiz = (GDVector*)_this;
+    guint size = gthiz->last - gthiz->first;
+    size = (size / gthiz->csize);
     return size;
 }
 
-static gpointer g_vector_erase(GVector *_this, gpointer first, gpointer last) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (first == NULL || last == NULL || first >= last)
-        return _gthis->first;
-    if (first >= last)
-        return _gthis->first;
-    if (first < _gthis->first)
-        first = _gthis->first;
-    if (last > _gthis->last)
-        last = _gthis->last;
-    for (;last < _gthis->last; first = first + _gthis->csize, last = last + _gthis->csize)
-        memcpy(first, last, _gthis->csize);
-    _gthis->last = first;
-    return first;
-}
-
-static gpointer  g_vector_data(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    return _gthis->first;
+static guint g_vector_capacity(GVector *_this) {
+    GDVector *gthiz = (GDVector*)_this;
+    guint capacity = gthiz->end - gthiz->first;
+    capacity = (capacity / gthiz->csize);
+    return capacity;
 }
 
 static void g_vector_resize(GVector *_this, guint n, gpointer data) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (_gthis->first == NULL) {
-        _gthis->first = malloc(n * _gthis->csize);
-        _gthis->end  = _gthis->first + n * _gthis->csize;
+    GDVector *gthiz = (GDVector*)_this;
+    if (gthiz->first == NULL) {
+        gthiz->first = malloc(n * gthiz->csize);
+        gthiz->end  = gthiz->first + n * gthiz->csize;
     } else {
         if (n > _this->capacity(_this)) {
-            free(_gthis->first);
-            _gthis->first = malloc(n * _gthis->csize);
-            _gthis->end  = _gthis->first + n * _gthis->csize;
+            free(gthiz->first);
+            gthiz->first = malloc(n * gthiz->csize);
+            gthiz->end  = gthiz->first + n * gthiz->csize;
         }
     }
-    _gthis->last = _gthis->first;
-    for (guint i = 0; i < n; ++i, _gthis->last += _gthis->csize) {
-        memcpy(_gthis->last, data, _gthis->csize);
+    gthiz->last = gthiz->first;
+    for (guint i = 0; i < n; ++i, gthiz->last += gthiz->csize) {
+        memcpy(gthiz->last, data, gthiz->csize);
     }
 }
 
 static void g_vector_reserve(GVector *_this, guint capacity) {
-    GDVector *_gthis = (GDVector*)_this;
+    GDVector *gthiz = (GDVector*)_this;
     if (capacity <= 0)
         return;
-    capacity = capacity * _gthis->csize;
-    guint size = _gthis->end - _gthis->first;
+    capacity = capacity * gthiz->csize;
+    guint size = gthiz->end - gthiz->first;
     if (size == capacity)
         return;
     gpointer gptr = malloc(capacity);
-    size = _gthis->last - _gthis->first;
+    size = gthiz->last - gthiz->first;
     if (size > capacity)
         size = capacity;
     if (size > 0)
-        memcpy(gptr, _gthis->first, size);
-    free(_gthis->first);
-    _gthis->first = gptr;
-    _gthis->last  = gptr + size;
-    _gthis->end   = gptr + capacity;
+        memcpy(gptr, gthiz->first, size);
+    free(gthiz->first);
+    gthiz->first = gptr;
+    gthiz->last  = gptr + size;
+    gthiz->end   = gptr + capacity;
 }
 
-static void g_vector_assign(GVector *_this, gpointer first, gpointer last) {
-    GDVector *_gthis = (GDVector*)_this;
+
+static gpointer g_vector_back(GVector *_this) {
+    GDVector *gthiz = (GDVector*)_this;
+    gpointer gptr = NULL;
+    guint size = gthiz->last - gthiz->first;
+    if (size < gthiz->csize)
+        return gthiz->last;
+    gptr = gthiz->last - gthiz->csize;
+    return gptr;
+}
+
+static gpointer g_vector_front(GVector *_this) {
+    GDVector *gthiz = (GDVector*)_this;
+    if (gthiz->first == gthiz->last)
+        return gthiz->last;
+    return gthiz->first;
+}
+
+static gpointer  g_vector_at(GVector *thiz, guint index) {
+    GDVector *gthiz = (GDVector*)thiz;
+    if (index >= thiz->size(thiz))
+        return gthiz->last;
+    return (gthiz->first + index * gthiz->csize);
+}
+
+static gpointer  g_vector_data(GVector *thiz) {
+    GDVector *gthiz = (GDVector*)thiz;
+    return gthiz->first;
+}
+
+
+
+static GIterator g_vector_begin(GVector *thiz) {
+    GDVector *gthiz = (GDVector*)thiz;
+    GIterator iterator = g_dvector_iterator_init(gthiz->first, gthiz->csize, 1);
+    return iterator;
+}
+
+static GIterator g_vector_end(GVector *thiz) {
+    GDVector *gthiz = (GDVector*)thiz;
+    GIterator iterator = g_dvector_iterator_init(gthiz->last, gthiz->csize, 1);
+    return iterator;
+}
+
+static GIterator g_vector_rbegin(GVector *thiz) {
+    GDVector *gthiz = (GDVector*)thiz;
+    GIterator iterator = g_dvector_iterator_init(gthiz->last - gthiz->csize, gthiz->csize, 0);
+    return iterator;
+}
+
+static GIterator g_vector_rend(GVector *thiz) {
+    GDVector *gthiz = (GDVector*)thiz;
+    GIterator iterator = g_dvector_iterator_init(gthiz->first - gthiz->csize, gthiz->csize, 0);
+    return iterator;
+}
+
+
+
+static void g_vector_push_back(GVector *_this, gpointer data) {
+    GDVector *gthiz = (GDVector*)_this;
+    GIterator iterator = g_dvector_iterator_init(gthiz->last, gthiz->csize, 1);
+    _this->fill(_this, iterator, 1, data);
+}
+
+static void g_vector_push_front(GVector *_this, gpointer data) {
+    GDVector *gthiz = (GDVector*)_this;
+    GIterator iterator = g_dvector_iterator_init(gthiz->first, gthiz->csize, 1);
+    _this->fill(_this, iterator, 1, data);
+}
+
+static void g_vector_pop_back(GVector *_this) {
+    GDVector *gthiz = (GDVector*)_this;
+    guint size = gthiz->last - gthiz->first;
+    if (size < gthiz->csize)
+        return;
+    gthiz->last = gthiz->last - gthiz->csize;
+}
+
+static void g_vector_pop_front(GVector *_this) {
+    GDVector *gthiz = (GDVector*)_this;
+    gpointer first;
+    guint size = gthiz->last - gthiz->first;
+    if (size < gthiz->csize)
+        return;
+    for (first = gthiz->first;first < gthiz->last; first = first + gthiz->csize)
+        memcpy(first, first + gthiz->csize, gthiz->csize);
+    gthiz->last = gthiz->last - gthiz->csize;
+}
+
+static GIterator g_vector_erase(GVector *thiz, GIterator itfirst, GIterator itlast) {
+    GDVector *gthiz = (GDVector*)thiz;
+    gpointer first = itfirst.data(&itfirst), last = itlast.data(&itlast);
+    if (first == NULL || last == NULL || first >= last)
+        return itfirst;
+    if (first >= last)
+        return itfirst;
+    if (first < gthiz->first)
+        first = gthiz->first;
+    if (last > gthiz->last)
+        last = gthiz->last;
+    for (;last < gthiz->last; first = first + gthiz->csize, last = last + gthiz->csize)
+        memcpy(first, last, gthiz->csize);
+    gthiz->last = first;
+    itfirst.set(&itfirst, first, gthiz->csize);
+    return itfirst;
+}
+
+static GIterator g_vector_remove(GVector *thiz, GIterator position) {
+    GDVector *gthiz = (GDVector*)thiz;
+    GIterator first = position, last = position;
+    last.set(&last, position.data(&position) + gthiz->csize, gthiz->csize);
+    return thiz->erase(thiz, first, last);
+}
+
+
+
+
+static void g_vector_assign(GVector *thiz, GIterator itfirst, GIterator itlast) {
+    GDVector *gthiz = (GDVector*)thiz;
+    gpointer first = itfirst.data(&itfirst), last = itlast.data(&itlast);
     if (first == NULL || last == NULL || first >= last)
         return;
     guint size = (last - first);
 
-    if (_gthis->first == NULL) {
-        _gthis->first = malloc(size);
-        _gthis->end  = _gthis->first + size;
+    if (gthiz->first == NULL) {
+        gthiz->first = malloc(size);
+        gthiz->end  = gthiz->first + size;
     } else {
-        if (size > (_gthis->end - _gthis->first)) {
-            free(_gthis->first);
-            _gthis->first = malloc(size);
-            _gthis->end  = _gthis->first + size;
+        if (size > (gthiz->end - gthiz->first)) {
+            free(gthiz->first);
+            gthiz->first = malloc(size);
+            gthiz->end  = gthiz->first + size;
         }
     }
 
-    _gthis->last = _gthis->first + size;
-    memcpy(_gthis->first, first, size);
+    gthiz->last = gthiz->first + size;
+    memcpy(gthiz->first, first, size);
 }
 
-static void g_vector_insert(GVector *_this, gpointer position, gpointer first, gpointer last) {
-    GDVector *_gthis = (GDVector*)_this;
-    if (position == NULL || first == NULL || last == NULL)
+static void g_vector_fill(GVector *thiz, GIterator itposition, guint n, gpointer data) {
+    GDVector *gthiz = (GDVector*)thiz;
+    gpointer position = itposition.data(&itposition);
+    if (position == NULL || data == NULL || n <= 0)
         return;
-    if (position < _gthis->first || position > _gthis->last || first >= last)
+    if (position < gthiz->first || position > gthiz->last)
         return;
-    guint newsize = last - first, size = _gthis->last - _gthis->first, capacity = _gthis->end - _gthis->first;
+    guint newsize = n * gthiz->csize, size = gthiz->last - gthiz->first, capacity = gthiz->end - gthiz->first;
     if (newsize + size > capacity) {
         gpointer gptr = malloc(2 * (newsize + size));
-        guint psize = position - _gthis->first;
+        guint psize = position - gthiz->first;
         if (psize > 0)
-            memcpy(gptr, _gthis->first, psize);
+            memcpy(gptr, gthiz->first, psize);
+        for (guint step = 0; step < newsize; step = step + gthiz->csize)
+            memcpy(gptr + psize + step, data, gthiz->csize);
+        if (size > psize)
+            memcpy(gptr + psize + newsize, position, size - psize);
+        free(gthiz->first);
+        gthiz->first = gptr;
+        gthiz->last  = gptr + newsize + size;
+        gthiz->end   = gptr + 2 * (newsize + size);
+        return;
+    }
+    gpointer gptr = gthiz->last - gthiz->csize;
+    for ( ;gptr >= position; gptr = gptr - gthiz->csize) {
+        memcpy(gptr + newsize, gptr, gthiz->csize);
+    }
+
+    for (guint step = 0; step < newsize; step = step + gthiz->csize)
+        memcpy(position + step, data, gthiz->csize);
+    gthiz->last = gthiz->last + newsize;
+}
+
+static void g_vector_insert(GVector *thiz, GIterator itposition, GIterator itfirst, GIterator itlast) {
+    GDVector *gthiz = (GDVector*)thiz;
+    gpointer first = itfirst.data(&itfirst), last = itlast.data(&itlast), position = itposition.data(&itposition);
+    if (position == NULL || first == NULL || last == NULL)
+        return;
+    if (position < gthiz->first || position > gthiz->last || first >= last)
+        return;
+    guint newsize = last - first, size = gthiz->last - gthiz->first, capacity = gthiz->end - gthiz->first;
+    if (newsize + size > capacity) {
+        gpointer gptr = malloc(2 * (newsize + size));
+        guint psize = position - gthiz->first;
+        if (psize > 0)
+            memcpy(gptr, gthiz->first, psize);
         memcpy(gptr + psize, first, newsize);
         if (size > psize)
             memcpy(gptr + psize + newsize, position, size - psize);
-        free(_gthis->first);
-        _gthis->first = gptr;
-        _gthis->last  = gptr + newsize + size;
-        _gthis->end   = gptr + 2 * (newsize + size);
+        free(gthiz->first);
+        gthiz->first = gptr;
+        gthiz->last  = gptr + newsize + size;
+        gthiz->end   = gptr + 2 * (newsize + size);
         return;
     }
-    gpointer gptr = _gthis->last - _gthis->csize;
-    for ( ;gptr >= position; gptr = gptr - _gthis->csize) {
-        memcpy(gptr + newsize, gptr, _gthis->csize);
+    gpointer gptr = gthiz->last - gthiz->csize;
+    for ( ;gptr >= position; gptr = gptr - gthiz->csize) {
+        memcpy(gptr + newsize, gptr, gthiz->csize);
     }
     memcpy(position, first, newsize);
-    _gthis->last = _gthis->last + newsize;
+    gthiz->last = gthiz->last + newsize;
 }
 
-static    void g_vector_swap(GVector *_this, GVector *_that) {
+static void g_vector_reverse(GVector *thiz) {
+    GDVector *gthiz = (GDVector*)thiz;
+    if (gthiz->first == gthiz->last)
+        return;
+    gpointer first = gthiz->first, last = gthiz->last - gthiz->csize;
+    gpointer gptr  = malloc(gthiz->csize);
+    for (; first < last; first = first + gthiz->csize, last = last - gthiz->csize) {
+        memcpy(gptr,  first, gthiz->csize);
+        memcpy(first, last,  gthiz->csize);
+        memcpy(last,  gptr,  gthiz->csize);
+    }
+    free(gptr);
+}
+
+static    void g_vector_swap(GVector *thiz, GVector *that) {
     gpointer gptr = NULL;
-    GDVector *_gthis = (GDVector*) _this, *_gthat = (GDVector*)_that;
-    if (_that == NULL) {
+    GDVector *gthiz = (GDVector*) thiz, *gthat = (GDVector*)that;
+    if (that == NULL) {
         return;
     }
-    gptr = _gthis->first;
-    _gthis->first = _gthat->first;
-    _gthat->first = gptr;
+    gptr = gthiz->first;
+    gthiz->first = gthat->first;
+    gthat->first = gptr;
 
-    gptr = _gthis->last;
-    _gthis->last = _gthat->last;
-    _gthat->last = gptr;
+    gptr = gthiz->last;
+    gthiz->last = gthat->last;
+    gthat->last = gptr;
 
-    gptr = _gthis->end;
-    _gthis->end = _gthat->end;
-    _gthat->end = gptr;
+    gptr = gthiz->end;
+    gthiz->end = gthat->end;
+    gthat->end = gptr;
 
-    guint c = _gthis->csize;
-    _gthis->csize = _gthat->csize;
-    _gthat->csize = c;
+    guint c = gthiz->csize;
+    gthiz->csize = gthat->csize;
+    gthat->csize = c;
 }
 
-static guint g_vector_capacity(GVector *_this) {
-    GDVector *_gthis = (GDVector*)_this;
-    guint capacity = _gthis->end - _gthis->first;
-    capacity = (capacity / _gthis->csize);
-    return capacity;
-}
 
 GVector* g_vector_alloc(guint n, guint c) {//vector unit size
-    GDVector* _gthis = NULL;
-    GVector*  _this  = NULL;
+    GDVector* gthiz = NULL;
+    GVector*  thiz  = NULL;
     if (n <= 0 || c <= 0) {
-        return _this;
+        return thiz;
     }
-    _gthis = (GDVector*) malloc(sizeof(GDVector));
-    _gthis->first = malloc(n * c);
-    _gthis->last  = _gthis->first;
-    _gthis->end   = _gthis->first + n * c;
-    _gthis->csize = c;// unit size > 0
+    gthiz = (GDVector*) malloc(sizeof(GDVector));
+    gthiz->first = malloc(n * c);
+    gthiz->last  = gthiz->first;
+    gthiz->end   = gthiz->first + n * c;
+    gthiz->csize = c;// unit size > 0
 
-    _this     = &(_gthis->_this);
-    _this->clear  = g_vector_clear;// but not free _this
-    _this->free   = g_vector_free;
-    _this->push_back  = g_vector_push_back;
-    _this->push_front = g_vector_push_front;
-    _this->remove     = g_vector_remove;
-    _this->pop_back   = g_vector_pop_back;
-    _this->pop_front  = g_vector_pop_front;
-    _this->back  = g_vector_back;
-    _this->front = g_vector_front;
-    _this->begin = g_vector_begin;
-    _this->end    = g_vector_end;
-    _this->backward   = g_vector_backward;
-    _this->rbegin = g_vector_rbegin;
-    _this->rend   = g_vector_rend;
-    _this->forward   = g_vector_forward;
-    _this->reverse = g_vector_reverse;
-    _this->at      = g_vector_at;
-    _this->fill    = g_vector_fill;
-    _this->empty   = g_vector_empty;
-    _this->size    = g_vector_size;
-    _this->erase   = g_vector_erase;
-    _this->data    = g_vector_data;
-    _this->resize = g_vector_resize;
-    _this->reserve = g_vector_reserve;
-    _this->assign = g_vector_assign;
-    _this->insert   = g_vector_insert;
-    _this->capacity = g_vector_capacity;
-    _this->swap     = g_vector_swap;
-    return _this;
+    thiz     = &(gthiz->thiz);
+    thiz->clear  = g_vector_clear;// but not free thiz
+    thiz->free   = g_vector_free;
+
+    thiz->empty    = g_vector_empty;
+    thiz->size     = g_vector_size;
+    thiz->capacity = g_vector_capacity;
+    thiz->resize   = g_vector_resize;
+    thiz->reserve  = g_vector_reserve;
+
+    thiz->back     = g_vector_back;
+    thiz->front    = g_vector_front;
+    thiz->at       = g_vector_at;
+    thiz->data     = g_vector_data;
+
+    thiz->begin    = g_vector_begin;
+    thiz->end      = g_vector_end;
+    thiz->rbegin   = g_vector_rbegin;
+    thiz->rend     = g_vector_rend;
+
+    thiz->push_back  = g_vector_push_back;
+    thiz->push_front = g_vector_push_front;
+    thiz->pop_back   = g_vector_pop_back;
+    thiz->pop_front  = g_vector_pop_front;
+    thiz->erase      = g_vector_erase;
+    thiz->remove     = g_vector_remove;
+
+    thiz->assign     = g_vector_assign;
+    thiz->fill       = g_vector_fill;
+    thiz->insert     = g_vector_insert;
+    thiz->reverse    = g_vector_reverse;
+    thiz->swap       = g_vector_swap;
+    return thiz;
 }

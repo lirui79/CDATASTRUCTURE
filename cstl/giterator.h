@@ -12,11 +12,11 @@ typedef struct  _GIterator     GIterator;
 struct _GIterator {
     GIterator        (*next)(GIterator *thiz);
     GIterator        (*prev)(GIterator *thiz);
-    GIterator        (*next_n)(GIterator *thiz, guint n);
-    GIterator        (*prev_n)(GIterator *thiz, guint n);
+    GIterator        (*forward)(GIterator *thiz, guint n);// next n
+    GIterator        (*backward)(GIterator *thiz, guint n);// prev n
 
-    int              (*equal)(GIterator *thiz, GIterator that);
-    int              (*not_equal)(GIterator *thiz, GIterator that);
+    int              (*equal)(GIterator *thiz, GIterator *that);
+    int              (*not_equal)(GIterator *thiz, GIterator *that);
 
     int              (*less)(GIterator *thiz, GIterator *that);
     int              (*less_equal)(GIterator *thiz, GIterator *that);
@@ -25,20 +25,21 @@ struct _GIterator {
     int              (*greater_equal)(GIterator *thiz, GIterator *that);
 
 
-    gpointer         (*get)(GIterator *thiz);
+    gpointer         (*data)(GIterator *thiz);
     guint            (*size)(GIterator *thiz);
     GIterator        (*set)(GIterator *thiz, gpointer data, guint sz);
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+    guint            dir;
     union {
        struct {// vector list
-           gpointer    *data;
-           guint        dsize;
+           gpointer     itdata;
+           guint        itsize;
        };
 
 
-    };
+   };
 };
 
 

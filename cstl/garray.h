@@ -3,6 +3,7 @@
 
 
 #include "gtypes.h"
+#include "giterator.h"
 
 
 G_BEGIN_DECLS
@@ -11,39 +12,38 @@ G_BEGIN_DECLS
 typedef struct _GArray     GArray;
 
 struct _GArray {
-    void     (*free)(GArray *_this);  // free _this
+    void     (*free)(GArray *thiz);  // free thiz
 
-    guint    (*size)(GArray *_this);
+    guint    (*size)(GArray *thiz);
 
-    gpointer (*back)(GArray *_this);
+    gpointer (*back)(GArray *thiz);
 
-    gpointer (*front)(GArray *_this);
+    gpointer (*front)(GArray *thiz);
 
-    gpointer (*begin)(GArray *_this);
+    gpointer (*at)(GArray *thiz, guint index);
 
-    gpointer (*end)(GArray *_this);
+    gpointer (*data)(GArray *thiz);
 
-    gpointer (*backward)(GArray *_this, gpointer position, gint n);
 
-    gpointer (*rbegin)(GArray *_this);
+    GIterator (*begin)(GArray *thiz);
 
-    gpointer (*rend)(GArray *_this);
+    GIterator (*end)(GArray *thiz);
 
-    gpointer (*forward)(GArray *_this, gpointer position, gint n);
+    GIterator (*rbegin)(GArray *thiz);
 
-    void     (*reverse)(GArray *_this);
+    GIterator (*rend)(GArray *thiz);
 
-    gpointer (*at)(GArray *_this, guint index);
 
-    void     (*fill)(GArray *_this, gpointer data);
+    void     (*reverse)(GArray *thiz);
 
-    gpointer (*data)(GArray *_this);
+    void     (*fill)(GArray *thiz, gpointer data);
 
-    void     (*assign)(GArray *_this, gpointer first, gpointer last);
+    void     (*assign)(GArray *thiz, GIterator first, GIterator last);
 
-    void     (*swap)(GArray *_this, GArray *_that);
+    void     (*swap)(GArray *thiz, GArray *that);
 };
 
+GIterator g_array_iterator();
 
 GArray* g_array_alloc(guint n, guint c); //n - count   c - ElementSize
 
