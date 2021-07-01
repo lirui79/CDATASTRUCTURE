@@ -41,7 +41,7 @@ static void print_rbegintorend(GList *list) {
 }
 
 static void test_list_nodes(GList *list) {
-    GReference val = list->front(list);
+    GType val = list->front(list);
     Msg_t *msg =  val.data, *msg1 = NULL;
     int size;
     print_Msg_t(msg);
@@ -100,7 +100,7 @@ static void test_list_nodes(GList *list) {
 }
 
 static void test_list_create_data(GList *list, GList *list1) {
-    GReference val;
+    GType val;
     Msg_t *msg = NULL;
     int headSize = sizeof(unsigned int) +  sizeof(unsigned long) +  sizeof(int);
     for (int i = 0; i < 13; ++i) {

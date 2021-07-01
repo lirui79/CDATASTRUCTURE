@@ -31,9 +31,9 @@ typedef void*   gpointer;
 typedef const void*   gconstpointer;
 
 
-typedef struct  _GReference    GReference;
+typedef struct  _GType    GType;
 
-struct  _GReference {
+struct  _GType {
     gpointer     data;
     guint        size;
 };

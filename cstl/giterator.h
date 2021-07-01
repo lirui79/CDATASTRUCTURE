@@ -27,16 +27,16 @@ struct _GIterator {
     int              (*greater_equal)(GIterator *thiz, GIterator *that);
 
 
-    GReference       (*get)(GIterator *thiz);
-    GIterator        (*set)(GIterator *thiz, GReference val);
+    GType            (*get)(GIterator *thiz);
+    GIterator        (*set)(GIterator *thiz, GType val);
 
-    GReference       (*data)(GIterator *thiz);
+    GType            (*data)(GIterator *thiz);
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
     guint            dir;
     union {
-       GReference    refer;// vector list
+       GType         idata;// vector list
 
    };
 };

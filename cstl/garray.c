@@ -31,31 +31,31 @@ static guint  g_array_size(GArray *thiz) {
 }
 
 
-static GReference g_array_back(GArray *thiz) {
+static GType g_array_back(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GReference ref = {gthiz->last - gthiz->size, gthiz->size};
-    return ref;
+    GType val = {gthiz->last - gthiz->size, gthiz->size};
+    return val;
 }
 
-static GReference g_array_front(GArray *thiz) {
+static GType g_array_front(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GReference ref = {gthiz->first, gthiz->size};
-    return ref;
+    GType val = {gthiz->first, gthiz->size};
+    return val;
 }
 
-static GReference g_array_at(GArray *thiz, guint index) {
+static GType g_array_at(GArray *thiz, guint index) {
     GDArray *gthiz = (GDArray*)thiz;
-    GReference ref = {gthiz->last, gthiz->size};
+    GType val = {gthiz->last, gthiz->size};
     if (index >= thiz->size(thiz))
-        return ref;
-    ref.data =(gthiz->first + index * gthiz->size);
-    return ref;
+        return val;
+    val.data =(gthiz->first + index * gthiz->size);
+    return val;
 }
 
-static GReference g_array_data(GArray *thiz) {
+static GType g_array_data(GArray *thiz) {
     GDArray *gthiz = (GDArray*) thiz;
-    GReference ref = {gthiz->first, gthiz->size};
-    return ref;
+    GType val = {gthiz->first, gthiz->size};
+    return val;
 }
 
 
@@ -98,7 +98,7 @@ static void g_array_reverse(GArray *thiz) {
     free(gptr);
 }
 
-static void g_array_fill(GArray *thiz, GReference val) {
+static void g_array_fill(GArray *thiz, GType val) {
     GDArray *gthiz = (GDArray*) thiz;
     gpointer gptr = NULL;
     for(gptr = gthiz->first; gptr < gthiz->last; gptr += gthiz->size) {

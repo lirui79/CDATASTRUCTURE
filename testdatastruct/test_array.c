@@ -31,7 +31,7 @@ static void print_array_int_r(GArray *iarray) {
 static void test_array_int() {
     GArray *iarray = g_array_alloc(32,sizeof(int));
     int value = 0x33;
-    GReference ref = {&value, sizeof(int)};
+    GType ref = {&value, sizeof(int)};
     iarray->fill(iarray, ref);
     print_array_int(iarray);
     print_array_int_r(iarray);

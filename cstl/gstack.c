@@ -27,12 +27,12 @@ static    void g_stack_clear(GStack *thiz) {
     gthiz->last  = gthiz->first;
 }
 
-static    GReference g_stack_top(GStack *thiz) {
+static    GType g_stack_top(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
-    GReference ref = {gthiz->first, gthiz->size};
+    GType val = {gthiz->first, gthiz->size};
     if (gthiz->last > gthiz->first)
-        ref.data = gthiz->last - gthiz->size;
-    return ref;
+        val.data = gthiz->last - gthiz->size;
+    return val;
 }
 
 static    guint  g_stack_size(GStack *thiz) {
@@ -49,7 +49,7 @@ static    guint  g_stack_empty(GStack *thiz) {
     return 0;
 }
 
-static    void g_stack_push(GStack *thiz, GReference val) {
+static    void g_stack_push(GStack *thiz, GType val) {
     GDStack *gthiz = (GDStack*) thiz;
     if (gthiz->end > gthiz->last) {
         memcpy(gthiz->last, val.data, gthiz->size);

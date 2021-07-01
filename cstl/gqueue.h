@@ -20,11 +20,11 @@ struct _GQueue {
 
     guint     (*empty)(GQueue *thiz);
 
-    GReference  (*front)(GQueue *thiz);
+    GType  (*front)(GQueue *thiz);
 
-    GReference  (*back)(GQueue *thiz);
+    GType  (*back)(GQueue *thiz);
 
-    void      (*push)(GQueue *thiz, GReference val);
+    void      (*push)(GQueue *thiz, GType val);
 
     void      (*pop)(GQueue *thiz);
 

@@ -13,7 +13,7 @@ typedef struct  _GNode     GNode;
 struct _GNode {
     GNode             *next;
     GNode             *prev;
-    GReference         refer;
+    GType              data;
 };
 
 static GNode*          g_node_next(GNode  *thiz) {
@@ -24,91 +24,91 @@ static GNode*          g_node_prev(GNode  *thiz) {
     return  thiz->prev;
 }
 
-static GReference      g_node_data(GNode  *thiz) {
-    return thiz->refer;
+static GType      g_node_data(GNode  *thiz) {
+    return thiz->data;
 }
 
 
 
 static GIterator       g_list_iterator_next(GIterator *thiz) {
-    GNode *node  = (GNode*) thiz->refer.data;
-    thiz->refer.data = node->next;
+    GNode *node  = (GNode*) thiz->idata.data;
+    thiz->idata.data = node->next;
     return thiz[0];
 }
 
 static GIterator       g_list_iterator_prev(GIterator *thiz) {
-    GNode *node  = (GNode*) thiz->refer.data;
-    thiz->refer.data = node->prev;
+    GNode *node  = (GNode*) thiz->idata.data;
+    thiz->idata.data = node->prev;
     return thiz[0];
 }
 
 static GIterator       g_list_iterator_forward(GIterator *thiz, guint n) {
-    GNode *node  = (GNode*) thiz->refer.data;
+    GNode *node  = (GNode*) thiz->idata.data;
     while(n-- > 0) {
         node         = node->next;
-        thiz->refer.data = node;
+        thiz->idata.data = node;
     }
     return thiz[0];
 }
 
 static GIterator       g_list_iterator_backward(GIterator *thiz, guint n) {
-    GNode *node  = (GNode*) thiz->refer.data;
+    GNode *node  = (GNode*) thiz->idata.data;
     while(n-- > 0) {
         node         = node->prev;
-        thiz->refer.data = node;
+        thiz->idata.data = node;
     }
     return thiz[0];
 }
 
 
 static int              g_list_iterator_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data == that->refer.data)
+    if (thiz->idata.data == that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_list_iterator_not_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data == that->refer.data)
+    if (thiz->idata.data == that->idata.data)
         return 0;
     return 1;
 }
 
 static int              g_list_iterator_less(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data < that->refer.data)
+    if (thiz->idata.data < that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_list_iterator_less_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data <= that->refer.data)
+    if (thiz->idata.data <= that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_list_iterator_greater(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data > that->refer.data)
+    if (thiz->idata.data > that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_list_iterator_greater_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data >= that->refer.data)
+    if (thiz->idata.data >= that->idata.data)
         return 1;
     return 0;
 }
 
-static GReference       g_list_iterator_get(GIterator *thiz) {
-    return thiz->refer;
+static GType       g_list_iterator_get(GIterator *thiz) {
+    return thiz->idata;
 }
 
-static GIterator        g_list_iterator_set(GIterator *thiz, GReference val) {
-    thiz->refer = val;
+static GIterator        g_list_iterator_set(GIterator *thiz, GType val) {
+    thiz->idata = val;
     return thiz[0];
 }
 
-static GReference       g_list_iterator_data(GIterator *thiz) {
-    GNode *node  = (GNode*) thiz->refer.data;
-    return node->refer;
+static GType       g_list_iterator_data(GIterator *thiz) {
+    GNode *node  = (GNode*) thiz->idata.data;
+    return node->data;
 }
 
 GIterator g_list_iterator(gpointer data, guint size, int dir) {
@@ -139,24 +139,14 @@ GIterator g_list_iterator(gpointer data, guint size, int dir) {
 
 
 static GNode*          g_node_init(GNode *thiz, gpointer data, guint size) {
+    GType     val = {data, size};
     thiz->next  = NULL;
     thiz->prev  = NULL;
-    thiz->refer.data  = data;
-    thiz->refer.size  = size;
+    thiz->data  = val;
     return thiz;
 }
 
-static GNode*          g_node_alloc_data(gpointer data, guint size) {
-    GNode *thiz = malloc(sizeof(GNode));
-    if(data == NULL || size <= 0) {
-        return g_node_init(thiz, NULL, 0);
-    }
-    gpointer newdata = malloc(size);
-    memcpy(newdata, data, size);
-    return g_node_init(thiz, newdata, size);
-}
-
-static GNode*          g_node_alloc(GReference val) {
+static GNode*          g_node_alloc(GType val) {
     GNode *thiz = malloc(sizeof(GNode));
     if(val.data == NULL || val.size <= 0) {
         return g_node_init(thiz, NULL, 0);
@@ -168,8 +158,8 @@ static GNode*          g_node_alloc(GReference val) {
 
 
 static void           g_node_free(GNode  *thiz) {
-    if (thiz->refer.data != NULL)
-        free(thiz->refer.data);
+    if (thiz->data.data != NULL)
+        free(thiz->data.data);
     free(thiz);
 }
 
@@ -194,6 +184,7 @@ struct _GDList {
 static   void  g_list_clear(GList *gthis) {
     GDList* thiz = (GDList*)gthis;
     GNode *node = NULL, *next = NULL;
+    GType     val = {NULL, 0};
     node = thiz->head.next;
     while (node != &(thiz->head)) {
         next = node->next;
@@ -202,8 +193,7 @@ static   void  g_list_clear(GList *gthis) {
     }
     thiz->head.next = &(thiz->head);
     thiz->head.prev = &(thiz->head);
-    thiz->head.refer.data = NULL;
-    thiz->head.refer.size = 0;
+    thiz->head.data = val;
     thiz->size      = 0;
 }
 
@@ -228,35 +218,35 @@ static   guint  g_list_size(GList *gthis) {
     return thiz->size;
 }
 
-static   GReference g_list_back(GList *gthis) {
+static   GType g_list_back(GList *gthis) {
     GDList* thiz = (GDList*)gthis;
     GNode *node = thiz->head.prev;// last node
-    return node->refer;
+    return node->data;
 }
 
-static   GReference g_list_front(GList *gthis) {
+static   GType g_list_front(GList *gthis) {
     GDList* thiz = (GDList*)gthis;
     GNode *node = thiz->head.next;// first node
-    return node->refer;
+    return node->data;
 }
 
-static   GReference  g_list_at(GList *gthis, guint index) {
+static   GType  g_list_at(GList *gthis, guint index) {
     GDList* thiz = (GDList*)gthis;
     GNode *node = NULL;
-    GReference ref = {node, 0};
+    GType value = {node, 0};
     if (index < 0)
-        return ref;
+        return value;
 
     node = thiz->head.next;
     while(node != &(thiz->head)) {
         if (index-- <= 0)
-            return node->refer;
+            return node->data;
         node = node->next;
     }
-    return ref;
+    return value;
 }
 
-static   GIterator    g_list_find(GList *gthis, GReference val) {
+static   GIterator    g_list_find(GList *gthis, GType val) {
     GNode *node = NULL;
     GDList* thiz = (GDList*)gthis;
     GIterator  iterator = g_list_iterator(&(thiz->head), sizeof(GNode), 1);
@@ -266,7 +256,7 @@ static   GIterator    g_list_find(GList *gthis, GReference val) {
 
     node = thiz->head.next;
     while(node != &(thiz->head)) {
-        if ((val.data != node->refer.data) && (memcmp(val.data, node->refer.data, val.size) != 0)) {
+        if ((val.data != node->data.data) && (memcmp(val.data, node->data.data, val.size) != 0)) {
             node = node->next;
             continue;
         }
@@ -281,7 +271,7 @@ static   GIterator    g_list_find(GList *gthis, GReference val) {
 
 
 
-static   void g_list_push_back(GList *gthis, GReference val) {
+static   void g_list_push_back(GList *gthis, GType val) {
     GDList* thiz = (GDList*)gthis;
     GNode *node = NULL, *prev = NULL;
     prev = thiz->head.prev;// last node
@@ -290,7 +280,7 @@ static   void g_list_push_back(GList *gthis, GReference val) {
     thiz->size = thiz->size + 1;
 }
 
-static   void g_list_push_front(GList *gthis, GReference val) {
+static   void g_list_push_front(GList *gthis, GType val) {
     GDList* thiz = (GDList*)gthis;
     GNode *node = NULL, *prev = NULL;
     prev = &(thiz->head);// head node
@@ -346,7 +336,7 @@ static   GIterator g_list_erase(GList *gthis, GIterator itfirst, GIterator itlas
 
 static   GIterator g_list_remove(GList *gthis, GIterator position) {
     GDList*   thiz = (GDList*)gthis;
-    GReference val = position.data(&position);
+    GType val = position.data(&position);
     GNode *node = NULL, *next = NULL, *prev = NULL;
     GIterator  iterator = g_list_iterator(&(thiz->head), sizeof(GNode), 1);
     GIterator  pos      = iterator;
@@ -411,7 +401,7 @@ static   void g_list_assign(GList *gthis, GIterator itfirst, GIterator itlast) {
     GNode     *newnode = NULL;
 
     while(node != last) {
-        newnode = g_node_alloc(node->refer);
+        newnode = g_node_alloc(node->data);
         prev = thiz->head.prev;// last node
         g_node_insert(prev, newnode);
         node = node->next;
@@ -419,7 +409,7 @@ static   void g_list_assign(GList *gthis, GIterator itfirst, GIterator itlast) {
     }
 }
 
-static   void g_list_fill(GList *gthis, GIterator position, guint n, GReference val) {
+static   void g_list_fill(GList *gthis, GIterator position, guint n, GType val) {
     GDList    *thiz = (GDList*)gthis;
     GNode     *node = (GNode*)position.get(&position).data, *newnode = NULL;
 
@@ -437,7 +427,7 @@ static   void g_list_insert(GList *gthis, GIterator position, GIterator itfirst,
     GNode     *newnode = NULL;
 
     while(node != last) {
-        newnode = g_node_alloc(node->refer);
+        newnode = g_node_alloc(node->data);
         g_node_insert(prev, newnode);
         node = node->next;
         prev = newnode;

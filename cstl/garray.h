@@ -16,13 +16,13 @@ struct _GArray {
 
     guint    (*size)(GArray *thiz);
 
-    GReference (*back)(GArray *thiz);
+    GType (*back)(GArray *thiz);
 
-    GReference (*front)(GArray *thiz);
+    GType (*front)(GArray *thiz);
 
-    GReference (*at)(GArray *thiz, guint index);
+    GType (*at)(GArray *thiz, guint index);
 
-    GReference (*data)(GArray *thiz);
+    GType (*data)(GArray *thiz);
 
 
     GIterator (*begin)(GArray *thiz);
@@ -36,7 +36,7 @@ struct _GArray {
 
     void     (*reverse)(GArray *thiz);
 
-    void     (*fill)(GArray *thiz, GReference val);
+    void     (*fill)(GArray *thiz, GType val);
 
     void     (*assign)(GArray *thiz, GIterator first, GIterator last);
 

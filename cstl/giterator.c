@@ -6,74 +6,74 @@
 
 
 static GIterator       g_default_iterator_next(GIterator *thiz) {
-    thiz->refer.data += thiz->refer.size;
+    thiz->idata.data += thiz->idata.size;
     return thiz[0];
 }
 
 static GIterator       g_default_iterator_prev(GIterator *thiz) {
-    thiz->refer.data -= thiz->refer.size;
+    thiz->idata.data -= thiz->idata.size;
     return thiz[0];
 }
 
 static GIterator       g_default_iterator_forward(GIterator *thiz, guint n) {
-    thiz->refer.data += n * thiz->refer.size;
+    thiz->idata.data += n * thiz->idata.size;
     return thiz[0];
 }
 
 static GIterator       g_default_iterator_backward(GIterator *thiz, guint n) {
-    thiz->refer.data -= n * thiz->refer.size;
+    thiz->idata.data -= n * thiz->idata.size;
     return thiz[0];
 }
 
 static int              g_default_iterator_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data == that->refer.data)
+    if (thiz->idata.data == that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_default_iterator_not_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data != that->refer.data)
+    if (thiz->idata.data != that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_default_iterator_less(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data < that->refer.data)
+    if (thiz->idata.data < that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_default_iterator_less_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data <= that->refer.data)
+    if (thiz->idata.data <= that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_default_iterator_greater(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data > that->refer.data)
+    if (thiz->idata.data > that->idata.data)
         return 1;
     return 0;
 }
 
 static int              g_default_iterator_greater_equal(GIterator *thiz, GIterator *that) {
-    if (thiz->refer.data >= that->refer.data)
+    if (thiz->idata.data >= that->idata.data)
         return 1;
     return 0;
 }
 
-static GReference         g_default_iterator_get(GIterator *thiz) {
-    return thiz->refer;
+static GType         g_default_iterator_get(GIterator *thiz) {
+    return thiz->idata;
 }
 
-static GIterator       g_default_iterator_set(GIterator *thiz, GReference val) {
-    thiz->refer = val;
+static GIterator       g_default_iterator_set(GIterator *thiz, GType val) {
+    thiz->idata = val;
     return thiz[0];
 }
 
 GIterator g_default_iterator(gpointer data, guint size, int dir) {
     GIterator        thiz  = {0};
-    thiz.refer.data  = data;
-    thiz.refer.size  = size;
+    GType            val = {data, size};
+    thiz.idata       = val;
     thiz.dir         = dir;
     if (dir > 0) {
         thiz.next  = g_default_iterator_next;
