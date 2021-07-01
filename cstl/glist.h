@@ -3,19 +3,11 @@
 
 
 #include "gtypes.h"
+#include "giterator.h"
 
 
 G_BEGIN_DECLS
 
-
-typedef struct  _GNode     GNode;
-
-struct _GNode {
-    GNode*       (*next)(GNode *thiz);
-    GNode*       (*prev)(GNode *thiz);
-    gpointer     (*data)(GNode *thiz);
-    guint        (*size)(GNode *thiz);
-};
 
 /////////////////////////////////////////////////
 
@@ -26,45 +18,55 @@ struct _GList {
 
     void   (*free)(GList *thiz);  // free node, and free data, free list
 
+
+
     guint  (*empty)(GList *thiz);
 
     guint  (*size)(GList *thiz);
 
-    GNode* (*back)(GList *thiz);
+    GReference (*back)(GList *thiz);
 
-    GNode* (*front)(GList *thiz);
+    GReference (*front)(GList *thiz);
 
-    GNode* (*begin)(GList *thiz);
+    GReference (*at)(GList *thiz, guint index);
 
-    GNode* (*end)(GList *thiz);
+    GIterator (*find)(GList *thiz, GReference val);
 
-    GNode* (*rbegin)(GList *thiz);
 
-    GNode* (*rend)(GList *thiz);
+    GIterator (*begin)(GList *thiz);
 
-    GNode* (*at)(GList *thiz, guint index);
+    GIterator (*end)(GList *thiz);
 
-    gint   (*find)(GList *thiz, gpointer data, guint size);
+    GIterator (*rbegin)(GList *thiz);
 
-    void   (*push_back)(GList *thiz, gpointer data, guint size);
+    GIterator (*rend)(GList *thiz);
 
-    void   (*push_front)(GList *thiz, gpointer data, guint size);
 
-    GNode* (*remove)(GList *thiz, gpointer data, guint size);// free node, but not free data
+    void   (*push_back)(GList *thiz, GReference val);
+
+    void   (*push_front)(GList *thiz, GReference val);
 
     void   (*pop_back)(GList *thiz);// free node, but not free data
 
     void   (*pop_front)(GList *thiz);// free node, but not free data
 
+    GIterator  (*erase)(GList *thiz, GIterator first, GIterator last);
+
+    GIterator  (*remove)(GList *thiz, GIterator position);//
+
+
+    void   (*assign)(GList *thiz, GIterator first, GIterator last);
+
+    void   (*fill)(GList *thiz, GIterator position, guint n, GReference val);
+
+    void   (*insert)(GList *thiz, GIterator position, GIterator first, GIterator last);
+
     void   (*reverse)(GList *thiz);
-
-    void   (*assign)(GList *thiz, const GList *that);
-
-    void   (*insert)(GList *thiz, guint index, gpointer data, guint size);
 
     void   (*swap)(GList *thiz, GList *that);
 };
 
+GIterator g_list_iterator(gpointer data, guint size, int dir);
 
 GList* g_list_alloc(); //1 -
 

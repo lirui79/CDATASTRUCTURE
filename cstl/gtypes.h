@@ -31,6 +31,14 @@ typedef void*   gpointer;
 typedef const void*   gconstpointer;
 
 
+typedef struct  _GReference    GReference;
+
+struct  _GReference {
+    gpointer     data;
+    guint        size;
+};
+
+
 G_END_DECLS
 
 

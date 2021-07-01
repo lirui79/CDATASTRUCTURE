@@ -98,25 +98,29 @@ static    guint  g_queue_empty(GQueue *thiz) {
     return 0;
 }
 
-static    gpointer g_queue_front(GQueue *thiz) {
+static    GReference g_queue_front(GQueue *thiz) {
     GDQueue* gthis = (GDQueue*) thiz;
     GDQNode *node = gthis->head.next;
+    GReference val = {node->data, node->size};
     if (node == &(gthis->head))
-        return NULL;
-    return g_node_data(node);
+        return val;
+    val.data = g_node_data(node);
+    return val;
 }
 
-static    gpointer g_queue_back(GQueue *thiz) {
+static    GReference g_queue_back(GQueue *thiz) {
     GDQueue* gthis = (GDQueue*) thiz;
     GDQNode *node = gthis->head.prev;
+    GReference val = {node->data, node->size};
     if (node == &(gthis->head))
-        return NULL;
-    return g_node_data(node);
+        return val;
+    val.data = g_node_data(node);
+    return val;
 }
 
-static    void    g_queue_push(GQueue *thiz, gpointer data, guint size) {
+static    void    g_queue_push(GQueue *thiz, GReference val) {
     GDQueue* gthis = (GDQueue*) thiz;
-    GDQNode *node  = g_node_alloc(data, size);
+    GDQNode *node  = g_node_alloc(val.data, val.size);
     GDQNode *prev  = gthis->head.prev;
     g_node_insert(prev, node);
     gthis->size    =  gthis->size + 1;

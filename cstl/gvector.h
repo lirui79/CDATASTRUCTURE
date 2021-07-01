@@ -24,19 +24,19 @@ struct _GVector {
 
     guint     (*capacity)(GVector *thiz);
 
-    void      (*resize)(GVector *thiz, guint n, gpointer data);
+    void      (*resize)(GVector *thiz, guint n, GReference val);
 
     void      (*reserve)(GVector *thiz, guint capacity);
 
 
 
-    gpointer  (*back)(GVector *thiz);
+    GReference  (*back)(GVector *thiz);
 
-    gpointer  (*front)(GVector *thiz);
+    GReference  (*front)(GVector *thiz);
 
-    gpointer  (*at)(GVector *thiz, guint index);
+    GReference  (*at)(GVector *thiz, guint index);
 
-    gpointer  (*data)(GVector *thiz);
+    GReference  (*data)(GVector *thiz);
 
 
 
@@ -50,9 +50,9 @@ struct _GVector {
 
 
 
-    void      (*push_back)(GVector *thiz, gpointer data);
+    void      (*push_back)(GVector *thiz, GReference val);
 
-    void      (*push_front)(GVector *thiz, gpointer data);
+    void      (*push_front)(GVector *thiz, GReference val);
 
     void      (*pop_back)(GVector *thiz);//
 
@@ -65,7 +65,7 @@ struct _GVector {
 
     void      (*assign)(GVector *thiz, GIterator first, GIterator last);
 
-    void      (*fill)(GVector *thiz, GIterator position, guint n, gpointer data);
+    void      (*fill)(GVector *thiz, GIterator position, guint n, GReference val);
 
     void      (*insert)(GVector *thiz, GIterator position, GIterator first, GIterator last);
 
@@ -74,7 +74,6 @@ struct _GVector {
     void      (*swap)(GVector *thiz, GVector *that);
 };
 
-GIterator g_vector_iterator();
 
 GVector* g_vector_alloc(guint n, guint c); //vector ElementSize
 

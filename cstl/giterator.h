@@ -6,6 +6,8 @@
 
 G_BEGIN_DECLS
 
+
+
 typedef struct  _GIterator     GIterator;
 
 
@@ -25,23 +27,22 @@ struct _GIterator {
     int              (*greater_equal)(GIterator *thiz, GIterator *that);
 
 
-    gpointer         (*data)(GIterator *thiz);
-    guint            (*size)(GIterator *thiz);
-    GIterator        (*set)(GIterator *thiz, gpointer data, guint sz);
+    GReference       (*get)(GIterator *thiz);
+    GIterator        (*set)(GIterator *thiz, GReference val);
+
+    GReference       (*data)(GIterator *thiz);
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
     guint            dir;
     union {
-       struct {// vector list
-           gpointer     itdata;
-           guint        itsize;
-       };
-
+       GReference    refer;// vector list
 
    };
 };
 
+
+GIterator g_default_iterator(gpointer data, guint size, int dir);
 
 
 G_END_DECLS

@@ -10,7 +10,7 @@ struct _GDStack {
     gpointer   first;
     gpointer   last;
     gpointer   end;
-    guint      csize;
+    guint      size;
 };
 
 static    void g_stack_free(GStack *thiz) {
@@ -27,18 +27,18 @@ static    void g_stack_clear(GStack *thiz) {
     gthiz->last  = gthiz->first;
 }
 
-static    gpointer g_stack_top(GStack *thiz) {
+static    GReference g_stack_top(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
-    gpointer gptr = NULL;
+    GReference ref = {gthiz->first, gthiz->size};
     if (gthiz->last > gthiz->first)
-        gptr = gthiz->last - gthiz->csize;
-    return gptr;
+        ref.data = gthiz->last - gthiz->size;
+    return ref;
 }
 
 static    guint  g_stack_size(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
     guint size = gthiz->last - gthiz->first;
-    size = size / gthiz->csize;
+    size = size / gthiz->size;
     return size;
 }
 
@@ -49,17 +49,17 @@ static    guint  g_stack_empty(GStack *thiz) {
     return 0;
 }
 
-static    void g_stack_push(GStack *thiz, gpointer data) {
+static    void g_stack_push(GStack *thiz, GReference val) {
     GDStack *gthiz = (GDStack*) thiz;
     if (gthiz->end > gthiz->last) {
-        memcpy(gthiz->last, data, gthiz->csize);
-        gthiz->last = gthiz->last + gthiz->csize;
+        memcpy(gthiz->last, val.data, gthiz->size);
+        gthiz->last = gthiz->last + gthiz->size;
     }
 }
 static    void g_stack_pop(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
     if (gthiz->last > gthiz->first)
-        gthiz->last = gthiz->last - gthiz->csize;
+        gthiz->last = gthiz->last - gthiz->size;
 }
 
 static    void g_stack_swap(GStack *thiz, GStack *that) {
@@ -80,9 +80,9 @@ static    void g_stack_swap(GStack *thiz, GStack *that) {
     gthiz->end = gthat->end;
     gthat->end = gptr;
 
-    guint c = gthiz->csize;
-    gthiz->csize = gthat->csize;
-    gthat->csize = c;
+    guint c = gthiz->size;
+    gthiz->size = gthat->size;
+    gthat->size = c;
     return;
 }
 
@@ -97,7 +97,7 @@ GStack* g_stack_alloc(guint n, guint c) { //n - count   c - ElementSize
     gthiz->first = malloc(n * c);
     gthiz->last  = gthiz->first;
     gthiz->end   = gthiz->first + n * c;
-    gthiz->csize = c;// unit size > 0
+    gthiz->size = c;// unit size > 0
 
     thiz        = &(gthiz->thiz);
     thiz->free  = g_stack_free;  // free thiz
