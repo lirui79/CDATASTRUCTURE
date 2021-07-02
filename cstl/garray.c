@@ -140,16 +140,16 @@ static void  g_array_swap(GArray *thiz, GArray *that) {
 }
 
 
-GArray* g_array_alloc(guint n, guint c) { //n - count   c - ElementSize
+GArray* g_array_alloc(guint cnt, guint size) { //n - count   c - ElementSize
     GDArray *gthiz = NULL;
     GArray  *thiz  = NULL;
-    if (n <= 0 || c <= 0) {
+    if (cnt <= 0 || size <= 0) {
         return thiz;
     }
     gthiz = malloc(sizeof(GDArray));
-    gthiz->first = malloc(n * c);
-    gthiz->last  = gthiz->first + n * c;
-    gthiz->size = c;// unit size > 0
+    gthiz->first = malloc(cnt * size);
+    gthiz->last  = gthiz->first + cnt * size;
+    gthiz->size = size;// unit size > 0
 
     thiz     = &(gthiz->thiz);
     thiz->free  = g_array_free;  // free thiz

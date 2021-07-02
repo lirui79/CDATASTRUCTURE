@@ -38,6 +38,9 @@
 		<Unit filename="../cstl/garray.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="../cstl/gdeque.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../cstl/gdeque.h">
 			<Option target="Debug" />
 		</Unit>

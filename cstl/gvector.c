@@ -199,10 +199,7 @@ static void g_vector_pop_front(GVector *_this) {
 static GIterator g_vector_erase(GVector *thiz, GIterator itfirst, GIterator itlast) {
     GDVector *gthiz = (GDVector*)thiz;
     gpointer first = itfirst.get(&itfirst).data, last = itlast.get(&itlast).data;
-    GType ref = {NULL, gthiz->size};
     if (first == NULL || last == NULL || first >= last)
-        return itfirst;
-    if (first >= last)
         return itfirst;
     if (first < gthiz->first)
         first = gthiz->first;
@@ -211,15 +208,14 @@ static GIterator g_vector_erase(GVector *thiz, GIterator itfirst, GIterator itla
     for (;last < gthiz->last; first = first + gthiz->size, last = last + gthiz->size)
         memcpy(first, last, gthiz->size);
     gthiz->last = first;
-    ref.data = first;
-    itfirst.set(&itfirst, ref);
+    itfirst.set(&itfirst, g_default_ref(first, gthiz->size));
     return itfirst;
 }
 
 static GIterator g_vector_remove(GVector *thiz, GIterator position) {
     GDVector *gthiz = (GDVector*)thiz;
     GIterator first = position, last = position;
-    GType ref = {position.get(&position).data + gthiz->size, gthiz->size};
+    GRef ref = {position.get(&position).data + gthiz->size, gthiz->size};
     last.set(&last, ref);
     return thiz->erase(thiz, first, last);
 }
@@ -351,17 +347,17 @@ static    void g_vector_swap(GVector *thiz, GVector *that) {
 }
 
 
-GVector* g_vector_alloc(guint n, guint c) {//vector unit size
+GVector* g_vector_alloc(guint cnt, guint size) {//vector unit size
     GDVector* gthiz = NULL;
     GVector*  thiz  = NULL;
-    if (n <= 0 || c <= 0) {
+    if (cnt <= 0 || size <= 0) {
         return thiz;
     }
     gthiz = (GDVector*) malloc(sizeof(GDVector));
-    gthiz->first = malloc(n * c);
+    gthiz->first = malloc(cnt * size);
     gthiz->last  = gthiz->first;
-    gthiz->end   = gthiz->first + n * c;
-    gthiz->size = c;// unit size > 0
+    gthiz->end   = gthiz->first + cnt * size;
+    gthiz->size =size;// unit size > 0
 
     thiz     = &(gthiz->thiz);
     thiz->clear  = g_vector_clear;// but not free thiz

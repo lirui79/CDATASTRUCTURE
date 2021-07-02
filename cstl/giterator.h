@@ -8,8 +8,29 @@ G_BEGIN_DECLS
 
 
 
-typedef struct  _GIterator     GIterator;
+typedef struct  _GRef          GRef;
 
+struct _GRef {
+    union {
+        struct {// vector list array
+            gpointer     data;
+            guint        size;
+        };
+
+        struct {// deque
+            gpointer container;
+            gint     rows;
+            gint     cols;
+        };
+
+
+    };
+};
+
+GRef g_default_ref(gpointer data, guint size);
+
+
+typedef struct  _GIterator     GIterator;
 
 struct _GIterator {
     GIterator        (*next)(GIterator *thiz);
@@ -27,18 +48,17 @@ struct _GIterator {
     int              (*greater_equal)(GIterator *thiz, GIterator *that);
 
 
-    GType            (*get)(GIterator *thiz);
-    GIterator        (*set)(GIterator *thiz, GType val);
+    GRef            (*get)(GIterator *thiz);
+    GIterator        (*set)(GIterator *thiz, GRef val);
 
     GType            (*data)(GIterator *thiz);
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
     guint            dir;
-    union {
-       GType         idata;// vector list
 
-   };
+    GRef             idata;
+
 };
 
 

@@ -86,18 +86,18 @@ static    void g_stack_swap(GStack *thiz, GStack *that) {
     return;
 }
 
-GStack* g_stack_alloc(guint n, guint c) { //n - count   c - ElementSize
+GStack* g_stack_alloc(guint cnt, guint size) { //n - count   c - ElementSize
     GDStack *gthiz = NULL;
     GStack  *thiz  = NULL;
-    if (n <= 0 || c <= 0) {
+    if (cnt <= 0 || size <= 0) {
         return thiz;
     }
 
     gthiz = malloc(sizeof(GDStack));
-    gthiz->first = malloc(n * c);
+    gthiz->first = malloc(cnt * size);
     gthiz->last  = gthiz->first;
-    gthiz->end   = gthiz->first + n * c;
-    gthiz->size = c;// unit size > 0
+    gthiz->end   = gthiz->first + cnt * size;
+    gthiz->size  = size;// unit size > 0
 
     thiz        = &(gthiz->thiz);
     thiz->free  = g_stack_free;  // free thiz

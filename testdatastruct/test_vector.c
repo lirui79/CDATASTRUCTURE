@@ -29,7 +29,7 @@ static void print_vector_int_r(GVector *ivector) {
 static void test_vector_int() {
     GVector *ivector = g_vector_alloc(8,sizeof(int));
     int value = 0x11;
-    GType v = {&value, sizeof(int)};
+    GType v = g_default_type(&value, sizeof(int));
     ivector->resize(ivector, 20, v);
     print_vector_int(ivector);
     print_vector_int_r(ivector);
@@ -39,10 +39,12 @@ static void test_vector_int() {
 
     int buf[] = {0x21, 0x22, 0x43, 0x101020, 0x032390};
     GIterator first = ivector->begin(ivector), last = ivector->end(ivector);
-    GType val = {buf, sizeof(int)};
-    first.set(&first, val);
-    val.data = buf + 5;
-    last.set(&last, val);
+
+    GRef  ref = g_default_ref(buf, sizeof(int));
+    first.set(&first, ref);
+    ref = g_default_ref(buf + 5, sizeof(int));
+
+    last.set(&last, ref);
     ivector->assign(ivector, first, last);
     print_vector_int(ivector);
     print_vector_int_r(ivector);

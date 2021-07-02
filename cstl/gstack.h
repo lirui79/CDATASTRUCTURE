@@ -29,7 +29,7 @@ struct _GStack {
 };
 
 
-GStack* g_stack_alloc(guint n, guint c); //n - count   c - ElementSize
+GStack* g_stack_alloc(guint cnt, guint size); //n - count   c - ElementSize
 
 
 G_END_DECLS

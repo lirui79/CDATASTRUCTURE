@@ -38,6 +38,9 @@ struct  _GType {
     guint        size;
 };
 
+GType  g_default_type(gpointer data, guint size);
+
+
 
 G_END_DECLS
 

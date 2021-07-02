@@ -97,11 +97,11 @@ static int              g_list_iterator_greater_equal(GIterator *thiz, GIterator
     return 0;
 }
 
-static GType       g_list_iterator_get(GIterator *thiz) {
+static GRef       g_list_iterator_get(GIterator *thiz) {
     return thiz->idata;
 }
 
-static GIterator        g_list_iterator_set(GIterator *thiz, GType val) {
+static GIterator        g_list_iterator_set(GIterator *thiz, GRef val) {
     thiz->idata = val;
     return thiz[0];
 }
@@ -249,6 +249,7 @@ static   GType  g_list_at(GList *gthis, guint index) {
 static   GIterator    g_list_find(GList *gthis, GType val) {
     GNode *node = NULL;
     GDList* thiz = (GDList*)gthis;
+    GType   value = {0};
     GIterator  iterator = g_list_iterator(&(thiz->head), sizeof(GNode), 1);
     if ((val.data == NULL) || (val.size <= 0)) {
         return iterator;
@@ -256,14 +257,13 @@ static   GIterator    g_list_find(GList *gthis, GType val) {
 
     node = thiz->head.next;
     while(node != &(thiz->head)) {
-        if ((val.data != node->data.data) && (memcmp(val.data, node->data.data, val.size) != 0)) {
+        value = g_node_data(node);
+        if ((val.data != value.data) && (memcmp(val.data, value.data, val.size) != 0)) {
             node = node->next;
             continue;
         }
 
-        val.data = node;
-        val.size = sizeof(GNode);
-        iterator.set(&iterator, val);
+        iterator.set(&iterator, g_default_ref(node, sizeof(GNode)));
         return iterator;
     }
     return iterator;
@@ -346,9 +346,7 @@ static   GIterator g_list_remove(GList *gthis, GIterator position) {
 
     node = thiz->head.next;
     while(node != &(thiz->head)) {//if ((node->data != data) || (node->size != size)) {
-        val.data = node;
-        val.size = sizeof(GNode);
-        pos.set(&pos, val);
+        pos.set(&pos, g_default_ref(node, sizeof(GNode)));
         if (pos.equal(&pos, &position) == 0) {
             node = node->next;
             continue;
@@ -360,8 +358,7 @@ static   GIterator g_list_remove(GList *gthis, GIterator position) {
         prev->next = next;
         next->prev = prev;
         thiz->size = thiz->size - 1;
-        val.data = next;
-        iterator.set(&iterator, val);
+        iterator.set(&iterator, g_default_ref(next, sizeof(GNode)));
         return iterator;
     }
 

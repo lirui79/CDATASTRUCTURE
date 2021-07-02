@@ -16,13 +16,13 @@ struct _GArray {
 
     guint    (*size)(GArray *thiz);
 
-    GType (*back)(GArray *thiz);
+    GType    (*back)(GArray *thiz);
 
-    GType (*front)(GArray *thiz);
+    GType    (*front)(GArray *thiz);
 
-    GType (*at)(GArray *thiz, guint index);
+    GType    (*at)(GArray *thiz, guint index);
 
-    GType (*data)(GArray *thiz);
+    GType    (*data)(GArray *thiz);
 
 
     GIterator (*begin)(GArray *thiz);
@@ -43,7 +43,7 @@ struct _GArray {
     void     (*swap)(GArray *thiz, GArray *that);
 };
 
-GArray* g_array_alloc(guint n, guint c); //n - count   c - ElementSize
+GArray* g_array_alloc(guint cnt, guint size); //n - count   c - ElementSize
 
 
 

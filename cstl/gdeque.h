@@ -4,6 +4,7 @@
 
 
 #include "gtypes.h"
+#include "giterator.h"
 
 
 G_BEGIN_DECLS
@@ -16,53 +17,54 @@ struct _GDeque {
 
     void      (*clear)(GDeque *thiz);
 
+
     guint     (*size)(GDeque *thiz);
 
     guint     (*empty)(GDeque *thiz);
 
-    gpointer  (*begin)(GDeque *thiz);
+    GType     (*front)(GDeque *thiz);
 
-    gpointer  (*end)(GDeque *thiz);
+    GType     (*back)(GDeque *thiz);
 
-    gpointer  (*backward)(GDeque *thiz, gpointer position, gint n);
+    GType     (*at)(GDeque *thiz, guint index);
 
-    gpointer  (*front)(GDeque *thiz);
 
-    gpointer  (*back)(GDeque *thiz);
+    GIterator  (*begin)(GDeque *thiz);
 
-    gpointer  (*at)(GDeque *thiz, guint index);
+    GIterator  (*end)(GDeque *thiz);
 
-    gpointer  (*rbegin)(GDeque *thiz);
+    GIterator  (*rbegin)(GDeque *thiz);
 
-    gpointer  (*rend)(GDeque *thiz);
+    GIterator  (*rend)(GDeque *thiz);
 
-    gpointer  (*forward)(GDeque *thiz, gpointer position, gint n);
 
-    void      (*assign)(GDeque *thiz, gpointer first, gpointer last);
+    void      (*push_back)(GDeque *thiz, GType val);
 
-    void      (*fill)(GDeque *thiz, gpointer position, guint n, gpointer data);
-
-    void      (*push_back)(GDeque *thiz, gpointer data);
-
-    void      (*push_front)(GDeque *thiz, gpointer data);
+    void      (*push_front)(GDeque *thiz, GType val);
 
     void      (*pop_back)(GDeque *thiz);
 
     void      (*pop_front)(GDeque *thiz);
 
-    void      (*insert)(GDeque *thiz, gpointer position, gpointer first, gpointer last);
+    GIterator  (*erase)(GDeque *thiz, GIterator first, GIterator last);
 
-    gpointer  (*erase)(GDeque *thiz, gpointer first, gpointer last);
+    GIterator  (*remove)(GDeque *thiz, GIterator position);
 
-    gpointer  (*remove)(GDeque *thiz, gpointer data);
+
+    void      (*assign)(GDeque *thiz, GIterator first, GIterator last);
+
+    void      (*fill)(GDeque *thiz, GIterator position, guint n, GType val);
+
+    void      (*insert)(GDeque *thiz, GIterator position, GIterator first, GIterator last);
 
     void      (*swap)(GDeque *thiz, GDeque *that);
 
-    void      (*resize)(GDeque *thiz, guint n, gpointer data);
+    void      (*resize)(GDeque *thiz, guint n, GType val);
 };
 
+GIterator g_deque_iterator(gpointer data, guint size, int dir);
 
-GDeque* g_deque_alloc(guint n, guint c); //n - count   c - ElementSize
+GDeque*   g_deque_alloc(guint size); //n - count   c - ElementSize
 
 
 G_END_DECLS

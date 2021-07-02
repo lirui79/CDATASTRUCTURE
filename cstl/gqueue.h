@@ -12,17 +12,17 @@ G_BEGIN_DECLS
 typedef struct _GQueue    GQueue;
 
 struct _GQueue {
-    void      (*free)(GQueue *thiz);  // free thiz
+    void       (*free)(GQueue *thiz);  // free thiz
 
-    void      (*clear)(GQueue *thiz);
+    void       (*clear)(GQueue *thiz);
 
-    guint     (*size)(GQueue *thiz);
+    guint      (*size)(GQueue *thiz);
 
-    guint     (*empty)(GQueue *thiz);
+    guint      (*empty)(GQueue *thiz);
 
-    GType  (*front)(GQueue *thiz);
+    GType      (*front)(GQueue *thiz);
 
-    GType  (*back)(GQueue *thiz);
+    GType      (*back)(GQueue *thiz);
 
     void      (*push)(GQueue *thiz, GType val);
 

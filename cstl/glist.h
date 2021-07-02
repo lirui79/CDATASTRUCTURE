@@ -24,11 +24,11 @@ struct _GList {
 
     guint  (*size)(GList *thiz);
 
-    GType (*back)(GList *thiz);
+    GType  (*back)(GList *thiz);
 
-    GType (*front)(GList *thiz);
+    GType  (*front)(GList *thiz);
 
-    GType (*at)(GList *thiz, guint index);
+    GType  (*at)(GList *thiz, guint index);
 
     GIterator (*find)(GList *thiz, GType val);
 

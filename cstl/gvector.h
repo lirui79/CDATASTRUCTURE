@@ -75,7 +75,7 @@ struct _GVector {
 };
 
 
-GVector* g_vector_alloc(guint n, guint c); //vector ElementSize
+GVector* g_vector_alloc(guint cnt, guint size); //vector ElementSize
 
 
 

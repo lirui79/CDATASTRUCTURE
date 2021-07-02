@@ -3,7 +3,19 @@
 #include  <stdlib.h>
 #include  <string.h>
 
+GType  g_default_type(gpointer data, guint size) {
+     GType val = {0};
+     val.data = data;
+     val.size = size;
+     return val;
+}
 
+GRef g_default_ref(gpointer data, guint size) {
+     GRef val = {0};
+     val.data = data;
+     val.size = size;
+     return val;
+}
 
 static GIterator       g_default_iterator_next(GIterator *thiz) {
     thiz->idata.data += thiz->idata.size;
@@ -61,19 +73,24 @@ static int              g_default_iterator_greater_equal(GIterator *thiz, GItera
     return 0;
 }
 
-static GType         g_default_iterator_get(GIterator *thiz) {
+static GRef         g_default_iterator_get(GIterator *thiz) {
     return thiz->idata;
 }
 
-static GIterator       g_default_iterator_set(GIterator *thiz, GType val) {
+static GIterator       g_default_iterator_set(GIterator *thiz, GRef val) {
     thiz->idata = val;
     return thiz[0];
 }
 
+static GType        g_default_iterator_data(GIterator *thiz) {
+    GType val = {thiz->idata.data, thiz->idata.size};
+    return val;
+}
+
 GIterator g_default_iterator(gpointer data, guint size, int dir) {
     GIterator        thiz  = {0};
-    GType            val = {data, size};
-    thiz.idata       = val;
+    thiz.idata.data  = data;
+    thiz.idata.size  = size;
     thiz.dir         = dir;
     if (dir > 0) {
         thiz.next  = g_default_iterator_next;
