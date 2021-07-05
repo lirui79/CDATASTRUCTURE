@@ -9,7 +9,7 @@ static void print_vector_int(GVector *ivector) {
     GIterator it, end = ivector->end(ivector);
     printf("GVector::size %d  empty %d capacity %d \n", ivector->size(ivector), ivector->empty(ivector), ivector->capacity(ivector));
     for (it = ivector->begin(ivector); it.less(&it, &end); it.next(&it)) {
-        value = *(int *) it.data(&it).data;
+        value = *((int *) it.data(&it).data);
         printf("%x ", value);
     }
     printf("\n");
@@ -20,14 +20,14 @@ static void print_vector_int_r(GVector *ivector) {
     GIterator it, rend = ivector->rend(ivector);
     printf("GVector::size %d  empty %d capacity %d \n", ivector->size(ivector), ivector->empty(ivector), ivector->capacity(ivector));
     for (it = ivector->rbegin(ivector); it.greater(&it, &rend); it.next(&it)) {
-        value = *(int *) it.data(&it).data;
+        value = *((int *) it.data(&it).data);
         printf("%x ", value);
     }
     printf("\n");
 }
 
 static void test_vector_int() {
-    GVector *ivector = g_vector_alloc(8,sizeof(int));
+    GVector *ivector = g_vector_alloc(8, sizeof(int));
     int value = 0x11;
     GType v = g_default_type(&value, sizeof(int));
     ivector->resize(ivector, 20, v);

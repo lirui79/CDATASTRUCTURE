@@ -111,6 +111,6 @@ GIterator g_default_iterator(gpointer data, guint size, int dir) {
     thiz.greater_equal  = g_default_iterator_greater_equal;
     thiz.get  = g_default_iterator_get;
     thiz.set  = g_default_iterator_set;
-    thiz.data = g_default_iterator_get;
+    thiz.data = g_default_iterator_data;
     return thiz;
 }

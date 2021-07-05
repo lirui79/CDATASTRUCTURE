@@ -75,37 +75,45 @@
 1622861871 source:d:\project\testdatastruct\testdatastruct\testdatastruct\test_list_init.c
 	"test_list_init.h"
 
-1623761082 source:d:\workspace\cdatastructure\cstl\garray.c
+1625491539 source:d:\workspace\cdatastructure\cstl\garray.c
 	"garray.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623511771 d:\workspace\cdatastructure\cstl\garray.h
+1625491539 d:\workspace\cdatastructure\cstl\garray.h
 	"gtypes.h"
+	"giterator.h"
 
-1621823422 d:\workspace\cdatastructure\cstl\gtypes.h
+1625491539 d:\workspace\cdatastructure\cstl\gtypes.h
 	"gmacros.h"
 
 1621822889 d:\workspace\cdatastructure\cstl\gmacros.h
 	<stddef.h>
 
-1623075253 source:d:\workspace\cdatastructure\testdatastruct\main.c
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\main.c
 	<stdio.h>
 	<stdlib.h>
+	"test_set.h"
+	"test_map.h"
+	"test_queue.h"
+	"test_deque.h"
+	"test_array.h"
+	"test_stack.h"
 	"test_vector.h"
 	"test_list_alloc.h"
 
 1622686092 d:\workspace\cdatastructure\testdatastruct\test_list_init.h
 	"../cstl/glist.h"
 
-1623504547 d:\workspace\cdatastructure\cstl\glist.h
+1625491539 d:\workspace\cdatastructure\cstl\glist.h
 	"gtypes.h"
+	"giterator.h"
 
 1622686038 d:\workspace\cdatastructure\testdatastruct\test_list_alloc.h
 	"../cstl/glist.h"
 
-1623426123 source:d:\workspace\cdatastructure\testdatastruct\test_list_alloc.c
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_list_alloc.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -117,48 +125,50 @@
 	<string.h>
 	"test_list_init.h"
 
-1623761122 source:d:\workspace\cdatastructure\cstl\glist.c
+1625496577 source:d:\workspace\cdatastructure\cstl\glist.c
 	"glist.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623761225 source:d:\workspace\cdatastructure\cstl\gvector.c
+1625491539 source:d:\workspace\cdatastructure\cstl\gvector.c
 	"gvector.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623510494 d:\workspace\cdatastructure\cstl\gvector.h
+1625491539 d:\workspace\cdatastructure\cstl\gvector.h
 	"gtypes.h"
+	"giterator.h"
 
 1623075254 d:\workspace\cdatastructure\testdatastruct\test_vector.h
 	"../cstl/gvector.h"
 
-1623510514 source:d:\workspace\cdatastructure\testdatastruct\test_vector.c
+1625496142 source:d:\workspace\cdatastructure\testdatastruct\test_vector.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"test_vector.h"
 
-1624200538 source:d:\workspace\cdatastructure\cstl\gstack.c
+1625491539 source:d:\workspace\cdatastructure\cstl\gstack.c
 	"gstack.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623850122 d:\workspace\cdatastructure\cstl\gstack.h
+1625491539 d:\workspace\cdatastructure\cstl\gstack.h
 	"gtypes.h"
 
-1624203310 source:d:\workspace\cdatastructure\cstl\gdeque.c
+1625491539 source:d:\workspace\cdatastructure\cstl\gdeque.c
 	"gdeque.h"
 	"gvector.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1623767396 d:\workspace\cdatastructure\cstl\gdeque.h
+1625491539 d:\workspace\cdatastructure\cstl\gdeque.h
 	"gtypes.h"
+	"giterator.h"
 
 1625455091 source:d:\project\cdatastructure\testdatastruct\main.c
 	<stdio.h>
@@ -334,4 +344,86 @@
 	<stdlib.h>
 	<string.h>
 	"test_deque.h"
+
+1625491539 d:\workspace\cdatastructure\cstl\giterator.h
+	"gtypes.h"
+
+1625496745 source:d:\workspace\cdatastructure\cstl\giterator.c
+	"giterator.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1623328951 source:d:\workspace\cdatastructure\cstl\gmap.c
+
+1625491539 source:d:\workspace\cdatastructure\cstl\gqueue.c
+	"gqueue.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1625491539 d:\workspace\cdatastructure\cstl\gqueue.h
+	"gtypes.h"
+
+1623328908 source:d:\workspace\cdatastructure\cstl\gset.c
+
+1625491539 d:\workspace\cdatastructure\testdatastruct\test_set.h
+	"../cstl/gset.h"
+
+1623426624 d:\workspace\cdatastructure\cstl\gset.h
+	"gtypes.h"
+
+1625491539 d:\workspace\cdatastructure\testdatastruct\test_map.h
+	"../cstl/gmap.h"
+
+1623504371 d:\workspace\cdatastructure\cstl\gmap.h
+	"gtypes.h"
+
+1625491539 d:\workspace\cdatastructure\testdatastruct\test_queue.h
+	"../cstl/gqueue.h"
+
+1625491539 d:\workspace\cdatastructure\testdatastruct\test_deque.h
+	"../cstl/gdeque.h"
+
+1625491539 d:\workspace\cdatastructure\testdatastruct\test_array.h
+	"../cstl/garray.h"
+
+1625491539 d:\workspace\cdatastructure\testdatastruct\test_stack.h
+	"../cstl/gstack.h"
+
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_array.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_array.h"
+
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_deque.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_deque.h"
+
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_map.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_map.h"
+
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_queue.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_queue.h"
+
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_set.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_set.h"
+
+1625491539 source:d:\workspace\cdatastructure\testdatastruct\test_stack.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_stack.h"
 

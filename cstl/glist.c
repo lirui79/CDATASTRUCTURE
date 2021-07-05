@@ -124,7 +124,7 @@ GIterator g_list_iterator(gpointer data, guint size, int dir) {
         thiz.forward  = g_list_iterator_backward;
         thiz.backward  = g_list_iterator_forward;
     }
-/*
+//*
     thiz.equal  = g_list_iterator_equal;
     thiz.not_equal  = g_list_iterator_not_equal;
     thiz.less  = g_list_iterator_less;
