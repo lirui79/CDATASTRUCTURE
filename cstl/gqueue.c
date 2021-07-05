@@ -63,8 +63,7 @@ struct _GDQueue {
     guint                  size;
 };
 
-
-static    void g_queue_free(GQueue *thiz) { // free thiz
+static    void g_queue_clear(GQueue *thiz) {
     GDQueue* gthis = (GDQueue*) thiz;
     GDQNode *node = NULL, *next = NULL;
     GType     val = {NULL, 0};
@@ -81,9 +80,10 @@ static    void g_queue_free(GQueue *thiz) { // free thiz
     gthis->size      = 0;
 }
 
-static    void g_queue_clear(GQueue *thiz) {
+
+static    void g_queue_free(GQueue *thiz) { // free thiz
     GDQueue* gthis = (GDQueue*) thiz;
-    g_queue_free(thiz);
+    g_queue_clear(thiz);
     free(gthis);
 }
 
@@ -130,7 +130,7 @@ static    void    g_queue_pop(GQueue *thiz) {
     g_node_free(node);
     prev->next = next;
     next->prev = prev;
-    thiz->size = thiz->size - 1;
+    gthis->size = gthis->size - 1;
 }
 
 static    void    g_queue_swap(GQueue *thiz, GQueue *that) {

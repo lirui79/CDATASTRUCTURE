@@ -32,7 +32,7 @@ struct _GQueue {
 };
 
 
-GQueue* g_queue_alloc(); //n - count   c - ElementSize
+GQueue* g_queue_alloc();
 
 
 G_END_DECLS

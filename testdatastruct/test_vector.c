@@ -59,10 +59,6 @@ static void test_vector_int() {
 }
 
 
-
-
-
-
 void test_vector() {
    test_vector_int();
 }

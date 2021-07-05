@@ -437,7 +437,8 @@ static    void      g_deque_fill(GDeque *thiz, GIterator position, guint n, GTyp
     GDDeque *gthiz = (GDDeque*) thiz;
     gint nocopy = 1;
     if (g_deque_in(gthiz, position.idata.rows, position.idata.cols) < 1) {
-        if (position.equal(&position, &gthiz->last) < 1) {
+        GIterator end = g_deque_end(thiz);
+        if (position.equal(&position, &end) < 1) {
             return;
         }
 
@@ -472,7 +473,7 @@ static    void      g_deque_fill(GDeque *thiz, GIterator position, guint n, GTyp
     }
 
     GIterator *first = &position;
-    for (gint i = 0; i < n; ++n, first->next(first)) {
+    for (gint i = 0; i < n; ++i, first->next(first)) {
         memcpy(first->data(first).data, val.data, val.size);
     }
 
@@ -489,7 +490,8 @@ static    void      g_deque_insert(GDeque *thiz, GIterator position, GIterator f
     int n = g_deque_iterator_size(&first, &last);
     gint nocopy = 1;
     if (g_deque_in(gthiz, position.idata.rows, position.idata.cols) < 1) {
-        if (position.equal(&position, &gthiz->last) < 1) {
+        GIterator end = g_deque_end(thiz);
+        if (position.equal(&position, &end) < 1) {
             return;
         }
 
