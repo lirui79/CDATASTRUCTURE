@@ -38,8 +38,8 @@ static GType      g_node_data(GDQNode  *thiz) {
 
 
 static void           g_node_free(GDQNode  *thiz) {
-    if (thiz->data != NULL)
-        free(thiz->data);
+    if (thiz->data.data != NULL)
+        free(thiz->data.data);
     free(thiz);
 }
 
@@ -77,7 +77,7 @@ static    void g_queue_free(GQueue *thiz) { // free thiz
 
     gthis->head.next = &(gthis->head);
     gthis->head.prev = &(gthis->head);
-    thiz->head.data  = val;
+    gthis->head.data  = val;
     gthis->size      = 0;
 }
 

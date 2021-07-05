@@ -70,7 +70,7 @@
 		</Unit>
 		<Unit filename="../cstl/gqueue.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Debug" />
 		</Unit>
 		<Unit filename="../cstl/gqueue.h">
 			<Option target="Debug" />
@@ -109,11 +109,46 @@
 		<Unit filename="test_array.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="test_deque.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_deque.h">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="test_list_alloc.c">
 			<Option compilerVar="CC" />
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="test_list_alloc.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_map.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_map.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_queue.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_queue.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_set.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_set.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_stack.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="test_stack.h">
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="test_vector.c">

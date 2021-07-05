@@ -160,10 +160,15 @@
 1623767396 d:\workspace\cdatastructure\cstl\gdeque.h
 	"gtypes.h"
 
-1624947909 source:d:\project\cdatastructure\testdatastruct\main.c
+1625455091 source:d:\project\cdatastructure\testdatastruct\main.c
 	<stdio.h>
 	<stdlib.h>
+	"test_set.h"
+	"test_map.h"
+	"test_queue.h"
+	"test_deque.h"
 	"test_array.h"
+	"test_stack.h"
 	"test_vector.h"
 	"test_list_alloc.h"
 
@@ -241,13 +246,13 @@
 	<string.h>
 	"test_vector.h"
 
-1624330610 source:d:\project\cdatastructure\cstl\gqueue.c
+1625455218 source:d:\project\cdatastructure\cstl\gqueue.c
 	"gqueue.h"
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 
-1624244885 d:\project\cdatastructure\cstl\gqueue.h
+1625123076 d:\project\cdatastructure\cstl\gqueue.h
 	"gtypes.h"
 
 1624951525 source:d:\project\cdatastructure\cstl\gdeque_old.c
@@ -278,4 +283,55 @@
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+
+1625453652 d:\project\cdatastructure\testdatastruct\test_set.h
+	"../cstl/gset.h"
+
+1623723884 d:\project\cdatastructure\cstl\gset.h
+	"gtypes.h"
+
+1625453691 d:\project\cdatastructure\testdatastruct\test_map.h
+	"../cstl/gmap.h"
+
+1623892290 d:\project\cdatastructure\cstl\gmap.h
+	"gtypes.h"
+
+1625453673 d:\project\cdatastructure\testdatastruct\test_queue.h
+	"../cstl/gqueue.h"
+
+1625453714 d:\project\cdatastructure\testdatastruct\test_deque.h
+	"../cstl/gdeque.h"
+
+1625453613 d:\project\cdatastructure\testdatastruct\test_stack.h
+	"../cstl/gstack.h"
+
+1625453977 source:d:\project\cdatastructure\testdatastruct\test_map.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_map.h"
+
+1625453964 source:d:\project\cdatastructure\testdatastruct\test_queue.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_queue.h"
+
+1625453939 source:d:\project\cdatastructure\testdatastruct\test_set.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_set.h"
+
+1625453918 source:d:\project\cdatastructure\testdatastruct\test_stack.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_stack.h"
+
+1625453993 source:d:\project\cdatastructure\testdatastruct\test_deque.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"test_deque.h"
 
