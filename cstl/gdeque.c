@@ -347,12 +347,14 @@ static    GIterator  g_deque_rend(GDeque *thiz){
 
 static    void      g_deque_push_back(GDeque *thiz, GType val){
     GDDeque *gthiz = (GDDeque*) thiz;
-
+    GIterator end = g_deque_end(thiz);
+    thiz->fill(thiz, end, 1, val);
 }
 
 static    void      g_deque_push_front(GDeque *thiz, GType val){
     GDDeque *gthiz = (GDDeque*) thiz;
-
+    GIterator begin = g_deque_begin(thiz);
+    thiz->fill(thiz, begin, 1, val);
 }
 
 static    void      g_deque_pop_back(GDeque *thiz){
@@ -433,12 +435,103 @@ static    void      g_deque_assign(GDeque *thiz, GIterator first, GIterator last
 
 static    void      g_deque_fill(GDeque *thiz, GIterator position, guint n, GType val){
     GDDeque *gthiz = (GDDeque*) thiz;
+    gint nocopy = 1;
+    if (g_deque_in(gthiz, position.idata.rows, position.idata.cols) < 1) {
+        if (position.equal(&position, &gthiz->last) < 1) {
+            return;
+        }
 
+        nocopy = 0;
+    }
+
+    gint rows = n / gthiz->cols, cols = n % gthiz->cols;
+    gint lrows = rows + position.idata.rows, lcols = cols + position.idata.cols;
+    if (lcols >= gthiz->cols) {
+        lrows += 1;
+        lcols  = lcols - gthiz->cols;
+    }
+    lrows += 1;
+
+    if (gthiz->rows < lrows) {
+        gpointer *mptr = malloc(lrows * sizeof(gpointer));
+        memcpy(mptr, gthiz->mptr, gthiz->rows * sizeof(gpointer));
+        free(gthiz->mptr);
+        gthiz->mptr = mptr;
+        for (int i = gthiz->rows; i < lrows; ++i) {
+            gthiz->mptr[i] = malloc(gthiz->cols * gthiz->size);
+        }
+        gthiz->rows = lrows;
+    }
+
+    if (nocopy == 1) {
+        GIterator from = g_deque_end(thiz);
+        from.prev(&from);
+        GIterator to = from;
+        to.forward(&to, n);
+        g_deque_iterator_front_copy(&from, &to, gthiz->size, &position);
+    }
+
+    GIterator *first = &position;
+    for (gint i = 0; i < n; ++n, first->next(first)) {
+        memcpy(first->data(first).data, val.data, val.size);
+    }
+
+    gthiz->last.rows += rows;
+    gthiz->last.cols += cols;
+    if (gthiz->last.cols >= gthiz->cols) {
+        gthiz->last.rows += 1;
+        gthiz->last.cols -= gthiz->cols;
+    }
 }
 
 static    void      g_deque_insert(GDeque *thiz, GIterator position, GIterator first, GIterator last){
     GDDeque *gthiz = (GDDeque*) thiz;
+    int n = g_deque_iterator_size(&first, &last);
+    gint nocopy = 1;
+    if (g_deque_in(gthiz, position.idata.rows, position.idata.cols) < 1) {
+        if (position.equal(&position, &gthiz->last) < 1) {
+            return;
+        }
 
+        nocopy = 0;
+    }
+
+    gint rows = n / gthiz->cols, cols = n % gthiz->cols;
+    gint lrows = rows + position.idata.rows, lcols = cols + position.idata.cols;
+    if (lcols >= gthiz->cols) {
+        lrows += 1;
+        lcols  = lcols - gthiz->cols;
+    }
+    lrows += 1;
+
+    if (gthiz->rows < lrows) {
+        gpointer *mptr = malloc(lrows * sizeof(gpointer));
+        memcpy(mptr, gthiz->mptr, gthiz->rows * sizeof(gpointer));
+        free(gthiz->mptr);
+        gthiz->mptr = mptr;
+        for (int i = gthiz->rows; i < lrows; ++i) {
+            gthiz->mptr[i] = malloc(gthiz->cols * gthiz->size);
+        }
+        gthiz->rows = lrows;
+    }
+
+    if (nocopy == 1) {
+        GIterator from = g_deque_end(thiz);
+        from.prev(&from);
+        GIterator to = from;
+        to.forward(&to, n);
+        g_deque_iterator_front_copy(&from, &to, gthiz->size, &position);
+    }
+
+    GIterator to = position;
+    g_deque_iterator_back_copy(&first, &to, gthiz->size, &last);
+
+    gthiz->last.rows += rows;
+    gthiz->last.cols += cols;
+    if (gthiz->last.cols >= gthiz->cols) {
+        gthiz->last.rows += 1;
+        gthiz->last.cols -= gthiz->cols;
+    }
 }
 
 static    void      g_deque_swap(GDeque *thiz, GDeque *that){
@@ -476,7 +569,14 @@ static    void      g_deque_swap(GDeque *thiz, GDeque *that){
 
 static    void      g_deque_resize(GDeque *thiz, guint n, GType val){
     GDDeque *gthiz = (GDDeque*) thiz;
+    guint size = g_deque_size(thiz);
+    GIterator end = g_deque_end(thiz);
+    if (size >= n) {
+        return;
+    }
 
+    n = n - size;
+    g_deque_fill(thiz, end, n, val);
 }
 
 GDeque* g_deque_alloc(guint size) { //n - count   c - ElementSize
