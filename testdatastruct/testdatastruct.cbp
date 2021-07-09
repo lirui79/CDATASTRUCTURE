@@ -38,6 +38,13 @@
 		<Unit filename="../cstl/garray.h">
 			<Option target="Debug" />
 		</Unit>
+		<Unit filename="../cstl/gavltree.c">
+			<Option compilerVar="CC" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../cstl/gavltree.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="../cstl/gdeque.c">
 			<Option compilerVar="CC" />
 		</Unit>
