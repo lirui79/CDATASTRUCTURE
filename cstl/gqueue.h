@@ -16,15 +16,17 @@ struct _GQueue {
 
     void       (*clear)(GQueue *thiz);
 
+    guint      (*typesize)(GQueue *thiz);
+
     guint      (*size)(GQueue *thiz);
 
     guint      (*empty)(GQueue *thiz);
 
-    GType      (*front)(GQueue *thiz);
+    gpointer   (*front)(GQueue *thiz);
 
-    GType      (*back)(GQueue *thiz);
+    gpointer   (*back)(GQueue *thiz);
 
-    void      (*push)(GQueue *thiz, GType val);
+    void      (*push)(GQueue *thiz, gconstpointer val);
 
     void      (*pop)(GQueue *thiz);
 
@@ -32,7 +34,7 @@ struct _GQueue {
 };
 
 
-GQueue* g_queue_alloc();
+GQueue* g_queue_alloc(guint typesize);
 
 
 G_END_DECLS

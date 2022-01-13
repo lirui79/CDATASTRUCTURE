@@ -17,7 +17,7 @@ typedef char   gchar;
 typedef short  gshort;
 typedef long   glong;
 typedef int    gint;
-typedef gint    gboolean;
+typedef int    gboolean;
 
 typedef unsigned char   guchar;
 typedef unsigned short  gushort;
@@ -37,6 +37,8 @@ struct  _GType {
     gpointer     data;
     guint        size;
 };
+
+
 
 GType  g_default_type(gpointer data, guint size);
 

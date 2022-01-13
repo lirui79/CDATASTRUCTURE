@@ -15,13 +15,15 @@ struct _GStack {
 
     void      (*clear)(GStack *thiz);
 
-    GType     (*top)(GStack *thiz);
+    gpointer  (*top)(GStack *thiz);
+
+    guint     (*typesize)(GStack *thiz);
 
     guint     (*size)(GStack *thiz);
 
     guint     (*empty)(GStack *thiz);
 
-    void     (*push)(GStack *thiz, GType val);
+    void     (*push)(GStack *thiz, gconstpointer val);
 
     void     (*pop)(GStack *thiz);
 

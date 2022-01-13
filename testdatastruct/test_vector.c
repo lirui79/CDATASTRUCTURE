@@ -9,18 +9,18 @@ static void print_vector_int(GVector *ivector) {
     GIterator it, end = ivector->end(ivector);
     printf("GVector::size %d  empty %d capacity %d \n", ivector->size(ivector), ivector->empty(ivector), ivector->capacity(ivector));
     for (it = ivector->begin(ivector); it.less(&it, &end); it.next(&it)) {
-        value = *((int *) it.data(&it).data);
+        value = *((int *) it.data(&it));
         printf("%x ", value);
     }
     printf("\n");
 }
 
-static void print_vector_int_r(GVector *ivector) {
+static void print_vector_int_back(GVector *ivector) {
     int value = 0;
     GIterator it, rend = ivector->rend(ivector);
     printf("GVector::size %d  empty %d capacity %d \n", ivector->size(ivector), ivector->empty(ivector), ivector->capacity(ivector));
     for (it = ivector->rbegin(ivector); it.greater(&it, &rend); it.next(&it)) {
-        value = *((int *) it.data(&it).data);
+        value = *((int *) it.data(&it));
         printf("%x ", value);
     }
     printf("\n");
@@ -29,12 +29,10 @@ static void print_vector_int_r(GVector *ivector) {
 static void test_vector_int() {
     GVector *ivector = g_vector_alloc(8, sizeof(int));
     int value = 0x11;
-    GType v = g_default_type(&value, sizeof(int));
-    ivector->resize(ivector, 20, v);
+    ivector->resize(ivector, 20, &value);
     print_vector_int(ivector);
-    print_vector_int_r(ivector);
-    v = ivector->data(ivector);
-    value = *(int*) v.data;
+    print_vector_int_back(ivector);
+    value= *(int*)ivector->data(ivector);
     printf("GVector first %x\n", value);
 
     int buf[] = {0x21, 0x22, 0x43, 0x101020, 0x032390};
@@ -47,9 +45,9 @@ static void test_vector_int() {
     last.set(&last, ref);
     ivector->assign(ivector, first, last);
     print_vector_int(ivector);
-    print_vector_int_r(ivector);
+    print_vector_int_back(ivector);
 
-    value = *(int*) ivector->data(ivector).data;
+    value = *(int*)ivector->data(ivector);
     printf("GVector first %x\n", value);
 
     ivector->clear(ivector);

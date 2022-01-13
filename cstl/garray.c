@@ -11,7 +11,7 @@ struct _GDArray {
     GArray     thiz;
     gpointer   first;
     gpointer   last;
-    gint       size;
+    gint       typesize;
 };
 
 
@@ -26,61 +26,63 @@ static void g_array_free(GArray *thiz) {  // free thiz
 static guint  g_array_size(GArray *thiz) {
     GDArray *gthiz = (GDArray*) thiz;
     guint size = gthiz->last - gthiz->first;
-    size = size / gthiz->size;
+    size = size / gthiz->typesize;
     return size;
 }
 
-
-static GType g_array_back(GArray *thiz) {
+static guint  g_array_typesize(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GType val = {gthiz->last - gthiz->size, gthiz->size};
+    return gthiz->typesize;
+}
+
+static gpointer g_array_back(GArray *thiz) {
+    GDArray *gthiz = (GDArray*)thiz;
+    gpointer val = gthiz->last - gthiz->typesize;
     return val;
 }
 
-static GType g_array_front(GArray *thiz) {
+static gpointer g_array_front(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GType val = {gthiz->first, gthiz->size};
-    return val;
+    return gthiz->first;
 }
 
-static GType g_array_at(GArray *thiz, guint index) {
+static gpointer g_array_at(GArray *thiz, guint index) {
     GDArray *gthiz = (GDArray*)thiz;
-    GType val = {gthiz->last, gthiz->size};
+    gpointer val = gthiz->last;
     if (index >= thiz->size(thiz))
         return val;
-    val.data =(gthiz->first + index * gthiz->size);
+    val =(gthiz->first + index * gthiz->typesize);
     return val;
 }
 
-static GType g_array_data(GArray *thiz) {
+static gpointer g_array_data(GArray *thiz) {
     GDArray *gthiz = (GDArray*) thiz;
-    GType val = {gthiz->first, gthiz->size};
-    return val;
+    return gthiz->first;
 }
 
 
 
 static GIterator g_array_begin(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GIterator iterator = g_default_iterator(gthiz->first, gthiz->size, 1);
+    GIterator iterator = g_default_iterator(gthiz->first, gthiz->typesize, 1);
     return iterator;
 }
 
 static GIterator g_array_end(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GIterator iterator = g_default_iterator(gthiz->last, gthiz->size, 1);
+    GIterator iterator = g_default_iterator(gthiz->last, gthiz->typesize, 1);
     return iterator;
 }
 
 static GIterator g_array_rbegin(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GIterator iterator = g_default_iterator(gthiz->last - gthiz->size, gthiz->size, 0);
+    GIterator iterator = g_default_iterator(gthiz->last - gthiz->typesize, gthiz->typesize, 0);
     return iterator;
 }
 
 static GIterator g_array_rend(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    GIterator iterator = g_default_iterator(gthiz->first - gthiz->size, gthiz->size, 0);
+    GIterator iterator = g_default_iterator(gthiz->first - gthiz->typesize, gthiz->typesize, 0);
     return iterator;
 }
 
@@ -88,21 +90,21 @@ static GIterator g_array_rend(GArray *thiz) {
 
 static void g_array_reverse(GArray *thiz) {
     GDArray *gthiz = (GDArray*)thiz;
-    gpointer first = gthiz->first, last = gthiz->last - gthiz->size;
-    gpointer gptr  = malloc(gthiz->size);
-    for (; first < last; first = first + gthiz->size, last = last - gthiz->size) {
-        memcpy(gptr,  first, gthiz->size);
-        memcpy(first, last,  gthiz->size);
-        memcpy(last,  gptr,  gthiz->size);
+    gpointer first = gthiz->first, last = gthiz->last - gthiz->typesize;
+    gpointer gptr  = malloc(gthiz->typesize);
+    for (; first < last; first = first + gthiz->typesize, last = last - gthiz->typesize) {
+        memcpy(gptr,  first, gthiz->typesize);
+        memcpy(first, last,  gthiz->typesize);
+        memcpy(last,  gptr,  gthiz->typesize);
     }
     free(gptr);
 }
 
-static void g_array_fill(GArray *thiz, GType val) {
+static void g_array_fill(GArray *thiz, gconstpointer val) {
     GDArray *gthiz = (GDArray*) thiz;
     gpointer gptr = NULL;
-    for(gptr = gthiz->first; gptr < gthiz->last; gptr += gthiz->size) {
-        memcpy(gptr, val.data, val.size);
+    for(gptr = gthiz->first; gptr < gthiz->last; gptr += gthiz->typesize) {
+        memcpy(gptr, val, gthiz->typesize);
     }
 }
 
@@ -134,22 +136,22 @@ static void  g_array_swap(GArray *thiz, GArray *that) {
     gthiz->last = gthat->last;
     gthat->last = gptr;
 
-    guint c = gthiz->size;
-    gthiz->size = gthat->size;
-    gthat->size = c;
+    guint typesize = gthiz->typesize;
+    gthiz->typesize = gthat->typesize;
+    gthat->typesize = typesize;
 }
 
 
-GArray* g_array_alloc(guint cnt, guint size) { //n - count   c - ElementSize
+GArray* g_array_alloc(guint cnt, guint typesize) { //n - count   c - ElementSize
     GDArray *gthiz = NULL;
     GArray  *thiz  = NULL;
-    if (cnt <= 0 || size <= 0) {
+    if (cnt <= 0 || typesize <= 0) {
         return thiz;
     }
     gthiz = malloc(sizeof(GDArray));
-    gthiz->first = malloc(cnt * size);
-    gthiz->last  = gthiz->first + cnt * size;
-    gthiz->size = size;// unit size > 0
+    gthiz->first = malloc(cnt * typesize);
+    gthiz->last  = gthiz->first + cnt * typesize;
+    gthiz->typesize = typesize;// unit typesize > 0
 
     thiz     = &(gthiz->thiz);
     thiz->free  = g_array_free;  // free thiz
@@ -163,6 +165,7 @@ GArray* g_array_alloc(guint cnt, guint size) { //n - count   c - ElementSize
     thiz->at  = g_array_at;
     thiz->fill  = g_array_fill;
     thiz->size  = g_array_size;
+    thiz->typesize  = g_array_typesize;
     thiz->data  = g_array_data;
     thiz->assign  = g_array_assign;
     thiz->swap  = g_array_swap;

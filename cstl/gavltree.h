@@ -32,7 +32,7 @@ struct _GAvlTree {
 
     void       (*clear)(GAvlTree  *thiz);
 
-
+    guint      (*typesize)(GAvlTree *thiz);
 
     guint      (*empty)(GAvlTree *thiz);
 
@@ -56,17 +56,15 @@ struct _GAvlTree {
 
     GIterator  (*max)(GAvlTree *thiz);
 
-    GIterator  (*find)(GAvlTree *thiz, GType key);
+    GIterator  (*find)(GAvlTree *thiz, gconstpointer key);
 
 
 
-    GIterator  (*remove)(GAvlTree *thiz, GType val);
+    GIterator  (*remove)(GAvlTree *thiz, gconstpointer val);
 
-    GIterator  (*insert)(GAvlTree *thiz, GType val);
+    GIterator  (*insert)(GAvlTree *thiz, gconstpointer val);
 
     void      (*traverse)(GAvlTree *thiz);
-
-
 
     void      (*swap)(GAvlTree *thiz, GAvlTree *that);
 };

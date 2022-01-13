@@ -10,7 +10,7 @@ struct _GDStack {
     gpointer   first;
     gpointer   last;
     gpointer   end;
-    guint      size;
+    guint      typesize;
 };
 
 static    void g_stack_free(GStack *thiz) {
@@ -27,18 +27,23 @@ static    void g_stack_clear(GStack *thiz) {
     gthiz->last  = gthiz->first;
 }
 
-static    GType g_stack_top(GStack *thiz) {
+static guint  g_stack_typesize(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
-    GType val = {gthiz->first, gthiz->size};
+    return gthiz->typesize;
+}
+
+static    gpointer g_stack_top(GStack *thiz) {
+    GDStack *gthiz = (GDStack*) thiz;
+    gpointer val = gthiz->first;
     if (gthiz->last > gthiz->first)
-        val.data = gthiz->last - gthiz->size;
+        val = gthiz->last - gthiz->typesize;
     return val;
 }
 
 static    guint  g_stack_size(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
     guint size = gthiz->last - gthiz->first;
-    size = size / gthiz->size;
+    size = size / gthiz->typesize;
     return size;
 }
 
@@ -49,17 +54,17 @@ static    guint  g_stack_empty(GStack *thiz) {
     return 0;
 }
 
-static    void g_stack_push(GStack *thiz, GType val) {
+static    void g_stack_push(GStack *thiz, gconstpointer val) {
     GDStack *gthiz = (GDStack*) thiz;
     if (gthiz->end > gthiz->last) {
-        memcpy(gthiz->last, val.data, gthiz->size);
-        gthiz->last = gthiz->last + gthiz->size;
+        memcpy(gthiz->last, val, gthiz->typesize);
+        gthiz->last = gthiz->last + gthiz->typesize;
     }
 }
 static    void g_stack_pop(GStack *thiz) {
     GDStack *gthiz = (GDStack*) thiz;
     if (gthiz->last > gthiz->first)
-        gthiz->last = gthiz->last - gthiz->size;
+        gthiz->last = gthiz->last - gthiz->typesize;
 }
 
 static    void g_stack_swap(GStack *thiz, GStack *that) {
@@ -80,28 +85,29 @@ static    void g_stack_swap(GStack *thiz, GStack *that) {
     gthiz->end = gthat->end;
     gthat->end = gptr;
 
-    guint c = gthiz->size;
-    gthiz->size = gthat->size;
-    gthat->size = c;
+    guint typesize  = gthiz->typesize;
+    gthiz->typesize = gthat->typesize;
+    gthat->typesize = typesize;
     return;
 }
 
-GStack* g_stack_alloc(guint cnt, guint size) { //n - count   c - ElementSize
+GStack* g_stack_alloc(guint cnt, guint typesize) { //n - count   c - ElementSize
     GDStack *gthiz = NULL;
     GStack  *thiz  = NULL;
-    if (cnt <= 0 || size <= 0) {
+    if (cnt <= 0 || typesize <= 0) {
         return thiz;
     }
 
     gthiz = malloc(sizeof(GDStack));
-    gthiz->first = malloc(cnt * size);
+    gthiz->first = malloc(cnt * typesize);
     gthiz->last  = gthiz->first;
-    gthiz->end   = gthiz->first + cnt * size;
-    gthiz->size  = size;// unit size > 0
+    gthiz->end   = gthiz->first + cnt * typesize;
+    gthiz->typesize  = typesize;// unit typesize > 0
 
     thiz        = &(gthiz->thiz);
     thiz->free  = g_stack_free;  // free thiz
     thiz->clear = g_stack_clear;
+    thiz->typesize = g_stack_typesize;
     thiz->top   = g_stack_top;
     thiz->size  = g_stack_size;
     thiz->empty = g_stack_empty;

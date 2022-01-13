@@ -41,33 +41,29 @@ void test_stack() {
         },
     };
 
-    GType val = {NULL, 0};
+    gpointer val = NULL;
 
     for (int i = 1; i < 4; ++i) {
-        val.data = item + i;
-        val.size = sizeof(st_item);
-        stack->push(stack, val);
+        stack->push(stack, item + i);
     }
 
     printf("GStack::size %d  empty %d \n", stack->size(stack), stack->empty(stack));
     stack->clear(stack);
     while(stack->size(stack)) {
         val = stack->top(stack);
-        st_item *it = val.data;
+        st_item *it = val;
         printf("GStack: %d   %d  %s\n", it->id, it->grade, it->name);
         stack->pop(stack);
     }
     printf("GStack::size %d  empty %d \n", stack->size(stack), stack->empty(stack));
 
     for (int i = 0; i < 5; ++i) {
-        val.data = item + i;
-        val.size = sizeof(st_item);
-        stack->push(stack, val);
+        stack->push(stack, item + i);
     }
 
     while(stack->size(stack)) {
         val = stack->top(stack);
-        st_item *it = val.data;
+        st_item *it = val;
         printf("GStack: %d   %d  %s\n", it->id, it->grade, it->name);
         stack->pop(stack);
     }

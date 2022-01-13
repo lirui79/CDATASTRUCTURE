@@ -41,27 +41,20 @@ void test_queue() {
         },
     };
 
-    GQueue *queue = g_queue_alloc();
+    GQueue *queue = g_queue_alloc(sizeof(st_item));
 
     printf("GQueue::size %d  empty %d \n", queue->size(queue), queue->empty(queue));
 
-
-    GType val = {NULL, 0};
-
     for (int i = 1; i < 4; ++i) {
-        val.data = item + i;
-        val.size = sizeof(st_item);
-        queue->push(queue, val);
+        queue->push(queue, item + i);
     }
 
     printf("GQueue::size %d  empty %d \n", queue->size(queue), queue->empty(queue));
     queue->clear(queue);
     while(queue->size(queue)) {
-        val = queue->front(queue);
-        st_item *it = val.data;
+        st_item *it = queue->front(queue);
         printf("GQueue::front %d   %d  %s\n", it->id, it->grade, it->name);
-        val = queue->back(queue);
-        it = val.data;
+        it = queue->back(queue);
         if (it != NULL)
         printf("GQueue::back %d   %d  %s\n", it->id, it->grade, it->name);
 
@@ -70,17 +63,13 @@ void test_queue() {
     printf("GQueue::size %d  empty %d \n", queue->size(queue), queue->empty(queue));
 
     for (int i = 0; i < 5; ++i) {
-        val.data = item + i;
-        val.size = sizeof(st_item);
-        queue->push(queue, val);
+        queue->push(queue, item + i);
     }
 
     while(queue->size(queue)) {
-        val = queue->front(queue);
-        st_item *it = val.data;
+        st_item *it = queue->front(queue);
         printf("GQueue::front %d   %d  %s\n", it->id, it->grade, it->name);
-        val = queue->back(queue);
-        it = val.data;
+        it = queue->back(queue);
         if (it != NULL)
         printf("GQueue::back %d   %d  %s\n", it->id, it->grade, it->name);
 

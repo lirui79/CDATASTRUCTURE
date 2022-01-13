@@ -16,6 +16,7 @@ struct _GAvlDNode {
     GAvlDNode         *left;
     GAvlDNode         *right;
     GAvlDNode         *parent;
+    gint               degree;
     gint               height;
     GType              data;
     GType              key;
@@ -96,7 +97,9 @@ static    void       g_avltree_clear(GAvlTree  *thiz) {
 
 }
 
+static    guint      g_avltree_typesize(GAvlTree *thiz) {
 
+}
 
 static    guint      g_avltree_empty(GAvlTree *thiz) {
 
@@ -176,6 +179,8 @@ GAvlTree* g_avltree_alloc() {
     thiz->free   = g_avltree_free;
 
     thiz->clear  = g_avltree_clear;
+
+    thiz->typesize  = g_avltree_typesize;
 
 
     thiz->empty  = g_avltree_empty;

@@ -39,19 +39,19 @@ struct _GIterator {
     GIterator        (*backward)(GIterator *thiz, guint n);// prev n
 
     int              (*equal)(GIterator *thiz, GIterator *that);
-    int              (*not_equal)(GIterator *thiz, GIterator *that);
+    int              (*unequal)(GIterator *thiz, GIterator *that);
 
     int              (*less)(GIterator *thiz, GIterator *that);
-    int              (*less_equal)(GIterator *thiz, GIterator *that);
+    int              (*lequal)(GIterator *thiz, GIterator *that);// less and equal
 
     int              (*greater)(GIterator *thiz, GIterator *that);
-    int              (*greater_equal)(GIterator *thiz, GIterator *that);
+    int              (*gequal)(GIterator *thiz, GIterator *that);// greater and equal
 
 
-    GRef            (*get)(GIterator *thiz);
+    GRef             (*get)(GIterator *thiz);
     GIterator        (*set)(GIterator *thiz, GRef val);
 
-    GType            (*data)(GIterator *thiz);
+    gpointer         (*data)(GIterator *thiz);
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

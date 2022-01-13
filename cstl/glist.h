@@ -18,19 +18,20 @@ struct _GList {
 
     void   (*free)(GList *thiz);  // free node, and free data, free list
 
+    guint   (*typesize)(GList *thiz);
 
 
     guint  (*empty)(GList *thiz);
 
     guint  (*size)(GList *thiz);
 
-    GType  (*back)(GList *thiz);
+    gpointer  (*back)(GList *thiz);
 
-    GType  (*front)(GList *thiz);
+    gpointer  (*front)(GList *thiz);
 
-    GType  (*at)(GList *thiz, guint index);
+    gpointer  (*at)(GList *thiz, guint index);
 
-    GIterator (*find)(GList *thiz, GType val);
+    GIterator (*find)(GList *thiz, gconstpointer val);
 
 
     GIterator (*begin)(GList *thiz);
@@ -42,9 +43,9 @@ struct _GList {
     GIterator (*rend)(GList *thiz);
 
 
-    void   (*push_back)(GList *thiz, GType val);
+    void   (*push_back)(GList *thiz, gconstpointer val);
 
-    void   (*push_front)(GList *thiz, GType val);
+    void   (*push_front)(GList *thiz, gconstpointer val);
 
     void   (*pop_back)(GList *thiz);// free node, but not free data
 
@@ -57,7 +58,7 @@ struct _GList {
 
     void   (*assign)(GList *thiz, GIterator first, GIterator last);
 
-    void   (*fill)(GList *thiz, GIterator position, guint n, GType val);
+    void   (*fill)(GList *thiz, GIterator position, guint n, gconstpointer val);
 
     void   (*insert)(GList *thiz, GIterator position, GIterator first, GIterator last);
 
@@ -66,9 +67,9 @@ struct _GList {
     void   (*swap)(GList *thiz, GList *that);
 };
 
-GIterator g_list_iterator(gpointer data, guint size, int dir);
+GIterator g_list_iterator(gpointer data, guint typsize, int dir);
 
-GList* g_list_alloc(); //1 -
+GList* g_list_alloc(guint typesize); //1 -
 
 
 

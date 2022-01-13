@@ -31,12 +31,10 @@ static void print_array_int_r(GArray *iarray) {
 static void test_array_int() {
     GArray *iarray = g_array_alloc(32,sizeof(int));
     int value = 0x33;
-    GType tval = g_default_type(&value, sizeof(int));
-    iarray->fill(iarray, tval);
+    iarray->fill(iarray, &value);
     print_array_int(iarray);
     print_array_int_r(iarray);
-    tval = iarray->data(iarray);
-    value = *(int*) tval.data;
+    value = *(int*)iarray->data(iarray);
     printf("GArray first %x\n", value);
 
     int buf[] = {0x45, 0x32, 0x65, 0x223232, 0x78797};
@@ -52,8 +50,7 @@ static void test_array_int() {
     print_array_int(iarray);
     print_array_int_r(iarray);
 
-    tval = iarray->data(iarray);
-    value = *(int*) tval.data;
+    value = *(int*)iarray->data(iarray);
     printf("GArray first %x\n", value);
 
     printf("GArray::size %d \n", iarray->size(iarray));

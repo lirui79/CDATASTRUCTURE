@@ -43,7 +43,7 @@ static int              g_default_iterator_equal(GIterator *thiz, GIterator *tha
     return 0;
 }
 
-static int              g_default_iterator_not_equal(GIterator *thiz, GIterator *that) {
+static int              g_default_iterator_unequal(GIterator *thiz, GIterator *that) {
     if (thiz->idata.data != that->idata.data)
         return 1;
     return 0;
@@ -82,9 +82,8 @@ static GIterator       g_default_iterator_set(GIterator *thiz, GRef val) {
     return thiz[0];
 }
 
-static GType        g_default_iterator_data(GIterator *thiz) {
-    GType val = {thiz->idata.data, thiz->idata.size};
-    return val;
+static gpointer        g_default_iterator_data(GIterator *thiz) {
+    return thiz->idata.data;
 }
 
 GIterator g_default_iterator(gpointer data, guint size, int dir) {
@@ -104,11 +103,11 @@ GIterator g_default_iterator(gpointer data, guint size, int dir) {
         thiz.backward  = g_default_iterator_forward;
     }
     thiz.equal  = g_default_iterator_equal;
-    thiz.not_equal  = g_default_iterator_not_equal;
+    thiz.unequal  = g_default_iterator_unequal;
     thiz.less  = g_default_iterator_less;
-    thiz.less_equal  = g_default_iterator_less_equal;
+    thiz.lequal  = g_default_iterator_less_equal;
     thiz.greater  = g_default_iterator_greater;
-    thiz.greater_equal  = g_default_iterator_greater_equal;
+    thiz.gequal  = g_default_iterator_greater_equal;
     thiz.get  = g_default_iterator_get;
     thiz.set  = g_default_iterator_set;
     thiz.data = g_default_iterator_data;

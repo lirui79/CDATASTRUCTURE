@@ -9,37 +9,36 @@ typedef struct _GDQNode   GDQNode;
 struct _GDQNode {
     GDQNode           *next;
     GDQNode           *prev;
-    GType              data;// data pointer //  data size
+    gpointer           data;// data pointer //  data size
 };
 
 
-static GDQNode*          g_node_init(GDQNode *thiz, gpointer data, guint size) {
-    GType     val = {data, size};
+static GDQNode*          g_node_init(GDQNode *thiz, gpointer data) {
     thiz->next  = NULL;
     thiz->prev  = NULL;
-    thiz->data  = val;
+    thiz->data  = data;
     return thiz;
 }
 
 
-static GDQNode*          g_node_alloc(GType val) {
+static GDQNode*          g_node_alloc(gconstpointer val, guint typesize) {
     GDQNode *thiz = malloc(sizeof(GDQNode));
-    if(val.data == NULL || val.size <= 0) {
-        return g_node_init(thiz, NULL, 0);
+    if(val == NULL || typesize <= 0) {
+        return g_node_init(thiz, NULL);
     }
-    gpointer newdata = malloc(val.size);
-    memcpy(newdata, val.data, val.size);
-    return g_node_init(thiz, newdata, val.size);
+    gpointer newdata = malloc(typesize);
+    memcpy(newdata, val, typesize);
+    return g_node_init(thiz, newdata);
 }
 
-static GType      g_node_data(GDQNode  *thiz) {
+static gpointer      g_node_data(GDQNode  *thiz) {
     return thiz->data;
 }
 
 
 static void           g_node_free(GDQNode  *thiz) {
-    if (thiz->data.data != NULL)
-        free(thiz->data.data);
+    if (thiz->data != NULL)
+        free(thiz->data);
     free(thiz);
 }
 
@@ -61,12 +60,12 @@ struct _GDQueue {
     GQueue                 thiz;
     GDQNode                head;// list  head  no data      next -> first node
     guint                  size;
+    guint                  typesize;
 };
 
 static    void g_queue_clear(GQueue *thiz) {
     GDQueue* gthis = (GDQueue*) thiz;
     GDQNode *node = NULL, *next = NULL;
-    GType     val = {NULL, 0};
     node = gthis->head.next;
     while (node != &(gthis->head)) {
         next = node->next;
@@ -76,7 +75,7 @@ static    void g_queue_clear(GQueue *thiz) {
 
     gthis->head.next = &(gthis->head);
     gthis->head.prev = &(gthis->head);
-    gthis->head.data  = val;
+    gthis->head.data  = NULL;
     gthis->size      = 0;
 }
 
@@ -85,6 +84,11 @@ static    void g_queue_free(GQueue *thiz) { // free thiz
     GDQueue* gthis = (GDQueue*) thiz;
     g_queue_clear(thiz);
     free(gthis);
+}
+
+static    guint  g_queue_typesize(GQueue *thiz) {
+    GDQueue* gthis = (GDQueue*) thiz;
+    return gthis->typesize;
 }
 
 static    guint  g_queue_size(GQueue *thiz) {
@@ -99,21 +103,21 @@ static    guint  g_queue_empty(GQueue *thiz) {
     return 0;
 }
 
-static    GType g_queue_front(GQueue *thiz) {
+static    gpointer g_queue_front(GQueue *thiz) {
     GDQueue* gthis = (GDQueue*) thiz;
     GDQNode *node = gthis->head.next;
     return node->data;
 }
 
-static    GType g_queue_back(GQueue *thiz) {
+static    gpointer g_queue_back(GQueue *thiz) {
     GDQueue* gthis = (GDQueue*) thiz;
     GDQNode *node = gthis->head.prev;
     return node->data;
 }
 
-static    void    g_queue_push(GQueue *thiz, GType val) {
+static    void    g_queue_push(GQueue *thiz, gconstpointer val) {
     GDQueue* gthis = (GDQueue*) thiz;
-    GDQNode *node  = g_node_alloc(val);
+    GDQNode *node  = g_node_alloc(val, gthis->typesize);
     GDQNode *prev  = gthis->head.prev;
     g_node_insert(prev, node);
     gthis->size    =  gthis->size + 1;
@@ -174,22 +178,24 @@ static    void    g_queue_swap(GQueue *thiz, GQueue *that) {
 }
 
 
-GQueue* g_queue_alloc() {
+GQueue* g_queue_alloc(guint typesize) {
     GDQueue *gthis = (GDQueue *) malloc(sizeof(GDQueue));
     GQueue  *thiz = NULL;
     if (gthis == NULL) {
         return NULL;
     }
 
-    g_node_init(&gthis->head, NULL, 0);
+    g_node_init(&gthis->head, NULL);
     gthis->head.next = &(gthis->head);
     gthis->head.prev = &(gthis->head);
     gthis->size      = 0;
+    gthis->typesize      = typesize;
 
     thiz = &gthis->thiz;
     /////////////////////////////////////
     thiz->clear        = g_queue_clear;
     thiz->free         = g_queue_free;
+    thiz->typesize     = g_queue_typesize;
 
     thiz->size         = g_queue_size;
     thiz->empty        = g_queue_empty;
