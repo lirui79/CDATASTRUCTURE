@@ -267,15 +267,15 @@ static    guint     g_deque_empty(GDeque *thiz) {
 
 
 
-static    GType  g_deque_front(GDeque *thiz) {
+static    gpointer  g_deque_front(GDeque *thiz) {
     GDDeque *gthiz = (GDDeque*) thiz;
     gint rows = gthiz->first.rows, cols = gthiz->first.cols;
     gpointer gptr = gthiz->mptr[rows];
     gptr += cols * gthiz->typesize;
-    return g_default_type(gptr, gthiz->typesize);
+    return gptr;
 }
 
-static    GType  g_deque_back(GDeque *thiz) {
+static    gpointer  g_deque_back(GDeque *thiz) {
     GDDeque *gthiz = (GDDeque*) thiz;
     gint rows = gthiz->last.rows, cols = gthiz->last.cols;
     cols -= 1;
@@ -286,10 +286,10 @@ static    GType  g_deque_back(GDeque *thiz) {
 
     gpointer gptr = gthiz->mptr[rows];
     gptr += cols * gthiz->typesize;
-    return g_default_type(gptr, gthiz->typesize);
+    return gptr;
 }
 
-static    GType  g_deque_at(GDeque *thiz, guint index) {
+static    gpointer  g_deque_at(GDeque *thiz, guint index) {
     GDDeque *gthiz = (GDDeque*) thiz;
     gint rows = gthiz->first.rows + index / gthiz->cols, cols = gthiz->first.cols + index % gthiz->cols;
     if (cols >= gthiz->cols) {
@@ -299,7 +299,7 @@ static    GType  g_deque_at(GDeque *thiz, guint index) {
 
     gpointer gptr = gthiz->mptr[rows];
     gptr += cols * gthiz->typesize;
-    return g_default_type(gptr, gthiz->typesize);
+    return gptr;
 }
 
 
